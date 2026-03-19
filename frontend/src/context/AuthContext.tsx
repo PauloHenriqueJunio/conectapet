@@ -36,8 +36,15 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-const PUBLIC_PATHS = ["/", "/login", "/register"];
+const PUBLIC_PATHS = ["/", "/login", "/register", "/quem-somos", "/ongs"];
 const STORAGE_KEY = "conectapet_auth";
+
+function isRoutePublic(pathname: string) {
+  return PUBLIC_PATHS.some(
+    (publicPath) =>
+      pathname === publicPath || pathname.startsWith(`${publicPath}/`),
+  );
+}
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [token, setToken] = useState<string | null>(null);
@@ -67,7 +74,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    const isPublicPath = PUBLIC_PATHS.includes(pathname);
+    const isPublicPath = isRoutePublic(pathname);
 
     if (!token && !isPublicPath) {
       router.replace("/login");
