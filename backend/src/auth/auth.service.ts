@@ -19,6 +19,25 @@ export class AuthService {
   ) {}
 
   async register(dto: RegisterDto) {
+    const normalizedCpf = dto.cpf?.replace(/\D/g, "") ?? "";
+    const normalizedCnpj = dto.cnpj?.replace(/\D/g, "") ?? "";
+
+    if (dto.role === Role.ONG && normalizedCnpj.length !== 14) {
+      throw new BadRequestException("CNPJ obrigatório e inválido para ONG.");
+    }
+
+    if (normalizedCpf.length > 0 && normalizedCpf.length !== 11) {
+      throw new BadRequestException("CPF inválido.");
+    }
+
+    if (dto.role === Role.ADOTANTE && normalizedCnpj.length > 0) {
+      throw new BadRequestException("Pessoa física não deve informar CNPJ.");
+    }
+
+    if (dto.role === Role.ONG && normalizedCpf.length > 0) {
+      throw new BadRequestException("ONG não deve informar CPF.");
+    }
+
     const existingUser = await this.prisma.user.findUnique({
       where: { email: dto.email.toLowerCase() },
     });
@@ -35,11 +54,15 @@ export class AuthService {
         email: dto.email.toLowerCase(),
         passwordHash,
         role: dto.role,
+        cpf: normalizedCpf || null,
+        cnpj: normalizedCnpj || null,
       },
       select: {
         id: true,
         name: true,
         email: true,
+        cpf: true,
+        cnpj: true,
         role: true,
         createdAt: true,
       },
@@ -79,6 +102,8 @@ export class AuthService {
         id: user.id,
         name: user.name,
         email: user.email,
+        cpf: user.cpf,
+        cnpj: user.cnpj,
         role: user.role,
       },
     };

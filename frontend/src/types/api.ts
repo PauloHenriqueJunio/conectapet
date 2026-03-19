@@ -4,6 +4,8 @@ export interface AuthUser {
   id: string;
   name: string;
   email: string;
+  cpf?: string | null;
+  cnpj?: string | null;
   role: Role;
 }
 

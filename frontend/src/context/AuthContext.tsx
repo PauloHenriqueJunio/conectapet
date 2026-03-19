@@ -17,6 +17,8 @@ interface RegisterPayload {
   email: string;
   password: string;
   role: Role;
+  cpf?: string;
+  cnpj?: string;
 }
 
 interface LoginPayload {
