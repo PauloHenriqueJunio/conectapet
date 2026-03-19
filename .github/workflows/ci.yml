@@ -17,6 +17,6 @@ jobs:
         with:
           node-version: "20"
 
-      - run: npm ci --prefix frontend
+      - run: npm install --prefix frontend
 
       - run: npm --prefix frontend run build
