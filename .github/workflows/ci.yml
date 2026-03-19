@@ -1,0 +1,44 @@
+name: ConectaPet CI/CD Integrado
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-validate:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 📥 Clonar o repositório
+      uses: actions/checkout@v4
+
+    - name: ⚙️ Configurar Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        cache-dependency-path: |
+          frontend/package-lock.json
+          backend/package-lock.json
+
+    
+    - name: 📦 Instalar dependências (Backend)
+      working-directory: ./backend
+      run: npm ci 
+
+    - name: 🏗️ Compilar Backend (NestJS)
+      working-directory: ./backend
+      run: npm run build
+
+    
+    - name: 📦 Instalar dependências (Frontend)
+      working-directory: ./frontend
+      run: npm ci
+
+    - name: 🏗️ Compilar Frontend (Next.js)
+      working-directory: ./frontend
+      run: npm run build
+      
+    
