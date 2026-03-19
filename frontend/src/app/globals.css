@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #f8faf8;
+  --surface: #ffffff;
+  --ink: #1d2a22;
+}
+
+body {
+  background:
+    radial-gradient(circle at 10% 10%, #dff6e8 0%, transparent 38%),
+    radial-gradient(circle at 90% 20%, #e9f7ef 0%, transparent 45%),
+    linear-gradient(180deg, #f8faf8 0%, #f0f6f2 100%);
+  color: var(--ink);
+}

@@ -1,0 +1,58 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ONG
+  ADOTANTE
+}
+
+enum AdoptionStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model User {
+  id               String            @id @default(uuid()) @db.Uuid
+  email            String            @unique
+  passwordHash     String
+  name             String
+  role             Role
+  createdAt        DateTime          @default(now())
+  pets             Pet[]             @relation("OngPets")
+  adoptionRequests AdoptionRequest[] @relation("AdopterRequests")
+}
+
+model Pet {
+  id               String            @id @default(uuid()) @db.Uuid
+  name             String
+  species          String
+  age              Int
+  description      String
+  photoUrl         String            @default("")
+  isAdopted        Boolean           @default(false)
+  createdAt        DateTime          @default(now())
+  ongId            String            @db.Uuid
+  ong              User              @relation("OngPets", fields: [ongId], references: [id], onDelete: Restrict)
+  adoptionRequests AdoptionRequest[] @relation("PetRequests")
+}
+
+model AdoptionRequest {
+  id         String         @id @default(uuid()) @db.Uuid
+  petId      String         @db.Uuid
+  adopterId  String         @db.Uuid
+  status     AdoptionStatus @default(PENDING)
+  message    String
+  createdAt  DateTime       @default(now())
+
+  pet        Pet            @relation("PetRequests", fields: [petId], references: [id], onDelete: Cascade)
+  adopter    User           @relation("AdopterRequests", fields: [adopterId], references: [id], onDelete: Cascade)
+
+  @@unique([petId, adopterId])
+}
