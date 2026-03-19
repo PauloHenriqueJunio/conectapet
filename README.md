@@ -70,6 +70,29 @@ npx prisma generate
 npx prisma migrate dev --name init
 ```
 
+## 4.1 Popular banco com dados mockados (seed)
+
+Para inserir dados de demonstração e testar o fluxo completo da aplicação:
+
+```bash
+cd backend
+npm run prisma:seed
+```
+
+O seed cria:
+
+- 1 ONG
+- 2 ADOTANTES
+- pets com status disponivel e adotado
+- solicitacoes de adocao com status PENDING, APPROVED e REJECTED
+
+Usuarios de teste (somente ambiente local/dev):
+
+- ONG: ong@conectapet.dev
+- ADOTANTE: adotante1@conectapet.dev
+- ADOTANTE: adotante2@conectapet.dev
+- Senha para todos: 123456
+
 ## 5. Iniciar os servidores em desenvolvimento
 
 Terminal 1 (backend):
