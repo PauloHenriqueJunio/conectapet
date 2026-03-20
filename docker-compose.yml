@@ -32,9 +32,9 @@ services:
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public
       JWT_SECRET: ${JWT_SECRET}
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN}
-      BACKEND_PORT: ${BACKEND_PORT:-3001}
+      BACKEND_PORT: 3001
     ports:
-      - "${BACKEND_PORT:-3001}:3001"
+      - "3002:3001"
     command: >
       sh -c "npx prisma migrate deploy && npm run prisma:seed && npm run start"
 

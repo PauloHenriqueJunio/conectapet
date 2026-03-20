@@ -51,7 +51,7 @@ Ao subir os containers, o backend executa automaticamente:
 - `prisma migrate deploy`
 - `npm run prisma:seed`
 
-Assim, os dados mock (incluindo ONGs com endereco) ja ficam disponiveis.
+Assim, os dados mock (incluindo 4 ONGs) ja ficam disponiveis.
 
 ## 3. Instalar dependências
 
@@ -88,7 +88,7 @@ npm run prisma:seed
 
 O seed cria:
 
-- 2 ONGs com endereco mock
+- 4 ONGs mockadas
 - 2 ADOTANTES
 - pets com status disponivel e adotado
 - solicitacoes de adocao com status PENDING, APPROVED e REJECTED
@@ -96,6 +96,9 @@ O seed cria:
 Usuarios de teste (somente ambiente local/dev):
 
 - ONG: ong@conectapet.dev
+- ONG: ong2@conectapet.dev
+- ONG: ong3@conectapet.dev
+- ONG: ong4@conectapet.dev
 - ADOTANTE: adotante1@conectapet.dev
 - ADOTANTE: adotante2@conectapet.dev
 - Senha para todos: 123456
@@ -119,7 +122,8 @@ npm run dev
 ## URLs
 
 - Frontend: http://localhost:3000
-- Backend: http://localhost:3001
+- Backend local (npm run start:dev): http://localhost:3001
+- Backend via Docker Compose: http://localhost:3002
 
 ## Endpoints principais
 

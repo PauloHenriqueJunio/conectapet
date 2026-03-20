@@ -40,6 +40,36 @@ async function main() {
     },
   });
 
+  await prisma.user.create({
+    data: {
+      name: "ONG Lar dos Bichos",
+      email: "ong3@conectapet.dev",
+      passwordHash,
+      cep: "80010000",
+      state: "PR",
+      city: "Curitiba",
+      contact: "(41) 96666-3333",
+      address: "Rua das Flores, 88 - Centro",
+      cnpj: "66778899000155",
+      role: Role.ONG,
+    },
+  });
+
+  await prisma.user.create({
+    data: {
+      name: "ONG Vida Animal",
+      email: "ong4@conectapet.dev",
+      passwordHash,
+      cep: "40010000",
+      state: "BA",
+      city: "Salvador",
+      contact: "(71) 95555-4444",
+      address: "Avenida do Porto, 420 - Comercio",
+      cnpj: "11223344000177",
+      role: Role.ONG,
+    },
+  });
+
   const adopterOne = await prisma.user.create({
     data: {
       name: "Paula Costa",
@@ -177,6 +207,8 @@ async function main() {
   console.log("Usuarios de teste (senha: 123456):");
   console.log("- ONG: ong@conectapet.dev");
   console.log("- ONG: ong2@conectapet.dev");
+  console.log("- ONG: ong3@conectapet.dev");
+  console.log("- ONG: ong4@conectapet.dev");
   console.log("- ADOTANTE: adotante1@conectapet.dev");
   console.log("- ADOTANTE: adotante2@conectapet.dev");
 }
