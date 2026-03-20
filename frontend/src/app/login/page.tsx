@@ -111,7 +111,7 @@ export default function LoginPage() {
           Ainda não tem conta?{" "}
           <Link
             href={`/register?role=${userType}`}
-            className="font-semibold text-brand-700"
+            className="font-semibold text-brand-700 hover:underline underline-offset-2"
           >
             Cadastre-se
           </Link>
