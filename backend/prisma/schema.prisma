@@ -23,7 +23,7 @@ model User {
   email            String            @unique
   passwordHash     String
   name             String
-  cep              String?
+  cep              String
   state            String?
   city             String?
   contact          String?

@@ -53,8 +53,8 @@ export function SiteHeader({ page }: SiteHeaderProps) {
             ConectaPet
           </Link>
           <p className="mt-1 text-xs text-slate-600 sm:text-sm">
-            Encontre um novo melhor amigo e transforme vidas com adocao
-            responsavel.
+            Encontre um novo melhor amigo e transforme vidas com adoção
+            responsável.
           </p>
         </div>
 
@@ -101,7 +101,7 @@ export function SiteHeader({ page }: SiteHeaderProps) {
                 className={navClass("colocar-na-adocao")}
                 onClick={() => setActiveNav("colocar-na-adocao")}
               >
-                Colocar na adocao
+                Colocar na adoção
               </Link>
             </li>
             <li>
@@ -175,7 +175,7 @@ export function SiteHeader({ page }: SiteHeaderProps) {
                   setIsMenuOpen(false);
                 }}
               >
-                Colocar na adocao
+                Colocar na adoção
               </Link>
             </li>
             <li>
