@@ -11,6 +11,11 @@ import { LoginDto } from "./dto/login.dto";
 import { RegisterDto } from "./dto/register.dto";
 import { JwtPayload } from "./types/jwt-payload.type";
 
+interface BrasilApiCepResponse {
+  state: string;
+  city: string;
+}
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -24,6 +29,12 @@ export class AuthService {
     if (!response.ok) {
       throw new BadRequestException("CEP inválido ou não encontrado.");
     }
+
+    const data = (await response.json()) as BrasilApiCepResponse;
+    return {
+      state: data.state,
+      city: data.city,
+    };
   }
 
   async register(dto: RegisterDto) {
@@ -57,7 +68,7 @@ export class AuthService {
       throw new BadRequestException("Contato é obrigatório para ONG.");
     }
 
-    await this.validateCepWithBrasilApi(normalizedCep);
+    const cepData = await this.validateCepWithBrasilApi(normalizedCep);
 
     const existingUser = await this.prisma.user.findUnique({
       where: { email: dto.email.toLowerCase() },
@@ -76,6 +87,8 @@ export class AuthService {
         passwordHash,
         role: dto.role,
         cep: normalizedCep,
+        state: cepData.state,
+        city: cepData.city,
         contact: trimmedContact || null,
         address: trimmedAddress || null,
         cpf: normalizedCpf || null,
@@ -86,6 +99,8 @@ export class AuthService {
         name: true,
         email: true,
         cep: true,
+        state: true,
+        city: true,
         contact: true,
         address: true,
         cpf: true,
@@ -130,6 +145,8 @@ export class AuthService {
         name: user.name,
         email: user.email,
         cep: user.cep,
+        state: user.state,
+        city: user.city,
         contact: user.contact,
         address: user.address,
         cpf: user.cpf,
@@ -147,6 +164,8 @@ export class AuthService {
         name: true,
         email: true,
         cep: true,
+        state: true,
+        city: true,
         contact: true,
         address: true,
         cnpj: true,

@@ -10,19 +10,15 @@ interface ONG {
   name: string;
   email: string;
   cep: string | null;
+  state: string | null;
+  city: string | null;
   cnpj: string | null;
   contact: string | null;
   address: string | null;
 }
 
-interface BrasilApiCep {
-  state: string;
-  city: string;
-}
-
 function formatCnpj(cnpj: string | null) {
-  if (!cnpj) return "CNPJ nao informado";
-
+  if (!cnpj) return "CNPJ não informado";
   const digits = cnpj.replace(/\D/g, "");
   if (digits.length !== 14) return cnpj;
 
@@ -47,36 +43,7 @@ export default function OngsPage() {
           throw new Error("Falha ao buscar ONGs");
         }
         const data = (await response.json()) as ONG[];
-
-        const enrichedOngs = await Promise.all(
-          data.map(async (ong) => {
-            if (ong.address || !ong.cep) {
-              return ong;
-            }
-
-            try {
-              const cepResponse = await fetch(
-                `https://brasilapi.com.br/api/cep/v1/${ong.cep.replace(/\D/g, "")}`,
-              );
-
-              if (!cepResponse.ok) {
-                return ong;
-              }
-
-              const cepData = (await cepResponse.json()) as BrasilApiCep;
-              const stateCity = `${cepData.state} - ${cepData.city}`;
-
-              return {
-                ...ong,
-                address: stateCity,
-              };
-            } catch {
-              return ong;
-            }
-          }),
-        );
-
-        setOngs(enrichedOngs);
+        setOngs(data);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Erro desconhecido");
       } finally {
@@ -96,7 +63,7 @@ export default function OngsPage() {
           Verifique as ONGS cadastradas
         </h1>
         <p className="mt-2 text-sm text-slate-600">
-          Encontre organizaçôes parceiras e escolha com quem iniciar o processo
+          Encontre organizações parceiras e escolha com quem iniciar o processo
           de adoção.
         </p>
       </section>
@@ -149,14 +116,14 @@ export default function OngsPage() {
                 <p className="text-base font-medium text-brand-700 flex items-center gap-1">
                   <Phone size={19} />
                   <span className="text-neutral-800 font-semibold">
-                    : {ong.contact ?? "Nao informado"}
+                    : {ong.contact ?? "Não informado"}
                   </span>
                 </p>
 
                 <p className="text-base font-medium text-brand-700 flex items-center gap-1">
                   <MapPin size={19} />
                   <span className="text-neutral-800 font-semibold">
-                    : {ong.address ?? "Nao informado"}
+                    : {ong.address ?? (ong.state && ong.city ? `${ong.state} - ${ong.city}` : "Não informado")}
                   </span>
                 </p>
               </div>

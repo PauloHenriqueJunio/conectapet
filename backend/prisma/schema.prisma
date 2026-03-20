@@ -24,6 +24,8 @@ model User {
   passwordHash     String
   name             String
   cep              String?
+  state            String?
+  city             String?
   contact          String?
   address          String?
   cpf              String?           @unique
