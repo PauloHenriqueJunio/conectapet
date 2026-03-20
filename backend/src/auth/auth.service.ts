@@ -4,7 +4,7 @@ import {
   UnauthorizedException,
 } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import { Role } from "@prisma/client";
+import { Prisma, Role } from "@prisma/client";
 import * as bcrypt from "bcrypt";
 import { PrismaService } from "../prisma/prisma.service";
 import { LoginDto } from "./dto/login.dto";
@@ -78,37 +78,74 @@ export class AuthService {
       throw new BadRequestException("Email já cadastrado.");
     }
 
+    if (normalizedCpf.length > 0) {
+      const existingCpf = await this.prisma.user.findUnique({
+        where: { cpf: normalizedCpf },
+        select: { id: true },
+      });
+
+      if (existingCpf) {
+        throw new BadRequestException("CPF já cadastrado.");
+      }
+    }
+
+    if (normalizedCnpj.length > 0) {
+      const existingCnpj = await this.prisma.user.findUnique({
+        where: { cnpj: normalizedCnpj },
+        select: { id: true },
+      });
+
+      if (existingCnpj) {
+        throw new BadRequestException("CNPJ já cadastrado.");
+      }
+    }
+
     const passwordHash = await bcrypt.hash(dto.password, 12);
 
-    const user = await this.prisma.user.create({
-      data: {
-        name: dto.name,
-        email: dto.email.toLowerCase(),
-        passwordHash,
-        role: dto.role,
-        cep: normalizedCep,
-        state: cepData.state,
-        city: cepData.city,
-        contact: trimmedContact || null,
-        address: trimmedAddress || null,
-        cpf: normalizedCpf || null,
-        cnpj: normalizedCnpj || null,
-      },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        cep: true,
-        state: true,
-        city: true,
-        contact: true,
-        address: true,
-        cpf: true,
-        cnpj: true,
-        role: true,
-        createdAt: true,
-      },
-    });
+    let user;
+
+    try {
+      user = await this.prisma.user.create({
+        data: {
+          name: dto.name,
+          email: dto.email.toLowerCase(),
+          passwordHash,
+          role: dto.role,
+          cep: normalizedCep,
+          state: cepData.state,
+          city: cepData.city,
+          contact: trimmedContact || null,
+          address: trimmedAddress || null,
+          cpf: normalizedCpf || null,
+          cnpj: normalizedCnpj || null,
+        },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          cep: true,
+          state: true,
+          city: true,
+          contact: true,
+          address: true,
+          cpf: true,
+          cnpj: true,
+          role: true,
+          createdAt: true,
+        },
+      });
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === "P2002"
+      ) {
+        throw new BadRequestException(
+          "Dados duplicados: email, CPF ou CNPJ já cadastrados.",
+        );
+      }
+
+      throw error;
+    }
 
     return user;
   }

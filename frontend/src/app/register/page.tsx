@@ -105,8 +105,8 @@ function RegisterForm() {
 
         <p className="mt-3 text-xs text-slate-500">
           {role === "ONG"
-            ? "Para ONG, o CNPJ e obrigatorio."
-            : "Para pessoa fisica, o CPF e opcional."}
+            ? "Para ONG, o CNPJ é obrigatório."
+            : "Para pessoa física, o CPF é opcional."}
         </p>
 
         <form className="mt-8 space-y-4" onSubmit={handleSubmit}>

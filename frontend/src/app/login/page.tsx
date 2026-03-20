@@ -65,7 +65,7 @@ export default function LoginPage() {
         <p className="mt-3 text-xs text-slate-500">
           {userType === "ONG"
             ? "Se voce for ONG, o cadastro deve incluir CNPJ."
-            : "Se voce for pessoa fisica, o cadastro deve incluir CPF."}
+            : "Se voce for pessoa física, o CPF no cadastro é opcional."}
         </p>
 
         <form className="mt-8 space-y-4" onSubmit={handleSubmit}>

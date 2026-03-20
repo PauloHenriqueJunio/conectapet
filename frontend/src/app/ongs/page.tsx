@@ -2,6 +2,7 @@
 
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
+import { apiFetch } from "@/lib/api";
 import { useEffect, useState } from "react";
 import { Mail, ShieldCheck, Phone, MapPin } from "lucide-react";
 
@@ -36,13 +37,7 @@ export default function OngsPage() {
   useEffect(() => {
     const fetchOngs = async () => {
       try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/auth/ongs`,
-        );
-        if (!response.ok) {
-          throw new Error("Falha ao buscar ONGs");
-        }
-        const data = (await response.json()) as ONG[];
+        const data = await apiFetch<ONG[]>("/auth/ongs");
         setOngs(data);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Erro desconhecido");
@@ -123,7 +118,11 @@ export default function OngsPage() {
                 <p className="text-base font-medium text-brand-700 flex items-center gap-1">
                   <MapPin size={19} />
                   <span className="text-neutral-800 font-semibold">
-                    : {ong.address ?? (ong.state && ong.city ? `${ong.state} - ${ong.city}` : "Não informado")}
+                    :{" "}
+                    {ong.address ??
+                      (ong.state && ong.city
+                        ? `${ong.state} - ${ong.city}`
+                        : "Não informado")}
                   </span>
                 </p>
               </div>
