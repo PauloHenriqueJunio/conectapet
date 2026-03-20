@@ -6,6 +6,35 @@ import { useSearchParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { Role } from "@/types/api";
 
+function getRegisterErrorMessage(error: unknown) {
+  if (!(error instanceof Error)) {
+    return "Não foi possível concluir o cadastro.";
+  }
+
+  const rawMessage = error.message?.trim();
+  if (!rawMessage) {
+    return "Não foi possível concluir o cadastro.";
+  }
+
+  try {
+    const parsed = JSON.parse(rawMessage) as {
+      message?: string | string[];
+    };
+
+    if (Array.isArray(parsed.message)) {
+      return parsed.message.join(" ");
+    }
+
+    if (typeof parsed.message === "string" && parsed.message.length > 0) {
+      return parsed.message;
+    }
+  } catch {
+    return rawMessage;
+  }
+
+  return rawMessage;
+}
+
 function RegisterForm() {
   const { register } = useAuth();
   const searchParams = useSearchParams();
@@ -57,8 +86,8 @@ function RegisterForm() {
         cpf: cpf.trim() || undefined,
         cnpj: cnpj.trim() || undefined,
       });
-    } catch {
-      setError("Não foi possível concluir o cadastro.");
+    } catch (err) {
+      setError(getRegisterErrorMessage(err));
     } finally {
       setIsSubmitting(false);
     }

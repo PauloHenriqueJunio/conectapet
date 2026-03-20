@@ -1,6 +1,8 @@
 import {
+  BadGatewayException,
   BadRequestException,
   Injectable,
+  ServiceUnavailableException,
   UnauthorizedException,
 } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
@@ -24,10 +26,35 @@ export class AuthService {
   ) {}
 
   private async validateCepWithBrasilApi(cep: string) {
-    const response = await fetch(`https://brasilapi.com.br/api/cep/v1/${cep}`);
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 5000);
+
+    let response: Response;
+
+    try {
+      response = await fetch(`https://brasilapi.com.br/api/cep/v1/${cep}`, {
+        signal: controller.signal,
+      });
+    } catch (error) {
+      if (error instanceof Error && error.name === "AbortError") {
+        throw new ServiceUnavailableException(
+          "Tempo de validação do CEP esgotado. Tente novamente.",
+        );
+      }
+
+      throw new ServiceUnavailableException(
+        "Serviço de validação de CEP indisponível no momento.",
+      );
+    } finally {
+      clearTimeout(timeout);
+    }
 
     if (!response.ok) {
-      throw new BadRequestException("CEP inválido ou não encontrado.");
+      if (response.status === 400 || response.status === 404) {
+        throw new BadRequestException("CEP inválido ou não encontrado.");
+      }
+
+      throw new BadGatewayException("Falha ao consultar serviço de CEP.");
     }
 
     const data = (await response.json()) as BrasilApiCepResponse;
@@ -68,8 +95,6 @@ export class AuthService {
       throw new BadRequestException("Contato é obrigatório para ONG.");
     }
 
-    const cepData = await this.validateCepWithBrasilApi(normalizedCep);
-
     const existingUser = await this.prisma.user.findUnique({
       where: { email: dto.email.toLowerCase() },
     });
@@ -99,6 +124,8 @@ export class AuthService {
         throw new BadRequestException("CNPJ já cadastrado.");
       }
     }
+
+    const cepData = await this.validateCepWithBrasilApi(normalizedCep);
 
     const passwordHash = await bcrypt.hash(dto.password, 12);
 
