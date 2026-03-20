@@ -108,4 +108,17 @@ export class AuthService {
       },
     };
   }
+
+  async getOngs() {
+    return this.prisma.user.findMany({
+      where: { role: Role.ONG },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        cnpj: true,
+      },
+      orderBy: { createdAt: "desc" },
+    });
+  }
 }

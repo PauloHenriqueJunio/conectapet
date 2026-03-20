@@ -1,12 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useState } from "react";
+import { FormEvent, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { Role } from "@/types/api";
 
-export default function RegisterPage() {
+function RegisterForm() {
   const { register } = useAuth();
   const searchParams = useSearchParams();
   const initialRole = searchParams.get("role") === "ONG" ? "ONG" : "ADOTANTE";
@@ -174,11 +174,28 @@ export default function RegisterPage() {
 
         <p className="mt-6 text-sm text-slate-600">
           Já tem conta?{" "}
-          <Link href="/login" className="font-semibold text-brand-700 hover:underline underline-offset-2">
+          <Link
+            href="/login"
+            className="font-semibold text-brand-700 hover:underline underline-offset-2"
+          >
             Fazer login
           </Link>
         </p>
       </div>
     </main>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center min-h-screen">
+          Carregando...
+        </div>
+      }
+    >
+      <RegisterForm />
+    </Suspense>
   );
 }
