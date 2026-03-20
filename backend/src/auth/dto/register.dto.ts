@@ -28,4 +28,16 @@ export class RegisterDto {
   @IsOptional()
   @IsString()
   cnpj?: string;
+
+  @IsString()
+  @IsNotEmpty()
+  cep!: string;
+
+  @IsOptional()
+  @IsString()
+  contact?: string;
+
+  @IsOptional()
+  @IsString()
+  address?: string;
 }

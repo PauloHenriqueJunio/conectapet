@@ -13,6 +13,9 @@ function RegisterForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [cep, setCep] = useState("");
+  const [contact, setContact] = useState("");
+  const [address, setAddress] = useState("");
   const [role, setRole] = useState<Role>(initialRole);
   const [cpf, setCpf] = useState("");
   const [cnpj, setCnpj] = useState("");
@@ -30,12 +33,27 @@ function RegisterForm() {
       return;
     }
 
+    if (cep.trim().length === 0) {
+      setError("CEP é obrigatório.");
+      setIsSubmitting(false);
+      return;
+    }
+
+    if (role === "ONG" && contact.trim().length === 0) {
+      setError("Contato é obrigatório para cadastro de ONG.");
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
       await register({
         name,
         email,
         password,
         role,
+        cep,
+        contact: contact.trim() || undefined,
+        address: address.trim() || undefined,
         cpf: cpf.trim() || undefined,
         cnpj: cnpj.trim() || undefined,
       });
@@ -126,6 +144,20 @@ function RegisterForm() {
             />
           </div>
 
+          <div>
+            <label className="mb-1 block text-sm font-medium">
+              CEP (obrigatório)
+            </label>
+            <input
+              type="text"
+              required
+              value={cep}
+              onChange={(event) => setCep(event.target.value)}
+              placeholder="Ex: 01001-000"
+              className="w-full rounded-xl border border-slate-300 px-4 py-2 outline-none ring-brand-300 focus:ring"
+            />
+          </div>
+
           {role === "ADOTANTE" && (
             <div>
               <label className="mb-1 block text-sm font-medium">
@@ -142,19 +174,48 @@ function RegisterForm() {
           )}
 
           {role === "ONG" && (
-            <div>
-              <label className="mb-1 block text-sm font-medium">
-                CNPJ (obrigatório)
-              </label>
-              <input
-                type="text"
-                required
-                value={cnpj}
-                onChange={(event) => setCnpj(event.target.value)}
-                placeholder="Ex: 12.345.678/0001-90"
-                className="w-full rounded-xl border border-slate-300 px-4 py-2 outline-none ring-brand-300 focus:ring"
-              />
-            </div>
+            <>
+              <div>
+                <label className="mb-1 block text-sm font-medium">
+                  CNPJ (obrigatório)
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={cnpj}
+                  onChange={(event) => setCnpj(event.target.value)}
+                  placeholder="Ex: 12.345.678/0001-90"
+                  className="w-full rounded-xl border border-slate-300 px-4 py-2 outline-none ring-brand-300 focus:ring"
+                />
+              </div>
+
+              <div>
+                <label className="mb-1 block text-sm font-medium">
+                  Contato (obrigatório)
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={contact}
+                  onChange={(event) => setContact(event.target.value)}
+                  placeholder="Ex: (11) 99999-0000"
+                  className="w-full rounded-xl border border-slate-300 px-4 py-2 outline-none ring-brand-300 focus:ring"
+                />
+              </div>
+
+              <div>
+                <label className="mb-1 block text-sm font-medium">
+                  Endereço (opcional)
+                </label>
+                <input
+                  type="text"
+                  value={address}
+                  onChange={(event) => setAddress(event.target.value)}
+                  placeholder="Ex: Rua das Flores, 123"
+                  className="w-full rounded-xl border border-slate-300 px-4 py-2 outline-none ring-brand-300 focus:ring"
+                />
+              </div>
+            </>
           )}
 
           {error && (
