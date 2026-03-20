@@ -4,6 +4,13 @@ export interface AuthUser {
   id: string;
   name: string;
   email: string;
+  cep?: string | null;
+  state?: string | null;
+  city?: string | null;
+  contact?: string | null;
+  address?: string | null;
+  cpf?: string | null;
+  cnpj?: string | null;
   role: Role;
 }
 

@@ -3,9 +3,11 @@
 import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { Role } from "@/types/api";
 
 export default function LoginPage() {
   const { login } = useAuth();
+  const [userType, setUserType] = useState<Role>("ADOTANTE");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -33,6 +35,37 @@ export default function LoginPage() {
         </h1>
         <p className="mt-2 text-sm text-slate-600">
           Acesse sua conta para gerenciar adoções.
+        </p>
+
+        <nav className="mt-6 grid grid-cols-2 rounded-xl bg-slate-100 p-1">
+          <button
+            type="button"
+            onClick={() => setUserType("ADOTANTE")}
+            className={`rounded-lg px-3 py-2 text-sm font-semibold transition ${
+              userType === "ADOTANTE"
+                ? "bg-white text-brand-700 shadow-sm"
+                : "text-slate-600 hover:text-slate-800"
+            }`}
+          >
+            Pessoa Física
+          </button>
+          <button
+            type="button"
+            onClick={() => setUserType("ONG")}
+            className={`rounded-lg px-3 py-2 text-sm font-semibold transition ${
+              userType === "ONG"
+                ? "bg-white text-brand-700 shadow-sm"
+                : "text-slate-600 hover:text-slate-800"
+            }`}
+          >
+            ONG
+          </button>
+        </nav>
+
+        <p className="mt-3 text-xs text-slate-500">
+          {userType === "ONG"
+            ? "Se voce for ONG, o cadastro deve incluir CNPJ."
+            : "Se voce for pessoa física, o CPF no cadastro é opcional."}
         </p>
 
         <form className="mt-8 space-y-4" onSubmit={handleSubmit}>
@@ -76,7 +109,10 @@ export default function LoginPage() {
 
         <p className="mt-6 text-sm text-slate-600">
           Ainda não tem conta?{" "}
-          <Link href="/register" className="font-semibold text-brand-700">
+          <Link
+            href={`/register?role=${userType}`}
+            className="font-semibold text-brand-700 hover:underline underline-offset-2"
+          >
             Cadastre-se
           </Link>
         </p>

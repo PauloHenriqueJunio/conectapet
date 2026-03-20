@@ -1,15 +1,22 @@
 import {
+  BadGatewayException,
   BadRequestException,
   Injectable,
+  ServiceUnavailableException,
   UnauthorizedException,
 } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import { Role } from "@prisma/client";
+import { Prisma, Role } from "@prisma/client";
 import * as bcrypt from "bcrypt";
 import { PrismaService } from "../prisma/prisma.service";
 import { LoginDto } from "./dto/login.dto";
 import { RegisterDto } from "./dto/register.dto";
 import { JwtPayload } from "./types/jwt-payload.type";
+
+interface BrasilApiCepResponse {
+  state: string;
+  city: string;
+}
 
 @Injectable()
 export class AuthService {
@@ -18,7 +25,76 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
+  private async validateCepWithBrasilApi(cep: string) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 5000);
+
+    let response: Response;
+
+    try {
+      response = await fetch(`https://brasilapi.com.br/api/cep/v1/${cep}`, {
+        signal: controller.signal,
+      });
+    } catch (error) {
+      if (error instanceof Error && error.name === "AbortError") {
+        throw new ServiceUnavailableException(
+          "Tempo de validação do CEP esgotado. Tente novamente.",
+        );
+      }
+
+      throw new ServiceUnavailableException(
+        "Serviço de validação de CEP indisponível no momento.",
+      );
+    } finally {
+      clearTimeout(timeout);
+    }
+
+    if (!response.ok) {
+      if (response.status === 400 || response.status === 404) {
+        throw new BadRequestException("CEP inválido ou não encontrado.");
+      }
+
+      throw new BadGatewayException("Falha ao consultar serviço de CEP.");
+    }
+
+    const data = (await response.json()) as BrasilApiCepResponse;
+    return {
+      state: data.state,
+      city: data.city,
+    };
+  }
+
   async register(dto: RegisterDto) {
+    const normalizedCpf = dto.cpf?.replace(/\D/g, "") ?? "";
+    const normalizedCnpj = dto.cnpj?.replace(/\D/g, "") ?? "";
+    const normalizedCep = dto.cep?.replace(/\D/g, "") ?? "";
+    const trimmedContact = dto.contact?.trim() ?? "";
+    const trimmedAddress = dto.address?.trim() ?? "";
+
+    if (dto.role === Role.ONG && normalizedCnpj.length !== 14) {
+      throw new BadRequestException("CNPJ obrigatório e inválido para ONG.");
+    }
+
+    if (normalizedCpf.length > 0 && normalizedCpf.length !== 11) {
+      throw new BadRequestException("CPF inválido.");
+    }
+
+    if (dto.role === Role.ADOTANTE && normalizedCnpj.length > 0) {
+      throw new BadRequestException("Pessoa física não deve informar CNPJ.");
+    }
+
+    if (dto.role === Role.ONG && normalizedCpf.length > 0) {
+      throw new BadRequestException("ONG não deve informar CPF.");
+    }
+
+    if (normalizedCep.length !== 8) {
+      throw new BadRequestException("CEP obrigatório e inválido.");
+    }
+
+    if (dto.role === Role.ONG && trimmedContact.length === 0) {
+      throw new BadRequestException("Contato é obrigatório para ONG.");
+    }
+
     const existingUser = await this.prisma.user.findUnique({
       where: { email: dto.email.toLowerCase() },
     });
@@ -27,23 +103,76 @@ export class AuthService {
       throw new BadRequestException("Email já cadastrado.");
     }
 
+    if (normalizedCpf.length > 0) {
+      const existingCpf = await this.prisma.user.findUnique({
+        where: { cpf: normalizedCpf },
+        select: { id: true },
+      });
+
+      if (existingCpf) {
+        throw new BadRequestException("CPF já cadastrado.");
+      }
+    }
+
+    if (normalizedCnpj.length > 0) {
+      const existingCnpj = await this.prisma.user.findUnique({
+        where: { cnpj: normalizedCnpj },
+        select: { id: true },
+      });
+
+      if (existingCnpj) {
+        throw new BadRequestException("CNPJ já cadastrado.");
+      }
+    }
+
+    const cepData = await this.validateCepWithBrasilApi(normalizedCep);
+
     const passwordHash = await bcrypt.hash(dto.password, 12);
 
-    const user = await this.prisma.user.create({
-      data: {
-        name: dto.name,
-        email: dto.email.toLowerCase(),
-        passwordHash,
-        role: dto.role,
-      },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        role: true,
-        createdAt: true,
-      },
-    });
+    let user;
+
+    try {
+      user = await this.prisma.user.create({
+        data: {
+          name: dto.name,
+          email: dto.email.toLowerCase(),
+          passwordHash,
+          role: dto.role,
+          cep: normalizedCep,
+          state: cepData.state,
+          city: cepData.city,
+          contact: trimmedContact || null,
+          address: trimmedAddress || null,
+          cpf: normalizedCpf || null,
+          cnpj: normalizedCnpj || null,
+        },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          cep: true,
+          state: true,
+          city: true,
+          contact: true,
+          address: true,
+          cpf: true,
+          cnpj: true,
+          role: true,
+          createdAt: true,
+        },
+      });
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === "P2002"
+      ) {
+        throw new BadRequestException(
+          "Dados duplicados: email, CPF ou CNPJ já cadastrados.",
+        );
+      }
+
+      throw error;
+    }
 
     return user;
   }
@@ -79,8 +208,33 @@ export class AuthService {
         id: user.id,
         name: user.name,
         email: user.email,
+        cep: user.cep,
+        state: user.state,
+        city: user.city,
+        contact: user.contact,
+        address: user.address,
+        cpf: user.cpf,
+        cnpj: user.cnpj,
         role: user.role,
       },
     };
+  }
+
+  async getOngs() {
+    return this.prisma.user.findMany({
+      where: { role: Role.ONG },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        cep: true,
+        state: true,
+        city: true,
+        contact: true,
+        address: true,
+        cnpj: true,
+      },
+      orderBy: { createdAt: "desc" },
+    });
   }
 }
