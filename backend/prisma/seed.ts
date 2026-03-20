@@ -15,6 +15,8 @@ async function main() {
       name: "ONG Amor Animal",
       email: "ong@conectapet.dev",
       passwordHash,
+      cep: "01310100",
+      cnpj: "12345678000190",
       role: Role.ONG,
     },
   });
@@ -24,6 +26,8 @@ async function main() {
       name: "Paula Costa",
       email: "adotante1@conectapet.dev",
       passwordHash,
+      cep: "30130010",
+      cpf: "12345678901",
       role: Role.ADOTANTE,
     },
   });
@@ -33,6 +37,8 @@ async function main() {
       name: "Lucas Silva",
       email: "adotante2@conectapet.dev",
       passwordHash,
+      cep: "20040002",
+      cpf: "98765432100",
       role: Role.ADOTANTE,
     },
   });

@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { apiFetch } from "@/lib/api";
+import { SiteFooter } from "@/components/layout/SiteFooter";
+import { SiteHeader } from "@/components/layout/SiteHeader";
 import { Pet } from "@/types/api";
 
 export default function HomePage() {
@@ -28,27 +29,7 @@ export default function HomePage() {
 
   return (
     <main className="mx-auto max-w-6xl px-6 py-10">
-      <header className="mb-8 rounded-3xl bg-brand-700 p-8 text-white shadow-xl">
-        <h1 className="text-4xl font-bold">ConectaPet</h1>
-        <p className="mt-2 text-brand-100">
-          Encontre um novo melhor amigo e transforme vidas com adoção
-          responsável.
-        </p>
-        <div className="mt-5 flex gap-3">
-          <Link
-            href="/login"
-            className="rounded-xl bg-white px-4 py-2 font-semibold text-brand-700"
-          >
-            Entrar
-          </Link>
-          <Link
-            href="/register"
-            className="rounded-xl border border-white px-4 py-2 font-semibold"
-          >
-            Criar conta
-          </Link>
-        </div>
-      </header>
+      <SiteHeader page="home" />
 
       <section className="mb-6">
         <label className="mb-2 block text-sm font-medium">
@@ -85,6 +66,8 @@ export default function HomePage() {
           </article>
         ))}
       </section>
+
+      <SiteFooter />
     </main>
   );
 }

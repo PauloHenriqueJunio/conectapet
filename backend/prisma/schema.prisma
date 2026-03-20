@@ -23,6 +23,13 @@ model User {
   email            String            @unique
   passwordHash     String
   name             String
+  cep              String
+  state            String?
+  city             String?
+  contact          String?
+  address          String?
+  cpf              String?           @unique
+  cnpj             String?           @unique
   role             Role
   createdAt        DateTime          @default(now())
   pets             Pet[]             @relation("OngPets")
