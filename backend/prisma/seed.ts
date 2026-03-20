@@ -16,7 +16,26 @@ async function main() {
       email: "ong@conectapet.dev",
       passwordHash,
       cep: "01310100",
+      state: "SP",
+      city: "Sao Paulo",
+      contact: "(11) 98888-1111",
+      address: "Av. Paulista, 1000 - Bela Vista",
       cnpj: "12345678000190",
+      role: Role.ONG,
+    },
+  });
+
+  await prisma.user.create({
+    data: {
+      name: "ONG Patas Unidas",
+      email: "ong2@conectapet.dev",
+      passwordHash,
+      cep: "30130010",
+      state: "MG",
+      city: "Belo Horizonte",
+      contact: "(31) 97777-2222",
+      address: "Rua dos Animais, 250 - Funcionarios",
+      cnpj: "55443322000166",
       role: Role.ONG,
     },
   });
@@ -157,6 +176,7 @@ async function main() {
   console.log("Seed finalizado com sucesso.");
   console.log("Usuarios de teste (senha: 123456):");
   console.log("- ONG: ong@conectapet.dev");
+  console.log("- ONG: ong2@conectapet.dev");
   console.log("- ADOTANTE: adotante1@conectapet.dev");
   console.log("- ADOTANTE: adotante2@conectapet.dev");
 }

@@ -12,7 +12,7 @@ Aplicação web de adoção de animais com monorepo dividido em backend (NestJS 
 
 - backend: API REST com autenticação e regras de autorização por roles
 - frontend: interface web pública e dashboard protegido
-- docker-compose.yml: sobe PostgreSQL local
+- docker-compose.yml: sobe PostgreSQL + backend com migracao e seed automaticos
 
 ## Pré-requisitos
 
@@ -40,11 +40,18 @@ No frontend:
 NEXT_PUBLIC_API_URL=http://localhost:3001
 ```
 
-## 2. Subir o PostgreSQL com um único comando Docker
+## 2. Subir banco + backend com um unico comando Docker
 
 ```bash
-docker compose up -d
+docker compose up --build -d
 ```
+
+Ao subir os containers, o backend executa automaticamente:
+
+- `prisma migrate deploy`
+- `npm run prisma:seed`
+
+Assim, os dados mock (incluindo ONGs com endereco) ja ficam disponiveis.
 
 ## 3. Instalar dependências
 
@@ -70,7 +77,7 @@ npx prisma generate
 npx prisma migrate dev --name init
 ```
 
-## 4.1 Popular banco com dados mockados (seed)
+## 4.1 Popular banco com dados mockados (opcional)
 
 Para inserir dados de demonstração e testar o fluxo completo da aplicação:
 
@@ -81,7 +88,7 @@ npm run prisma:seed
 
 O seed cria:
 
-- 1 ONG
+- 2 ONGs com endereco mock
 - 2 ADOTANTES
 - pets com status disponivel e adotado
 - solicitacoes de adocao com status PENDING, APPROVED e REJECTED
