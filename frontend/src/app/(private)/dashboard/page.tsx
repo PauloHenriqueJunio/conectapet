@@ -145,10 +145,8 @@ export default function DashboardPage() {
               >
                 <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg border border-slate-200 bg-slate-100 shadow-inner">
                   <img
-                    src={
-                      request.pet?.photoUrl ||
-                      "https://images.unsplash.com/photo-1518717758536-85ae29035b6d?auto=format&fit=crop&w=150&q=80"
-                    }
+                    src=//   request.pet?.photoUrl ||
+                    "https://images.unsplash.com/photo-1518717758536-85ae29035b6d?auto=format&fit=crop&w=150&q=80"
                     alt={request.pet?.name || "Pet"}
                     className={`h-full w-full object-cover transition-transform duration-300 group-hover:scale-105 ${
                       request.status !== "PENDING" ? "opacity-90" : ""
