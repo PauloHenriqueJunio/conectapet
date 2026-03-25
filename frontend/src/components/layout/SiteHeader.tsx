@@ -134,7 +134,7 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
                     className={navClass("dashboard-home")}
                     onClick={() => setActiveNav("dashboard-home")}
                   >
-                    HOME
+                    Home
                   </Link>
                 </li>
                 <li>
@@ -143,7 +143,7 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
                     className={navClass("dashboard-cadastrar-pet")}
                     onClick={() => setActiveNav("dashboard-cadastrar-pet")}
                   >
-                    CADASTRAR PET
+                    Cadastrar Pet
                   </Link>
                 </li>
                 <li>
@@ -152,7 +152,7 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
                     className={navClass("dashboard-editar")}
                     onClick={() => setActiveNav("dashboard-editar")}
                   >
-                    EDITAR
+                    Editar
                   </Link>
                 </li>
               </>
