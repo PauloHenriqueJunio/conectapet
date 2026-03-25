@@ -42,6 +42,11 @@ model Pet {
   species          String
   age              Int
   description      String
+  donationReason   String?
+  isCastrated      Boolean  @default(false)
+  isDewormed       Boolean  @default(false)
+  hasVaccineV8     Boolean  @default(false)
+  hasVaccineRabies Boolean  @default(false)
   photoUrl         String            @default("")
   isAdopted        Boolean           @default(false)
   createdAt        DateTime          @default(now())

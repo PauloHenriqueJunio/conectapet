@@ -21,12 +21,33 @@ export default function CadastrarPetPage() {
     name: "",
     species: "",
     age: 0,
+    donationReason: "",
     description: "",
+    hasHistoryOfIllness: false,
+    illnessDescription: "",
     isCastrated: false,
     isDewormed: false,
     hasVaccineV8: false,
     hasVaccineRabies: false,
   });
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    const { id, value } = e.target;
+    const finalValue = id === "age" ? Number(value) : value;
+
+    setPetForm((prev) => ({ ...prev, [id]: finalValue }));
+  };
+
+  const handleHealthChange = (field: string, value: boolean | string) => {
+    setPetForm((prev) => {
+      if (field === "hasHistoryOfIllness" && value === false) {
+        return { ...prev, [field]: value, illnessDescription: "" };
+      }
+      return { ...prev, [field]: value };
+    });
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -34,10 +55,6 @@ export default function CadastrarPetPage() {
       const objectUrl = URL.createObjectURL(file);
       setPhotoPreview(objectUrl);
     }
-  };
-
-  const handleHealthChange = (field: string, value: boolean) => {
-    setPetForm((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleAddPet = async (event: FormEvent<HTMLFormElement>) => {
@@ -63,7 +80,10 @@ export default function CadastrarPetPage() {
         name: "",
         species: "",
         age: 0,
+        donationReason: "",
         description: "",
+        hasHistoryOfIllness: false,
+        illnessDescription: "",
         isCastrated: false,
         isDewormed: false,
         hasVaccineV8: false,
@@ -126,9 +146,7 @@ export default function CadastrarPetPage() {
                 className="rounded-lg border border-slate-300 bg-slate-50 px-4 py-2.5 text-slate-900 outline-none transition-all focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-500/20"
                 placeholder="Ex: Rex, Luna..."
                 value={petForm.name}
-                onChange={(e) =>
-                  setPetForm((prev) => ({ ...prev, name: e.target.value }))
-                }
+                onChange={handleChange}
                 required
               />
             </div>
@@ -145,9 +163,7 @@ export default function CadastrarPetPage() {
                 className="rounded-lg border border-slate-300 bg-slate-50 px-4 py-2.5 text-slate-900 outline-none transition-all focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-500/20"
                 placeholder="Ex: Cão, Gato, Ave..."
                 value={petForm.species}
-                onChange={(e) =>
-                  setPetForm((prev) => ({ ...prev, species: e.target.value }))
-                }
+                onChange={handleChange}
                 required
               />
             </div>
@@ -166,13 +182,25 @@ export default function CadastrarPetPage() {
                 className="rounded-lg border border-slate-300 bg-slate-50 px-4 py-2.5 text-slate-900 outline-none transition-all focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-500/20"
                 placeholder="0"
                 value={petForm.age === 0 ? "" : petForm.age}
-                onChange={(e) =>
-                  setPetForm((prev) => ({
-                    ...prev,
-                    age: Number(e.target.value),
-                  }))
-                }
+                onChange={handleChange}
                 required
+              />
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <label
+                htmlFor="donationReason"
+                className="text-sm font-semibold text-slate-700"
+              >
+                Motivo da doação{" "}
+                <span className="font-normal text-slate-400">(opcional)</span>
+              </label>
+              <input
+                id="donationReason"
+                className="rounded-lg border border-slate-300 bg-slate-50 px-4 py-2.5 text-slate-900 outline-none transition-all focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-500/20"
+                placeholder="Ex: Encontrei na rua, mudança..."
+                value={petForm.donationReason}
+                onChange={handleChange}
               />
             </div>
           </div>
@@ -182,6 +210,8 @@ export default function CadastrarPetPage() {
             isDewormed={petForm.isDewormed}
             hasVaccineV8={petForm.hasVaccineV8}
             hasVaccineRabies={petForm.hasVaccineRabies}
+            hasHistoryOfIllness={petForm.hasHistoryOfIllness}
+            illnessDescription={petForm.illnessDescription}
             onChange={handleHealthChange}
           />
 
@@ -198,9 +228,7 @@ export default function CadastrarPetPage() {
               className="resize-none rounded-lg border border-slate-300 bg-slate-50 px-4 py-3 text-slate-900 outline-none transition-all focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-500/20"
               placeholder="Conte um pouco sobre a história do pet, seu comportamento e necessidades especiais..."
               value={petForm.description}
-              onChange={(e) =>
-                setPetForm((prev) => ({ ...prev, description: e.target.value }))
-              }
+              onChange={handleChange}
               required
             />
           </div>

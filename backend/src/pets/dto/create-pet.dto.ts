@@ -1,4 +1,11 @@
-import { IsInt, IsNotEmpty, IsOptional, IsString, Min } from "class-validator";
+import {
+  IsBoolean,
+  IsInt,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Min,
+} from "class-validator";
 
 export class CreatePetDto {
   @IsNotEmpty()
@@ -16,6 +23,22 @@ export class CreatePetDto {
   @IsNotEmpty()
   @IsString()
   description!: string;
+
+  @IsString()
+  @IsOptional()
+  donationReason?: string;
+
+  @IsBoolean()
+  isCastrated!: boolean;
+
+  @IsBoolean()
+  isDewormed!: boolean;
+
+  @IsBoolean()
+  hasVaccineV8!: boolean;
+
+  @IsBoolean()
+  hasVaccineRabies!: boolean;
 
   @IsOptional()
   @IsString()
