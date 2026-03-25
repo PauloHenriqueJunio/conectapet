@@ -101,7 +101,7 @@ export default function CadastrarPetPage() {
   };
 
   return (
-    <div className="mx-auto max-w-3xl">
+    <div className="max-w-full text-left px-4 sm:px-0">
       <div className="mb-8 border-b border-slate-200 pb-5">
         <h2 className="text-2xl font-extrabold tracking-tight text-slate-900">
           Cadastrar Novo Pet
@@ -126,8 +126,8 @@ export default function CadastrarPetPage() {
         </div>
       )}
 
-      <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-        <form onSubmit={handleAddPet} className="flex flex-col gap-8">
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8 w-full">
+        <form onSubmit={handleAddPet} className="flex flex-col gap-8 w-full">
           <ImageUpload
             photoPreview={photoPreview}
             onFileChange={handleFileChange}
@@ -220,7 +220,7 @@ export default function CadastrarPetPage() {
               htmlFor="description"
               className="text-sm font-semibold text-slate-700"
             >
-              Descrição e Personalidade
+              Descrição e personalidade
             </label>
             <textarea
               id="description"
@@ -233,7 +233,7 @@ export default function CadastrarPetPage() {
             />
           </div>
 
-          <div className="mt-2 flex justify-end border-t border-slate-100 pt-6">
+          <div className="mt-2 flex justify-start border-t border-slate-100 pt-6">
             <button
               type="submit"
               disabled={isSubmitting}
