@@ -7,7 +7,7 @@ import { Role } from "@/types/api";
 
 export default function LoginPage() {
   const { login } = useAuth();
-  const [userType, setUserType] = useState<Role>("ADOTANTE");
+  const [userType, setUserType] = useState<Role | null>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -16,12 +16,30 @@ export default function LoginPage() {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError(null);
+
+    if (!userType) {
+      setError("Selecione se vai entrar como Pessoa Física ou ONG.");
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
-      await login({ email, password });
-    } catch {
-      setError("Falha no login. Verifique suas credenciais.");
+      await login({ email, password }, userType);
+    } catch (err) {
+      if (err instanceof Error && err.message === "ROLE_MISMATCH") {
+        if (userType === "ADOTANTE") {
+          setError(
+            "Este e-mail pertence a uma ONG. Para entrar, selecione a aba ONG.",
+          );
+        } else {
+          setError(
+            "Este e-mail pertence a Pessoa Física. Para entrar, selecione a aba Pessoa Física.",
+          );
+        }
+      } else {
+        setError("Falha no login. Verifique suas credenciais.");
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -35,6 +53,9 @@ export default function LoginPage() {
         </h1>
         <p className="mt-2 text-sm text-slate-600">
           Acesse sua conta para gerenciar adoções.
+        </p>
+        <p className="mt-2 text-xs text-slate-500">
+          Selecione primeiro o tipo da conta para entrar.
         </p>
 
         <nav className="mt-6 grid grid-cols-2 rounded-xl bg-slate-100 p-1">
@@ -65,7 +86,9 @@ export default function LoginPage() {
         <p className="mt-3 text-xs text-slate-500">
           {userType === "ONG"
             ? "Se você for ONG, o cadastro deve incluir CNPJ."
-            : "Se você for pessoa física, o CPF no cadastro é opcional."}
+            : userType === "ADOTANTE"
+              ? "Se você for pessoa física, o CPF no cadastro é opcional."
+              : "Escolha uma aba para continuar."}
         </p>
 
         <form className="mt-8 space-y-4" onSubmit={handleSubmit}>
@@ -100,7 +123,7 @@ export default function LoginPage() {
 
           <button
             type="submit"
-            disabled={isSubmitting}
+            disabled={isSubmitting || !userType}
             className="w-full rounded-xl bg-brand-600 px-4 py-2 font-semibold text-white disabled:opacity-70"
           >
             {isSubmitting ? "Entrando..." : "Entrar"}
@@ -110,8 +133,12 @@ export default function LoginPage() {
         <p className="mt-6 text-sm text-slate-600">
           Ainda não tem conta?{" "}
           <Link
-            href={`/register?role=${userType}`}
-            className="font-semibold text-brand-700 hover:underline underline-offset-2"
+            href={userType ? `/register?role=${userType}` : "/register"}
+            className={`font-semibold underline-offset-2 ${
+              userType
+                ? "text-brand-700 hover:underline"
+                : "pointer-events-none text-slate-400"
+            }`}
           >
             Cadastre-se
           </Link>

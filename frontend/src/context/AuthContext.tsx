@@ -34,7 +34,7 @@ interface AuthContextValue {
   user: AuthUser | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (payload: LoginPayload) => Promise<void>;
+  login: (payload: LoginPayload, expectedRole?: Role) => Promise<void>;
   register: (payload: RegisterPayload) => Promise<void>;
   logout: () => void;
 }
@@ -100,11 +100,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     );
   };
 
-  const login = async (payload: LoginPayload) => {
+  const login = async (payload: LoginPayload, expectedRole?: Role) => {
     const auth = await apiFetch<AuthResponse>("/auth/login", {
       method: "POST",
       body: JSON.stringify(payload),
     });
+
+    if (expectedRole && auth.user.role !== expectedRole) {
+      throw new Error("ROLE_MISMATCH");
+    }
 
     persistSession(auth);
     router.push("/dashboard");
