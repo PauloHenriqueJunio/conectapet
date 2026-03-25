@@ -102,7 +102,7 @@ export default function DashboardPage() {
           <button
             key={tab.id}
             onClick={() => setActiveFilter(tab.id)}
-            className={`px-4 py-2 rounded-full text-sm font-semibold transition-colors whitespace-nowrap ${
+            className={`px-4 py-2 rounded-full text-sm font-semibold transition-colors whitespace-nowrap flex items-center gap-2 ${
               activeFilter === tab.id
                 ? "bg-slate-800 text-white shadow-sm"
                 : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-50"
@@ -110,7 +110,13 @@ export default function DashboardPage() {
           >
             {tab.label}
             {tab.id === "ALL" && (
-              <span className="ml-2 rounded-full bg-slate-600 px-2 py-0.5 text-[10px] text-white">
+              <span
+                className={`rounded-full px-2 py-0.5 text-[10px] ${
+                  activeFilter === tab.id
+                    ? "bg-slate-600 text-white"
+                    : "bg-slate-200 text-slate-700"
+                }`}
+              >
                 {requests.length}
               </span>
             )}
@@ -125,16 +131,17 @@ export default function DashboardPage() {
           </div>
         ) : (
           filteredRequests.map((request) => {
-            const isCompleted = request.status !== "PENDING";
+            const cardStyle =
+              request.status === "APPROVED"
+                ? "bg-emerald-50/30 border-emerald-100"
+                : request.status === "REJECTED"
+                  ? "bg-red-50/30 border-red-100"
+                  : "bg-white border-slate-200 hover:shadow-md";
 
             return (
               <article
                 key={request.id}
-                className={`group flex flex-col sm:flex-row gap-4 rounded-xl border border-slate-200 p-4 transition-all sm:items-center ${
-                  isCompleted
-                    ? "bg-slate-50 opacity-75 grayscale-[20%]"
-                    : "bg-white shadow-sm hover:shadow-md"
-                }`}
+                className={`group flex flex-col sm:flex-row gap-4 rounded-xl border p-4 transition-all sm:items-center ${cardStyle}`}
               >
                 <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg border border-slate-200 bg-slate-100 shadow-inner">
                   <img
@@ -142,8 +149,10 @@ export default function DashboardPage() {
                       request.pet?.photoUrl ||
                       "https://images.unsplash.com/photo-1518717758536-85ae29035b6d?auto=format&fit=crop&w=150&q=80"
                     }
-                    alt={`Foto de ${request.pet?.name || "Pet"}`}
-                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    alt={request.pet?.name || "Pet"}
+                    className={`h-full w-full object-cover transition-transform duration-300 group-hover:scale-105 ${
+                      request.status !== "PENDING" ? "opacity-90" : ""
+                    }`}
                   />
                 </div>
 
@@ -158,7 +167,7 @@ export default function DashboardPage() {
                     <span
                       className={`rounded-full px-2.5 py-0.5 text-xs font-bold border ${
                         request.status === "APPROVED"
-                          ? "bg-green-100 text-green-700 border-green-200"
+                          ? "bg-emerald-100 text-emerald-700 border-emerald-200"
                           : request.status === "REJECTED"
                             ? "bg-red-100 text-red-700 border-red-200"
                             : "bg-amber-100 text-amber-700 border-amber-200"
@@ -169,10 +178,12 @@ export default function DashboardPage() {
                   </div>
 
                   <div className="text-sm text-slate-600 mb-2 flex flex-wrap items-center gap-1.5">
-                    <UserRound size={15} className="text-slate-500" />
-                    <span className="font-medium text-slate-800">
-                      {request.adopter?.name || "Usuário"}
-                    </span>
+                    <div className="flex items-center gap-1">
+                      <UserRound size={14} className="text-slate-400" />
+                      <span className="font-medium text-slate-800">
+                        {request.adopter?.name || "Usuário"}
+                      </span>
+                    </div>
 
                     {request.adopter?.email && (
                       <>
@@ -180,9 +191,8 @@ export default function DashboardPage() {
                         <a
                           href={`mailto:${request.adopter.email}`}
                           className="text-emerald-600 hover:text-emerald-700 hover:underline flex items-center gap-1 transition-colors"
-                          title="Enviar e-mail para o adotante"
                         >
-                          <Mail size={15} />
+                          <Mail size={14} />
                           {request.adopter.email}
                         </a>
                       </>
@@ -194,7 +204,7 @@ export default function DashboardPage() {
                     </span>
                   </div>
 
-                  <p className="text-sm text-slate-500 line-clamp-2 bg-white p-2 rounded-md border border-slate-100 shadow-sm">
+                  <p className="text-sm text-slate-500 line-clamp-2 bg-white/60 p-2 rounded-md border border-slate-100 shadow-sm">
                     <span className="font-medium text-slate-400 mr-1">
                       Mensagem:
                     </span>
@@ -221,14 +231,14 @@ export default function DashboardPage() {
                   ) : (
                     <div className="hidden sm:flex flex-col items-center justify-center h-full w-full">
                       {request.status === "APPROVED" ? (
-                        <div className="flex flex-col items-center text-green-600/60">
+                        <div className="flex flex-col items-center text-emerald-600/70">
                           <CheckCircle2 className="w-8 h-8" />
                           <span className="text-[10px] font-bold uppercase tracking-widest mt-1">
                             Concluído
                           </span>
                         </div>
                       ) : (
-                        <div className="flex flex-col items-center text-red-500/50">
+                        <div className="flex flex-col items-center text-red-500/60">
                           <XCircle className="w-8 h-8" />
                           <span className="text-[10px] font-bold uppercase tracking-widest mt-1">
                             Encerrado
