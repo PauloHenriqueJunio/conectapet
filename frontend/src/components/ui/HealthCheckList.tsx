@@ -7,6 +7,8 @@ interface HealthChecklistProps {
   hasVaccineRabies: boolean;
   hasHistoryOfIllness: boolean;
   illnessDescription: string;
+  hasOtherHealthInfo: boolean;
+  otherHealthInfoDescription: string;
   onChange: (field: string, value: boolean | string) => void;
 }
 
@@ -17,6 +19,8 @@ export function HealthChecklist({
   hasVaccineRabies,
   hasHistoryOfIllness,
   illnessDescription,
+  hasOtherHealthInfo,
+  otherHealthInfoDescription,
   onChange,
 }: HealthChecklistProps) {
   return (
@@ -88,32 +92,61 @@ export function HealthChecklist({
               Possui histórico de doença ou tratamento contínuo?
             </span>
           </label>
+          <label className="group flex cursor-pointer items-center gap-3 mt-3">
+            <input
+              type="checkbox"
+              className="h-5 w-5 cursor-pointer rounded border-slate-300 text-emerald-600 transition-colors focus:ring-emerald-500"
+              checked={hasOtherHealthInfo}
+              onChange={(e) => onChange("hasOtherHealthInfo", e.target.checked)}
+            />
+            <span className="text-sm font-medium text-slate-700 group-hover:text-slate-900">
+              Outras informações de saúde relevantes
+            </span>
+          </label>
         </div>
       </div>
 
-      <div
-        className={`flex flex-col gap-2 rounded-lg bg-white shadow-sm ring-1 ring-slate-200 transition-all duration-300 ease-in-out ${
-          hasHistoryOfIllness
-            ? "opacity-100 max-h-40 p-4 translate-y-0"
-            : "opacity-0 max-h-0 p-0 -mt-4 translate-y-2 pointer-events-none overflow-hidden"
-        }`}
-      >
-        <div className="flex items-center gap-2 text-amber-600">
-          <AlertCircle size={14} />
-          <span className="text-xs font-bold uppercase tracking-wider">
-            Detalhes Médicos
-          </span>
+      {hasHistoryOfIllness && (
+        <div className="flex flex-col gap-2 rounded-lg bg-white p-4 shadow-sm ring-1 ring-slate-200 animate-in fade-in slide-in-from-top-2 duration-300">
+          <div className="flex items-center gap-2 text-amber-600">
+            <AlertCircle size={14} />
+            <span className="text-xs font-bold uppercase tracking-wider">
+              Detalhes Médicos
+            </span>
+          </div>
+          <textarea
+            id="illnessDescription"
+            rows={2}
+            className="w-full resize-none bg-transparent text-sm text-slate-700 outline-none placeholder:text-slate-400"
+            placeholder="Ex: Teve cinomose, possui alergia ou faz uso de medicação X..."
+            value={illnessDescription}
+            onChange={(e) => onChange("illnessDescription", e.target.value)}
+            required={hasHistoryOfIllness}
+          />
         </div>
-        <textarea
-          id="illnessDescription"
-          rows={2}
-          className="w-full resize-none bg-transparent text-sm text-slate-700 outline-none placeholder:text-slate-400"
-          placeholder="Ex: Teve cinomose, possui alergia ou faz uso de alguma medicação..."
-          value={illnessDescription}
-          onChange={(e) => onChange("illnessDescription", e.target.value)}
-          required={hasHistoryOfIllness}
-        />
-      </div>
+      )}
+
+      {hasOtherHealthInfo && (
+        <div className="flex flex-col gap-2 rounded-lg bg-white p-4 shadow-sm ring-1 ring-slate-200 animate-in fade-in slide-in-from-top-2 duration-300">
+          <div className="flex items-center gap-2 text-emerald-600">
+            <AlertCircle size={14} />
+            <span className="text-xs font-bold uppercase tracking-wider">
+              Outras Informações
+            </span>
+          </div>
+          <textarea
+            id="otherHealthInfoDescription"
+            rows={2}
+            className="w-full resize-none bg-transparent text-sm text-slate-700 outline-none placeholder:text-slate-400"
+            placeholder="Ex: Alergia a picada de pulga, usa colírio X diariamente, fez cirurgia Y recente..."
+            value={otherHealthInfoDescription}
+            onChange={(e) =>
+              onChange("otherHealthInfoDescription", e.target.value)
+            }
+            required={hasOtherHealthInfo}
+          />
+        </div>
+      )}
     </div>
   );
 }

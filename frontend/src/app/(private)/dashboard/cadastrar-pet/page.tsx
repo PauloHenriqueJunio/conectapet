@@ -20,11 +20,15 @@ export default function CadastrarPetPage() {
   const [petForm, setPetForm] = useState({
     name: "",
     species: "",
+    sex: "",
+    size: "",
     age: 0,
     donationReason: "",
     description: "",
     hasHistoryOfIllness: false,
     illnessDescription: "",
+    hasOtherHealthInfo: false,
+    otherHealthInfoDescription: "",
     isCastrated: false,
     isDewormed: false,
     hasVaccineV8: false,
@@ -32,7 +36,9 @@ export default function CadastrarPetPage() {
   });
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
   ) => {
     const { id, value } = e.target;
     const finalValue = id === "age" ? Number(value) : value;
@@ -45,6 +51,10 @@ export default function CadastrarPetPage() {
       if (field === "hasHistoryOfIllness" && value === false) {
         return { ...prev, [field]: value, illnessDescription: "" };
       }
+      if (field === "hasOtherHealthInfo" && value === false) {
+        return { ...prev, [field]: value, otherHealthInfoDescription: "" };
+      }
+
       return { ...prev, [field]: value };
     });
   };
@@ -79,11 +89,15 @@ export default function CadastrarPetPage() {
       setPetForm({
         name: "",
         species: "",
+        sex: "",
+        size: "",
         age: 0,
         donationReason: "",
         description: "",
         hasHistoryOfIllness: false,
         illnessDescription: "",
+        hasOtherHealthInfo: false,
+        otherHealthInfoDescription: "",
         isCastrated: false,
         isDewormed: false,
         hasVaccineV8: false,
@@ -158,14 +172,67 @@ export default function CadastrarPetPage() {
               >
                 Espécie
               </label>
-              <input
+              <select
                 id="species"
                 className="rounded-lg border border-slate-300 bg-slate-50 px-4 py-2.5 text-slate-900 outline-none transition-all focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-500/20"
-                placeholder="Ex: Cão, Gato, Ave..."
                 value={petForm.species}
                 onChange={handleChange}
                 required
-              />
+              >
+                <option value="" disabled>
+                  Selecione a espécie...
+                </option>
+                <option value="Cão">Cão</option>
+                <option value="Gato">Gato</option>
+                <option value="Ave">Ave</option>
+                <option value="Roedor">Roedor</option>
+                <option value="Outros">Outros</option>
+              </select>
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <label
+                htmlFor="sex"
+                className="text-sm font-semibold text-slate-700"
+              >
+                Sexo
+              </label>
+              <select
+                id="sex"
+                className="rounded-lg border border-slate-300 bg-slate-50 px-4 py-2.5 text-slate-900 outline-none transition-all focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-500/20"
+                value={petForm.sex}
+                onChange={handleChange}
+                required
+              >
+                <option value="" disabled>
+                  Selecione o sexo...
+                </option>
+                <option value="Macho">Macho</option>
+                <option value="Fêmea">Fêmea</option>
+              </select>
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <label
+                htmlFor="size"
+                className="text-sm font-semibold text-slate-700"
+              >
+                Porte
+              </label>
+              <select
+                id="size"
+                className="rounded-lg border border-slate-300 bg-slate-50 px-4 py-2.5 text-slate-900 outline-none transition-all focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-500/20"
+                value={petForm.size}
+                onChange={handleChange}
+                required
+              >
+                <option value="" disabled>
+                  Selecione o porte...
+                </option>
+                <option value="Pequeno">Pequeno</option>
+                <option value="Médio">Médio</option>
+                <option value="Grande">Grande</option>
+              </select>
             </div>
 
             <div className="flex flex-col gap-1.5">
@@ -211,6 +278,8 @@ export default function CadastrarPetPage() {
             hasVaccineV8={petForm.hasVaccineV8}
             hasVaccineRabies={petForm.hasVaccineRabies}
             hasHistoryOfIllness={petForm.hasHistoryOfIllness}
+            hasOtherHealthInfo={petForm.hasOtherHealthInfo}
+            otherHealthInfoDescription={petForm.otherHealthInfoDescription}
             illnessDescription={petForm.illnessDescription}
             onChange={handleHealthChange}
           />
