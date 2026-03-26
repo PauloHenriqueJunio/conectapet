@@ -16,6 +16,14 @@ export class CreatePetDto {
   @IsString()
   species!: string;
 
+  @IsNotEmpty()
+  @IsString()
+  sex!: string;
+
+  @IsNotEmpty()
+  @IsString()
+  size!: string;
+
   @IsInt()
   @Min(0)
   age!: number;
@@ -39,6 +47,20 @@ export class CreatePetDto {
 
   @IsBoolean()
   hasVaccineRabies!: boolean;
+
+  @IsBoolean()
+  hasHistoryOfIllness!: boolean;
+
+  @IsOptional()
+  @IsString()
+  illnessDescription?: string;
+
+  @IsBoolean()
+  hasOtherHealthInfo!: boolean;
+
+  @IsOptional()
+  @IsString()
+  otherHealthInfoDescription?: string;
 
   @IsOptional()
   @IsString()

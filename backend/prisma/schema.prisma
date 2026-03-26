@@ -44,9 +44,15 @@ model Pet {
   description      String
   donationReason   String?
   isCastrated      Boolean  @default(false)
+  sex              String   @default("Indefinido")
+  size             String   @default("Indefinido")
   isDewormed       Boolean  @default(false)
   hasVaccineV8     Boolean  @default(false)
   hasVaccineRabies Boolean  @default(false)
+  hasHistoryOfIllness        Boolean  @default(false)
+  illnessDescription         String?
+  hasOtherHealthInfo         Boolean  @default(false)
+  otherHealthInfoDescription String?
   photoUrl         String            @default("")
   isAdopted        Boolean           @default(false)
   createdAt        DateTime          @default(now())
