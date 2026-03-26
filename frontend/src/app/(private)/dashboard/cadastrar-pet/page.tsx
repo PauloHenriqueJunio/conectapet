@@ -153,7 +153,7 @@ export default function CadastrarPetPage() {
                 htmlFor="name"
                 className="text-sm font-semibold text-slate-700"
               >
-                Nome do Pet
+                Nome do Pet <span className="text-red-500">*</span>
               </label>
               <input
                 id="name"
@@ -170,7 +170,7 @@ export default function CadastrarPetPage() {
                 htmlFor="species"
                 className="text-sm font-semibold text-slate-700"
               >
-                Espécie
+                Espécie <span className="text-red-500">*</span>
               </label>
               <select
                 id="species"
@@ -195,7 +195,7 @@ export default function CadastrarPetPage() {
                 htmlFor="sex"
                 className="text-sm font-semibold text-slate-700"
               >
-                Sexo
+                Sexo <span className="text-red-500">*</span>
               </label>
               <select
                 id="sex"
@@ -217,7 +217,7 @@ export default function CadastrarPetPage() {
                 htmlFor="size"
                 className="text-sm font-semibold text-slate-700"
               >
-                Porte
+                Porte <span className="text-red-500">*</span>
               </label>
               <select
                 id="size"
@@ -240,7 +240,7 @@ export default function CadastrarPetPage() {
                 htmlFor="age"
                 className="text-sm font-semibold text-slate-700"
               >
-                Idade (anos)
+                Idade (anos) <span className="text-red-500">*</span>
               </label>
               <input
                 id="age"
@@ -289,7 +289,7 @@ export default function CadastrarPetPage() {
               htmlFor="description"
               className="text-sm font-semibold text-slate-700"
             >
-              Descrição e personalidade
+              Descrição e personalidade <span className="text-red-500">*</span>
             </label>
             <textarea
               id="description"
