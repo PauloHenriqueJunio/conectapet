@@ -6,6 +6,7 @@ import {
   IsString,
   Min,
 } from "class-validator";
+import { Type, Transform } from "class-transformer";
 
 export class CreatePetDto {
   @IsNotEmpty()
@@ -24,6 +25,7 @@ export class CreatePetDto {
   @IsString()
   size!: string;
 
+  @Type(() => Number)
   @IsInt()
   @Min(0)
   age!: number;
@@ -36,18 +38,23 @@ export class CreatePetDto {
   @IsOptional()
   donationReason?: string;
 
+  @Transform(({ value }) => value === "true" || value === true)
   @IsBoolean()
   isCastrated!: boolean;
 
+  @Transform(({ value }) => value === "true" || value === true)
   @IsBoolean()
   isDewormed!: boolean;
 
+  @Transform(({ value }) => value === "true" || value === true)
   @IsBoolean()
   hasVaccineV8!: boolean;
 
+  @Transform(({ value }) => value === "true" || value === true)
   @IsBoolean()
   hasVaccineRabies!: boolean;
 
+  @Transform(({ value }) => value === "true" || value === true)
   @IsBoolean()
   hasHistoryOfIllness!: boolean;
 
@@ -55,6 +62,7 @@ export class CreatePetDto {
   @IsString()
   illnessDescription?: string;
 
+  @Transform(({ value }) => value === "true" || value === true)
   @IsBoolean()
   hasOtherHealthInfo!: boolean;
 

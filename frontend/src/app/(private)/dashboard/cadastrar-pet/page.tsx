@@ -16,6 +16,7 @@ export default function CadastrarPetPage() {
   const [success, setSuccess] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
 
   const [petForm, setPetForm] = useState({
     name: "",
@@ -64,6 +65,7 @@ export default function CadastrarPetPage() {
     if (file) {
       const objectUrl = URL.createObjectURL(file);
       setPhotoPreview(objectUrl);
+      setPhotoFile(file);
     }
   };
 
@@ -76,16 +78,33 @@ export default function CadastrarPetPage() {
     setIsSubmitting(true);
 
     try {
-      await apiFetch(
-        "/pets",
+      const formData = new FormData();
+
+      Object.entries(petForm).forEach(([key, value]) => {
+        formData.append(key, String(value));
+      });
+
+      if (photoFile) {
+        formData.append("photo", photoFile);
+      }
+
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"}/pets`,
         {
           method: "POST",
-          body: JSON.stringify(petForm),
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
         },
-        token,
       );
 
+      if (!response.ok) {
+        throw new Error("Falha ao salvar o pet no servidor");
+      }
+
       setSuccess("Pet adicionado com sucesso!");
+
       setPetForm({
         name: "",
         species: "",
@@ -104,6 +123,7 @@ export default function CadastrarPetPage() {
         hasVaccineRabies: false,
       });
       setPhotoPreview(null);
+      setPhotoFile(null);
 
       setTimeout(() => {
         router.push("/dashboard");
