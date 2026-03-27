@@ -55,6 +55,26 @@ export class CreatePetDto {
   hasVaccineRabies!: boolean;
 
   @Transform(({ value }) => value === "true" || value === true)
+  @IsOptional()
+  @IsBoolean()
+  hasVaccineGiardia?: boolean;
+
+  @Transform(({ value }) => value === "true" || value === true)
+  @IsOptional()
+  @IsBoolean()
+  hasVaccineFlu?: boolean;
+
+  @Transform(({ value }) => value === "true" || value === true)
+  @IsOptional()
+  @IsBoolean()
+  hasVaccineFeline?: boolean;
+
+  @Transform(({ value }) => value === "true" || value === true)
+  @IsOptional()
+  @IsBoolean()
+  hasVaccineFelv?: boolean;
+
+  @Transform(({ value }) => value === "true" || value === true)
   @IsBoolean()
   hasHistoryOfIllness!: boolean;
 

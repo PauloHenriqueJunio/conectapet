@@ -34,6 +34,10 @@ export default function CadastrarPetPage() {
     isDewormed: false,
     hasVaccineV8: false,
     hasVaccineRabies: false,
+    hasVaccineGiardia: false,
+    hasVaccineFlu: false,
+    hasVaccineFeline: false,
+    hasVaccineFelv: false,
   });
 
   const handleChange = (
@@ -137,6 +141,10 @@ export default function CadastrarPetPage() {
         isDewormed: false,
         hasVaccineV8: false,
         hasVaccineRabies: false,
+        hasVaccineGiardia: false,
+        hasVaccineFlu: false,
+        hasVaccineFeline: false,
+        hasVaccineFelv: false,
       });
       setPhotoPreview(null);
       setPhotoFile(null);
@@ -309,10 +317,15 @@ export default function CadastrarPetPage() {
           </div>
 
           <HealthChecklist
+            species={petForm.species}
             isCastrated={petForm.isCastrated}
             isDewormed={petForm.isDewormed}
             hasVaccineV8={petForm.hasVaccineV8}
             hasVaccineRabies={petForm.hasVaccineRabies}
+            hasVaccineGiardia={petForm.hasVaccineGiardia}
+            hasVaccineFlu={petForm.hasVaccineFlu}
+            hasVaccineFeline={petForm.hasVaccineFeline}
+            hasVaccineFelv={petForm.hasVaccineFelv}
             hasHistoryOfIllness={petForm.hasHistoryOfIllness}
             hasOtherHealthInfo={petForm.hasOtherHealthInfo}
             otherHealthInfoDescription={petForm.otherHealthInfoDescription}
