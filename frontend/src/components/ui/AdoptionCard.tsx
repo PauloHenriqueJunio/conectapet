@@ -104,23 +104,6 @@ export function AdoptionCard({
               {new Date(request.createdAt).toLocaleDateString("pt-BR")}
             </span>
           </div>
-          {petData &&
-            (petData.isCastrated ||
-              petData.isDewormed ||
-              petData.hasVaccineRabies ||
-              petData.hasHistoryOfIllness) && (
-              <div className="flex flex-wrap gap-1 mb-2.5">
-                {petData.isCastrated && <HealthBadge label="Castrado" />}
-                {petData.isDewormed && <HealthBadge label="Vermifugado" />}
-                {petData.hasVaccineRabies && (
-                  <HealthBadge label="Vacina Antirrábica" variant="success" />
-                )}
-                {petData.hasHistoryOfIllness && (
-                  <HealthBadge label="Histórico de Saúde" variant="warning" />
-                )}
-              </div>
-            )}
-
           <p
             className={`text-sm text-slate-500 bg-white/60 p-2 rounded-md border border-slate-100 shadow-sm transition-all duration-300 ${isExpanded ? "line-clamp-none" : "line-clamp-2"}`}
           >

@@ -56,7 +56,7 @@ export function AdoptionCardDetails({
           <div className="flex items-center gap-2.5 mb-4 text-slate-500">
             <ShieldCheck size={18} className="text-emerald-600" />
             <span className="text-sm font-semibold text-slate-800">
-              Carteira de Vacinação (Detalhada)
+              Carteira de Vacinação
             </span>
           </div>
           <div className="flex flex-wrap gap-2.5">
