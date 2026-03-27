@@ -61,11 +61,27 @@ export default function CadastrarPetPage() {
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setError(null);
     const file = e.target.files?.[0];
+
     if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        // (Max 5MB = 5 * 1024 * 1024 bytes)
+        setError("Tamanho máximo permitido é de 5MB.");
+        e.target.value = "";
+        return;
+      }
+
+      const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+      if (!allowedTypes.includes(file.type)) {
+        setError("Apenas imagens JPG, PNG ou WEBP.");
+        e.target.value = "";
+        return;
+      }
+
+      setPhotoFile(file);
       const objectUrl = URL.createObjectURL(file);
       setPhotoPreview(objectUrl);
-      setPhotoFile(file);
     }
   };
 
