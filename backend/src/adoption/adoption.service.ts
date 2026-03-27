@@ -52,6 +52,7 @@ export class AdoptionService {
             id: true,
             name: true,
             species: true,
+            photoUrl: true,
             ong: { select: { id: true, name: true } },
           },
         },
@@ -64,12 +65,8 @@ export class AdoptionService {
     return this.prisma.adoptionRequest.findMany({
       where: { pet: { ongId } },
       include: {
-        pet: {
-          select: { id: true, name: true, species: true, ongId: true },
-        },
-        adopter: {
-          select: { id: true, name: true, email: true },
-        },
+        pet: true,
+        adopter: true,
       },
       orderBy: { createdAt: "desc" },
     });

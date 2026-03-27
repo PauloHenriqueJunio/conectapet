@@ -13,11 +13,11 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   const isOng = useMemo(() => user?.role === "ONG", [user?.role]);
 
   const ongHeaderPage = useMemo(() => {
-    if (pathname === "/dashboard/cadastrar-pet") {
+    if (pathname === "/ong/cadastrar-pet") {
       return "dashboard-cadastrar-pet" as const;
     }
 
-    if (pathname === "/dashboard/editar") {
+    if (pathname === "/ong/editar") {
       return "dashboard-editar" as const;
     }
 

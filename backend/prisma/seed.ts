@@ -101,8 +101,11 @@ async function main() {
       age: 2,
       description: "Brincalhona e carinhosa, adora colo e janelas ensolaradas.",
       isCastrated: true,
+      hasVaccineFeline: true,
+      hasVaccineFelv: false,
       isDewormed: true,
-      photoUrl: "",
+      photoUrl:
+        "https://res.cloudinary.com/du0yit3co/image/upload/v1774626180/7-racas-de-gato-com-filhotes-muito-fofos-1024x683_gmycfo.jpg",
     },
     {
       name: "Thor",
@@ -112,8 +115,11 @@ async function main() {
       age: 4,
       description: "Companheiro fiel, excelente para familias com criancas.",
       hasVaccineV8: true,
+      hasVaccineGiardia: false,
+      hasVaccineFlu: true,
       hasVaccineRabies: true,
-      photoUrl: "",
+      photoUrl:
+        "https://res.cloudinary.com/du0yit3co/image/upload/v1774626180/si_cachorroinstagram_home_nleqiz.webp",
     },
     {
       name: "Mia",
@@ -125,7 +131,8 @@ async function main() {
       hasHistoryOfIllness: true,
       illnessDescription:
         "Teve rinotraqueíte filhote, já 100% curada e saudável.",
-      photoUrl: "",
+      photoUrl:
+        "https://res.cloudinary.com/du0yit3co/image/upload/v1774626179/images_hvoalt.jpg",
     },
     {
       name: "Bob",
@@ -134,7 +141,8 @@ async function main() {
       size: "Médio",
       age: 3,
       description: "Muito amigavel, ama passeios e brinquedos de corda.",
-      photoUrl: "",
+      photoUrl:
+        "https://res.cloudinary.com/du0yit3co/image/upload/v1774626367/foto-inusitada-cachorro-vieler-18_z5wchg.webp",
     },
     {
       name: "Nina",
@@ -146,7 +154,8 @@ async function main() {
       hasOtherHealthInfo: true,
       otherHealthInfoDescription:
         "Alergia a carne bovina, deve comer apenas ração de frango ou salmão.",
-      photoUrl: "",
+      photoUrl:
+        "https://res.cloudinary.com/du0yit3co/image/upload/v1774626179/_image_rsid7p.webp",
     },
     {
       name: "Simba",
@@ -156,7 +165,8 @@ async function main() {
       age: 2,
       description: "Gato tranquilo, se adapta bem a novos ambientes.",
       isCastrated: true,
-      photoUrl: "",
+      photoUrl:
+        "https://res.cloudinary.com/du0yit3co/image/upload/v1774626280/1704202114_65940f822b648_hd_krzt8l.jpg",
     },
     {
       name: "Mel",
@@ -165,7 +175,8 @@ async function main() {
       size: "Médio",
       age: 1,
       description: "Energica e alegre, perfeita para quem gosta de atividade.",
-      photoUrl: "",
+      photoUrl:
+        "https://res.cloudinary.com/du0yit3co/image/upload/v1774626279/golden-retriever-1_qd1ihh.webp",
     },
     {
       name: "Pingo",
@@ -175,7 +186,8 @@ async function main() {
       age: 6,
       description: "Adulto docil, prefere ambientes silenciosos.",
       isDewormed: true,
-      photoUrl: "",
+      photoUrl:
+        "https://res.cloudinary.com/du0yit3co/image/upload/v1774626280/cat-pictures-sdue47hg2msymih2_qjxbti.jpg",
     },
   ];
 
