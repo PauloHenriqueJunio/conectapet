@@ -4,9 +4,36 @@ import { useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { apiFetch } from "@/lib/api";
 import { AdoptionRequest } from "@/types/api";
-import { Mail, UserRound, CheckCircle2, XCircle } from "lucide-react";
+import {
+  Mail,
+  UserRound,
+  CheckCircle2,
+  XCircle,
+  ShieldCheck,
+} from "lucide-react";
 
 type FilterType = "ALL" | "PENDING" | "APPROVED" | "REJECTED";
+
+const HealthBadge = ({
+  label,
+  variant = "default",
+}: {
+  label: string;
+  variant?: "default" | "success" | "warning";
+}) => {
+  const styles = {
+    default: "bg-slate-100 text-slate-700 border-slate-200",
+    success: "bg-emerald-50 text-emerald-700 border-emerald-100",
+    warning: "bg-amber-50 text-amber-700 border-amber-100",
+  };
+  return (
+    <span
+      className={`rounded-full px-2 py-0.5 text-[10px] font-medium border ${styles[variant]}`}
+    >
+      {label}
+    </span>
+  );
+};
 
 export default function DashboardPage() {
   const { token, user, isLoading } = useAuth();
@@ -74,7 +101,7 @@ export default function DashboardPage() {
   return (
     <div className="max-w-5xl mx-auto">
       {error && (
-        <div className="mb-6 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-600 shadow-sm">
+        <div className="mb-6 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-600 shadow-sm animate-in fade-in duration-300">
           {error}
         </div>
       )}
@@ -138,16 +165,23 @@ export default function DashboardPage() {
                   ? "bg-red-50/30 border-red-100"
                   : "bg-white border-slate-200 hover:shadow-md";
 
+            // Atalho para acessar os dados do pet de forma mais segura
+            const petData = request.pet;
+
             return (
               <article
                 key={request.id}
                 className={`group flex flex-col sm:flex-row gap-4 rounded-xl border p-4 transition-all sm:items-center ${cardStyle}`}
               >
                 <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg border border-slate-200 bg-slate-100 shadow-inner">
+                  {/* --- CORREÇÃO DA IMAGEM AQUI --- */}
                   <img
-                    src=//   request.pet?.photoUrl ||
-                    "https://images.unsplash.com/photo-1518717758536-85ae29035b6d?auto=format&fit=crop&w=150&q=80"
-                    alt={request.pet?.name || "Pet"}
+                    // Usando as chaves {} corretas e caindo no fallback se não houver photoUrl
+                    src={
+                      petData?.photoUrl ||
+                      "https://images.unsplash.com/photo-1518717758536-85ae29035b6d?auto=format&fit=crop&w=150&q=80"
+                    }
+                    alt={petData?.name || "Pet"}
                     className={`h-full w-full object-cover transition-transform duration-300 group-hover:scale-105 ${
                       request.status !== "PENDING" ? "opacity-90" : ""
                     }`}
@@ -157,10 +191,10 @@ export default function DashboardPage() {
                 <div className="flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-2 mb-1.5">
                     <h3 className="truncate text-lg font-bold text-slate-900">
-                      {request.pet?.name ?? request.petId}
+                      {petData?.name ?? request.petId}
                     </h3>
                     <span className="rounded-full bg-white px-2.5 py-0.5 text-xs font-semibold text-slate-600 border border-slate-200">
-                      {request.pet?.species ?? "N/A"}
+                      {petData?.species ?? "N/A"}
                     </span>
                     <span
                       className={`rounded-full px-2.5 py-0.5 text-xs font-bold border ${
@@ -175,7 +209,7 @@ export default function DashboardPage() {
                     </span>
                   </div>
 
-                  <div className="text-sm text-slate-600 mb-2 flex flex-wrap items-center gap-1.5">
+                  <div className="text-sm text-slate-600 mb-2.5 flex flex-wrap items-center gap-x-1.5 gap-y-1">
                     <div className="flex items-center gap-1">
                       <UserRound size={14} className="text-slate-400" />
                       <span className="font-medium text-slate-800">
@@ -185,7 +219,9 @@ export default function DashboardPage() {
 
                     {request.adopter?.email && (
                       <>
-                        <span className="text-slate-300 mx-0.5">•</span>
+                        <span className="text-slate-300 mx-0.5 hidden sm:block">
+                          •
+                        </span>
                         <a
                           href={`mailto:${request.adopter.email}`}
                           className="text-emerald-600 hover:text-emerald-700 hover:underline flex items-center gap-1 transition-colors"
@@ -196,11 +232,78 @@ export default function DashboardPage() {
                       </>
                     )}
 
-                    <span className="text-slate-300 mx-0.5">•</span>
+                    <span className="text-slate-300 mx-0.5 hidden sm:block">
+                      •
+                    </span>
                     <span className="text-slate-500">
                       {new Date(request.createdAt).toLocaleDateString("pt-BR")}
                     </span>
                   </div>
+
+                  {/* --- NOVA SEÇÃO DE SAÚDE AQUI --- */}
+                  {petData && (
+                    <div className="mb-3 rounded-lg border border-slate-100 bg-slate-50/70 p-2.5 shadow-inner">
+                      <div className="flex items-center gap-2 mb-2 text-slate-500">
+                        <ShieldCheck size={14} className="text-emerald-600" />
+                        <span className="text-xs font-semibold tracking-wider uppercase">
+                          Visão Geral de Saúde
+                        </span>
+                      </div>
+                      <div className="flex flex-wrap gap-1.5">
+                        {/* Universais */}
+                        {petData.isCastrated && (
+                          <HealthBadge label="Castrado" />
+                        )}
+                        {petData.isDewormed && (
+                          <HealthBadge label="Vermifugado" />
+                        )}
+                        {petData.hasVaccineRabies && (
+                          <HealthBadge
+                            label="Vacina Antirrábica"
+                            variant="success"
+                          />
+                        )}
+
+                        {/* Cães */}
+                        {petData.species === "Cão" && (
+                          <>
+                            {petData.hasVaccineV8 && (
+                              <HealthBadge label="V8/V10" variant="success" />
+                            )}
+                            {petData.hasVaccineGiardia && (
+                              <HealthBadge label="Giárdia" variant="success" />
+                            )}
+                            {petData.hasVaccineFlu && (
+                              <HealthBadge
+                                label="Gripe Canina"
+                                variant="success"
+                              />
+                            )}
+                          </>
+                        )}
+
+                        {/* Gatos */}
+                        {petData.species === "Gato" && (
+                          <>
+                            {petData.hasVaccineFeline && (
+                              <HealthBadge label="V3/V4/V5" variant="success" />
+                            )}
+                            {petData.hasVaccineFelv && (
+                              <HealthBadge label="FeLV" variant="success" />
+                            )}
+                          </>
+                        )}
+
+                        {/* Alerta de Histórico Clínico */}
+                        {petData.hasHistoryOfIllness && (
+                          <HealthBadge
+                            label="Histórico de Saúde"
+                            variant="warning"
+                          />
+                        )}
+                      </div>
+                    </div>
+                  )}
 
                   <p className="text-sm text-slate-500 line-clamp-2 bg-white/60 p-2 rounded-md border border-slate-100 shadow-sm">
                     <span className="font-medium text-slate-400 mr-1">

@@ -41,6 +41,16 @@ export interface AdoptionRequest {
     id: string;
     name: string;
     species: string;
+    photoUrl: string;
+    hasVaccineV8: boolean;
+    hasVaccineGiardia: boolean;
+    isCastrated: boolean;
+    isDewormed: boolean;
+    hasVaccineRabies: boolean;
+    hasVaccineFlu: boolean;
+    hasVaccineFeline: boolean;
+    hasVaccineFelv: boolean;
+    hasHistoryOfIllness: boolean;
   };
   adopter?: {
     id: string;
