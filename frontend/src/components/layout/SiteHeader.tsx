@@ -130,7 +130,7 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
               <>
                 <li>
                   <Link
-                    href="/dashboard"
+                    href="/ong/dashboard"
                     className={navClass("dashboard-home")}
                     onClick={() => setActiveNav("dashboard-home")}
                   >
@@ -139,7 +139,7 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
                 </li>
                 <li>
                   <Link
-                    href="/dashboard/cadastrar-pet"
+                    href="/ong/cadastrar-pet"
                     className={navClass("dashboard-cadastrar-pet")}
                     onClick={() => setActiveNav("dashboard-cadastrar-pet")}
                   >
@@ -148,7 +148,7 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
                 </li>
                 <li>
                   <Link
-                    href="/dashboard/editar"
+                    href="/ong/editar"
                     className={navClass("dashboard-editar")}
                     onClick={() => setActiveNav("dashboard-editar")}
                   >

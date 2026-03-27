@@ -51,6 +51,9 @@ export interface AdoptionRequest {
     hasVaccineFeline: boolean;
     hasVaccineFelv: boolean;
     hasHistoryOfIllness: boolean;
+    illnessDescription?: string | null;
+    hasOtherHealthInfo: string | null;
+    otherHealthInfoDescription?: string | null;
   };
   adopter?: {
     id: string;

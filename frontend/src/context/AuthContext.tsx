@@ -87,7 +87,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     if (token && (pathname === "/login" || pathname === "/register")) {
-      router.replace("/dashboard");
+      router.replace("/ong/dashboard");
     }
   }, [pathname, token, isLoading, router]);
 
@@ -111,7 +111,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     persistSession(auth);
-    router.push("/dashboard");
+    router.push("/ong/dashboard");
   };
 
   const register = async (payload: RegisterPayload) => {
