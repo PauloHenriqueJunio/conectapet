@@ -77,6 +77,22 @@ export class PetsService {
     });
   }
 
+  async remove(id: string, ongId: string) {
+    const pet = await this.prisma.pet.findUnique({ where: { id } });
+
+    if (!pet) {
+      throw new NotFoundException("Pet não encontrado.");
+    }
+
+    if (pet.ongId !== ongId) {
+      throw new ForbiddenException("Você não pode remover este pet.");
+    }
+
+    return this.prisma.pet.delete({
+      where: { id },
+    });
+  }
+
   findByOng(ongId: string) {
     return this.prisma.pet.findMany({
       where: { ongId },

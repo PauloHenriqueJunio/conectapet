@@ -5,9 +5,10 @@ import { useParams, useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { apiFetch } from "@/lib/api";
 import { Pet } from "@/types/api";
+import { PetForm } from "@/components/ui/PetForm";
 
 export default function EditarPetPage() {
-  const params = useParams(); // Pega o ID lá da URL
+  const params = useParams();
   const router = useRouter();
   const { token, isLoading: authLoading } = useAuth();
 
@@ -22,7 +23,6 @@ export default function EditarPetPage() {
       if (!token || authLoading) return;
 
       try {
-        // Busca os dados do pet específico no seu NestJS
         const data = await apiFetch<Pet>(`/pets/${petId}`, undefined, token);
         setPet(data);
       } catch (err) {
@@ -35,8 +35,16 @@ export default function EditarPetPage() {
     fetchPet();
   }, [petId, token, authLoading]);
 
+  const handleSuccess = () => {
+    router.push("/ong/editar");
+  };
+
   if (loading || authLoading) {
-    return <div className="p-6">Carregando dados do pet...</div>;
+    return (
+      <div className="flex min-h-[400px] items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-emerald-500 border-t-transparent"></div>
+      </div>
+    );
   }
 
   if (error || !pet) {
@@ -45,7 +53,7 @@ export default function EditarPetPage() {
         <p>{error || "Pet não encontrado."}</p>
         <button
           onClick={() => router.back()}
-          className="mt-4 underline font-semibold"
+          className="mt-4 underline font-semibold hover:text-red-900 transition-colors"
         >
           Voltar para a lista
         </button>
@@ -54,8 +62,8 @@ export default function EditarPetPage() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto">
-      <div className="mb-6 border-b border-slate-200 pb-5 flex items-center justify-between">
+    <div className="max-w-full mx-auto px-4 sm:px-0">
+      <div className="mb-6 border-b border-slate-200 pb-5 flex flex-col sm:flex-row gap-4 sm:items-center justify-between">
         <div>
           <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight">
             Editar Pet: {pet.name}
@@ -66,17 +74,14 @@ export default function EditarPetPage() {
         </div>
         <button
           onClick={() => router.push("/ong/editar")}
-          className="px-4 py-2 text-sm font-semibold text-slate-600 bg-white border border-slate-300 rounded-lg hover:bg-slate-50"
+          className="px-4 py-2 text-sm font-semibold text-slate-600 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors shrink-0"
         >
-          Voltar
+          Cancelar e Voltar
         </button>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-        {/* AQUI VAI ENTRAR O SEU FORMULÁRIO DE CADASTRO REAPROVEITADO */}
-        <p className="text-emerald-600 font-semibold animate-pulse">
-          Dados do {pet.name} carregados com sucesso! Preparando o formulário...
-        </p>
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8">
+        <PetForm initialData={pet} onSubmitSuccess={handleSuccess} />
       </div>
     </div>
   );

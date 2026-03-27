@@ -6,11 +6,9 @@ import { AlertCircle, CheckCircle2, Loader2, PawPrint } from "lucide-react";
 import { ImageUpload } from "@/components/ui/ImageUpload";
 import { HealthChecklist } from "@/components/ui/HealthCheckList";
 
-// Define o que o formulário aceita receber.
-// initialData é opcional. Se vier, é edição. Se não vier, é criação.
 interface PetFormProps {
   initialData?: any;
-  onSubmitSuccess: () => void; // Avisa o pai que deu tudo certo
+  onSubmitSuccess: () => void;
 }
 
 export function PetForm({ initialData, onSubmitSuccess }: PetFormProps) {
@@ -18,14 +16,11 @@ export function PetForm({ initialData, onSubmitSuccess }: PetFormProps) {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // A foto tem estados separados para preview e envio
   const [photoPreview, setPhotoPreview] = useState<string | null>(
     initialData?.photoUrl || null,
   );
   const [photoFile, setPhotoFile] = useState<File | null>(null);
 
-  // O estado do formulário já nasce vazio OU preenchido com os dados do Pet
   const [petForm, setPetForm] = useState({
     name: initialData?.name || "",
     species: initialData?.species || "",
@@ -111,7 +106,6 @@ export function PetForm({ initialData, onSubmitSuccess }: PetFormProps) {
         formData.append("photo", photoFile);
       }
 
-      // Lógica de Rota: Se tem initialData é PATCH (Edição), se não, é POST (Criação)
       const url = initialData
         ? `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"}/pets/${initialData.id}`
         : `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"}/pets`;
@@ -132,7 +126,6 @@ export function PetForm({ initialData, onSubmitSuccess }: PetFormProps) {
           : "Pet adicionado com sucesso!",
       );
 
-      // Avisa a página pai que acabou para ela poder redirecionar o usuário
       setTimeout(() => {
         onSubmitSuccess();
       }, 1500);
