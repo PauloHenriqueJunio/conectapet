@@ -32,6 +32,18 @@ export class PetsService {
     });
   }
 
+  async findOne(id: string) {
+    const pet = await this.prisma.pet.findUnique({
+      where: { id },
+    });
+
+    if (!pet) {
+      throw new NotFoundException("Pet não encontrado.");
+    }
+
+    return pet;
+  }
+
   async create(dto: CreatePetDto, ongId: string, file?: Express.Multer.File) {
     let photoUrl = dto.photoUrl ?? "";
     if (file) {

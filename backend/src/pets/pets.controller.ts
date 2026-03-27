@@ -70,4 +70,10 @@ export class PetsController {
   findMyPets(@Req() req: { user: RequestUser }) {
     return this.petsService.findByOng(req.user.userId);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(":id")
+  async findOne(@Param("id") id: string) {
+    return this.petsService.findOne(id);
+  }
 }

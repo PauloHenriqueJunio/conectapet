@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { apiFetch } from "@/lib/api";
 import { Pet } from "@/types/api";
@@ -10,6 +11,7 @@ export default function EditarPage() {
   const { token, isLoading } = useAuth();
   const [pets, setPets] = useState<Pet[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const loadPets = async () => {
@@ -68,7 +70,7 @@ export default function EditarPage() {
                   <th className="px-6 py-4">Espécie</th>
                   <th className="px-6 py-4">Idade</th>
                   <th className="px-6 py-4">Status</th>
-                  <th className="px-6 py-4 text-right">Ações</th>
+                  <th className="px-14 py-4 text-right">Ações</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -108,18 +110,18 @@ export default function EditarPage() {
                       </span>
                     </td>
                     <td className="px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="flex items-center justify-end gap-2">
                         <button
                           title="Editar Pet"
-                          // onClick={() => ...} -> Vamos fazer a navegação aqui
-                          className="p-2 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
+                          onClick={() => router.push(`/ong/editar/${pet.id}`)}
+                          className="p-2 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
                         >
                           <Pencil size={18} />
                         </button>
                         <button
                           title="Excluir Pet"
                           // onClick={() => ...} -> Vamos abrir o modal aqui
-                          className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                          className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                         >
                           <Trash2 size={18} />
                         </button>
