@@ -19,5 +19,24 @@ services:
       timeout: 5s
       retries: 5
 
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: conectapet-backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN}
+      BACKEND_PORT: 3001
+    ports:
+      - "3002:3001"
+    command: >
+      sh -c "npx prisma migrate deploy && npm run prisma:seed && npm run start"
+
 volumes:
   postgres_data:

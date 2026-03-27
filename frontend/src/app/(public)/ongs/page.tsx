@@ -119,10 +119,9 @@ export default function OngsPage() {
                   <MapPin size={19} />
                   <span className="text-neutral-800 font-semibold">
                     :{" "}
-                    {ong.address ??
-                      (ong.state && ong.city
-                        ? `${ong.state} - ${ong.city}`
-                        : "Não informado")}
+                    {ong.state && ong.city
+                      ? `${ong.state} - ${ong.city}`
+                      : "Não informado"}
                   </span>
                 </p>
               </div>

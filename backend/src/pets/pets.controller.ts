@@ -8,7 +8,12 @@ import {
   Req,
   UseGuards,
   Param,
+  UseInterceptors,
+  UploadedFile,
+  ParseFilePipeBuilder,
+  HttpStatus,
 } from "@nestjs/common";
+import { FileInterceptor } from "@nestjs/platform-express";
 import { Role } from "@prisma/client";
 import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
 import { RolesGuard } from "../auth/guards/roles.guard";
@@ -22,16 +27,30 @@ import { PetsService } from "./pets.service";
 export class PetsController {
   constructor(private readonly petsService: PetsService) {}
 
-  @Get()
-  findAllAvailable(@Query("species") species?: string) {
-    return this.petsService.findAvailable(species);
-  }
-
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ONG)
   @Post()
-  create(@Body() dto: CreatePetDto, @Req() req: { user: RequestUser }) {
-    return this.petsService.create(dto, req.user.userId);
+  @UseInterceptors(FileInterceptor("photo"))
+  create(
+    @Body() dto: CreatePetDto,
+    @Req() req: any,
+    @UploadedFile(
+      new ParseFilePipeBuilder()
+        .addFileTypeValidator({ fileType: /(jpg|jpeg|png|webp)$/ })
+        .addMaxSizeValidator({ maxSize: 5 * 1024 * 1024 }) // 5MB
+        .build({
+          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+          fileIsRequired: false,
+        }),
+    )
+    file?: Express.Multer.File,
+  ) {
+    return this.petsService.create(dto, req.user.userId, file);
+  }
+
+  @Get()
+  findAllAvailable(@Query("species") species?: string) {
+    return this.petsService.findAvailable(species);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
