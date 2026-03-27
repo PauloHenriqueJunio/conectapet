@@ -6,10 +6,14 @@ import {
 import { PrismaService } from "../prisma/prisma.service";
 import { CreatePetDto } from "./dto/create-pet.dto";
 import { UpdatePetDto } from "./dto/update-pet.dto";
+import { CloudinaryService } from "../cloudinary/cloudinary.service";
 
 @Injectable()
 export class PetsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly cloudinaryService: CloudinaryService,
+  ) {}
 
   findAvailable(species?: string) {
     return this.prisma.pet.findMany({
@@ -28,11 +32,17 @@ export class PetsService {
     });
   }
 
-  create(dto: CreatePetDto, ongId: string) {
+  async create(dto: CreatePetDto, ongId: string, file?: Express.Multer.File) {
+    let photoUrl = dto.photoUrl ?? "";
+    if (file) {
+      const uploadResult = await this.cloudinaryService.uploadFile(file);
+      photoUrl = uploadResult.secure_url;
+    }
+
     return this.prisma.pet.create({
       data: {
         ...dto,
-        photoUrl: dto.photoUrl ?? "",
+        photoUrl,
         ongId,
       },
     });
