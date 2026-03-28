@@ -32,6 +32,18 @@ export class PetsService {
     });
   }
 
+  async findOne(id: string) {
+    const pet = await this.prisma.pet.findUnique({
+      where: { id },
+    });
+
+    if (!pet) {
+      throw new NotFoundException("Pet não encontrado.");
+    }
+
+    return pet;
+  }
+
   async create(dto: CreatePetDto, ongId: string, file?: Express.Multer.File) {
     let photoUrl = dto.photoUrl ?? "";
     if (file) {
@@ -62,6 +74,22 @@ export class PetsService {
     return this.prisma.pet.update({
       where: { id },
       data: dto,
+    });
+  }
+
+  async remove(id: string, ongId: string) {
+    const pet = await this.prisma.pet.findUnique({ where: { id } });
+
+    if (!pet) {
+      throw new NotFoundException("Pet não encontrado.");
+    }
+
+    if (pet.ongId !== ongId) {
+      throw new ForbiddenException("Você não pode remover este pet.");
+    }
+
+    return this.prisma.pet.delete({
+      where: { id },
     });
   }
 

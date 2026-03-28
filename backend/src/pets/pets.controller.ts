@@ -12,6 +12,7 @@ import {
   UploadedFile,
   ParseFilePipeBuilder,
   HttpStatus,
+  Delete,
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { Role } from "@prisma/client";
@@ -69,5 +70,17 @@ export class PetsController {
   @Get("my-pets")
   findMyPets(@Req() req: { user: RequestUser }) {
     return this.petsService.findByOng(req.user.userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id')
+  async remove(@Param('id') id: string, @Req() req: { user: RequestUser }) {
+    return this.petsService.remove(id, req.user.userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(":id")
+  async findOne(@Param("id") id: string) {
+    return this.petsService.findOne(id);
   }
 }

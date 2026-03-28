@@ -235,7 +235,7 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
               <>
                 <li>
                   <Link
-                    href="/dashboard"
+                    href="/ong/dashboard"
                     className={`block rounded-lg px-3 py-2 transition hover:bg-brand-50 ${
                       activeNav === "dashboard-home"
                         ? "bg-brand-100 text-brand-800"
@@ -246,12 +246,12 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
                       closeMobileMenu();
                     }}
                   >
-                    HOME
+                    Home
                   </Link>
                 </li>
                 <li>
                   <Link
-                    href="/dashboard/cadastrar-pet"
+                    href="/ong/cadastrar-pet"
                     className={`block rounded-lg px-3 py-2 transition hover:bg-brand-50 ${
                       activeNav === "dashboard-cadastrar-pet"
                         ? "bg-brand-100 text-brand-800"
@@ -262,12 +262,12 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
                       closeMobileMenu();
                     }}
                   >
-                    CADASTRAR PET
+                    Cadastrar Pet
                   </Link>
                 </li>
                 <li>
                   <Link
-                    href="/dashboard/editar"
+                    href="/ong/editar"
                     className={`block rounded-lg px-3 py-2 transition hover:bg-brand-50 ${
                       activeNav === "dashboard-editar"
                         ? "bg-brand-100 text-brand-800"
@@ -278,7 +278,7 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
                       closeMobileMenu();
                     }}
                   >
-                    EDITAR
+                    Editar
                   </Link>
                 </li>
                 <li className="pt-2">
