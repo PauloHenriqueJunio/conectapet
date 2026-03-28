@@ -5,7 +5,14 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { apiFetch } from "@/lib/api";
 import { Pet } from "@/types/api";
-import { Pencil, Trash2, Search, CalendarDays, PawPrint } from "lucide-react";
+import {
+  Pencil,
+  Trash2,
+  Search,
+  CalendarDays,
+  PawPrint,
+  Filter,
+} from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -18,11 +25,15 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
+type FilterStatus = "todos" | "disponiveis" | "adotados";
+
 export default function EditarPage() {
   const { token, isLoading } = useAuth();
   const [pets, setPets] = useState<Pet[]>([]);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+
+  const [activeFilter, setActiveFilter] = useState<FilterStatus>("todos");
 
   useEffect(() => {
     const loadPets = async () => {
@@ -50,6 +61,19 @@ export default function EditarPage() {
     }
   };
 
+  const filteredPets = pets.filter((pet) => {
+    if (activeFilter === "todos") return true;
+    if (activeFilter === "disponiveis") return !pet.isAdopted;
+    if (activeFilter === "adotados") return pet.isAdopted;
+    return true;
+  });
+
+  const counts = {
+    todos: pets.length,
+    disponiveis: pets.filter((p) => !p.isAdopted).length,
+    adotados: pets.filter((p) => p.isAdopted).length,
+  };
+
   if (isLoading) {
     return (
       <div className="flex min-h-[400px] items-center justify-center">
@@ -75,17 +99,23 @@ export default function EditarPage() {
         </p>
       </div>
 
-      {pets.length === 0 ? (
-        <EmptyState />
+      <FilterBar
+        activeFilter={activeFilter}
+        setActiveFilter={setActiveFilter}
+        counts={counts}
+      />
+
+      {filteredPets.length === 0 ? (
+        <EmptyState isFiltering={activeFilter !== "todos"} />
       ) : (
         <>
           <MobilePetList
-            pets={pets}
+            pets={filteredPets}
             onDelete={performActualDelete}
             onEdit={(id) => router.push(`/ong/editar/${id}`)}
           />
           <DesktopPetTable
-            pets={pets}
+            pets={filteredPets}
             onDelete={performActualDelete}
             onEdit={(id) => router.push(`/ong/editar/${id}`)}
           />
@@ -95,17 +125,49 @@ export default function EditarPage() {
   );
 }
 
-function StatusBadge({ isAdopted }: { isAdopted: boolean }) {
+interface FilterBarProps {
+  activeFilter: FilterStatus;
+  setActiveFilter: (filter: FilterStatus) => void;
+  counts: { todos: number; disponiveis: number; adotados: number };
+}
+
+function FilterBar({ activeFilter, setActiveFilter, counts }: FilterBarProps) {
+  const filters: { id: FilterStatus; label: string; count: number }[] = [
+    { id: "todos", label: "Todos", count: counts.todos },
+    { id: "disponiveis", label: "Disponíveis", count: counts.disponiveis },
+    { id: "adotados", label: "Adotados", count: counts.adotados },
+  ];
+
   return (
-    <span
-      className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold ${isAdopted ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-blue-50 text-blue-700 border-blue-200"}`}
-    >
-      {isAdopted ? "Adotado" : "Disponível"}
-    </span>
+    <div className="mb-6 p-1 rounded-xl bg-slate-100 border border-slate-200 inline-flex items-center gap-1 shadow-inner w-full sm:w-auto flex-wrap sm:flex-nowrap">
+      {filters.map((filter) => {
+        const isActive = activeFilter === filter.id;
+        return (
+          <button
+            key={filter.id}
+            onClick={() => setActiveFilter(filter.id)}
+            className={`flex-1 sm:flex-initial px-4 py-2 text-sm font-semibold rounded-lg transition-all flex items-center justify-center gap-2 whitespace-nowrap 
+              ${
+                isActive
+                  ? "bg-white text-emerald-700 shadow"
+                  : "text-slate-600 hover:bg-white/60 hover:text-slate-900"
+              }`}
+          >
+            {isActive && <Filter size={15} className="text-emerald-500" />}
+            {filter.label}
+            <span
+              className={`px-2 py-0.5 rounded-full text-xs transition-colors ${isActive ? "bg-emerald-50 text-emerald-800" : "bg-slate-200 text-slate-600"}`}
+            >
+              {filter.count}
+            </span>
+          </button>
+        );
+      })}
+    </div>
   );
 }
 
-function EmptyState() {
+function EmptyState({ isFiltering }: { isFiltering: boolean }) {
   return (
     <section className="rounded-2xl bg-white shadow-sm border border-slate-200 overflow-hidden">
       <div className="flex flex-col items-center justify-center p-12 text-center">
@@ -114,14 +176,25 @@ function EmptyState() {
           Nenhum pet encontrado
         </h3>
         <p className="text-slate-500 mt-1 max-w-sm">
-          Você ainda não tem animais registrados no sistema.
+          {isFiltering
+            ? "Nenhum animal cadastrado corresponde ao filtro selecionado no momento."
+            : 'Você ainda não tem animais registrados no sistema. Vá até a aba "Cadastrar Pet" para começar.'}
         </p>
       </div>
     </section>
   );
 }
 
-// LAYOUT MOBILE
+function StatusBadge({ isAdopted }: { isAdopted: boolean }) {
+  return (
+    <span
+      className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold ${isAdopted ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-blue-50 text-blue-700 border-blue-200"}`}
+    >
+      {isAdopted ? "Adotado" : "Disponível"}
+    </span>
+  );
+}
+
 function MobilePetList({
   pets,
   onDelete,
@@ -136,7 +209,7 @@ function MobilePetList({
       {pets.map((pet) => (
         <div
           key={`mobile-${pet.id}`}
-          className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-4"
+          className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-4 animate-in fade-in-50 duration-200"
         >
           <div className="flex items-center gap-4 border-b border-slate-100 pb-4">
             <div className="h-14 w-14 flex-shrink-0 overflow-hidden rounded-full border-2 border-slate-100 bg-slate-50 shadow-inner">
@@ -167,7 +240,8 @@ function MobilePetList({
             <div className="flex items-center gap-2 text-slate-600">
               <CalendarDays size={16} className="text-emerald-500" />
               <span>
-                <strong className="text-slate-900">Idade:</strong> {pet.age}
+                <strong className="text-slate-900">Idade:</strong> {pet.age}{" "}
+                anos
               </span>
             </div>
           </div>
@@ -185,7 +259,7 @@ function MobilePetList({
     </div>
   );
 }
-// layout desktop
+
 function DesktopPetTable({
   pets,
   onDelete,
@@ -211,11 +285,11 @@ function DesktopPetTable({
           {pets.map((pet) => (
             <tr
               key={`table-${pet.id}`}
-              className="hover:bg-slate-50/50 transition-colors group"
+              className="hover:bg-slate-50/50 transition-colors group animate-in fade-in-30 duration-150"
             >
               <td className="px-6 py-4">
                 <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded-full border border-slate-200 bg-slate-100">
+                  <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-full border border-slate-200 bg-slate-100">
                     <img
                       src={
                         pet.photoUrl ||
@@ -225,7 +299,9 @@ function DesktopPetTable({
                       className="h-full w-full object-cover"
                     />
                   </div>
-                  <span className="font-bold text-slate-900">{pet.name}</span>
+                  <span className="font-extrabold text-slate-900">
+                    {pet.name}
+                  </span>
                 </div>
               </td>
               <td className="px-6 py-4 text-slate-600">{pet.species}</td>
@@ -252,7 +328,7 @@ function DesktopPetTable({
     </section>
   );
 }
-// funcao para chamar o modal
+
 function DeleteButton({
   pet,
   onDelete,
