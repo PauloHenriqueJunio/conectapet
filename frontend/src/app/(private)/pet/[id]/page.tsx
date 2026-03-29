@@ -74,15 +74,43 @@ export default function PetProfilePage() {
   const vaccinesToShow =
     pet.species === "Gato"
       ? [
-          { label: "Múltipla Felina", taken: pet.hasVaccineFeline },
-          { label: "Antirrábica", taken: pet.hasVaccineRabies },
-          { label: "FeLV", taken: pet.hasVaccineFelv },
+          {
+            label: "Múltipla Felina",
+            taken: pet.hasVaccineFeline,
+            desc: "Protege contra as principais doenças virais, como rinotraqueíte e panleucopenia.",
+          },
+          {
+            label: "Antirrábica",
+            taken: pet.hasVaccineRabies,
+            desc: "Vacina obrigatória por lei. Protege contra o vírus da raiva.",
+          },
+          {
+            label: "FeLV",
+            taken: pet.hasVaccineFelv,
+            desc: "Protege contra o Vírus da Leucemia Felina, doença grave e contagiosa entre gatos.",
+          },
         ]
       : [
-          { label: "Múltipla (V8/V10)", taken: pet.hasVaccineV8 },
-          { label: "Antirrábica", taken: pet.hasVaccineRabies },
-          { label: "Giárdia", taken: pet.hasVaccineGiardia },
-          { label: "Gripe Canina", taken: pet.hasVaccineFlu },
+          {
+            label: "Múltipla (V8/V10)",
+            taken: pet.hasVaccineV8,
+            desc: "Protege contra Cinomose, Parvovirose, Leptospirose e outras doenças graves.",
+          },
+          {
+            label: "Antirrábica",
+            taken: pet.hasVaccineRabies,
+            desc: "Vacina obrigatória por lei. Protege contra o vírus da raiva.",
+          },
+          {
+            label: "Giárdia",
+            taken: pet.hasVaccineGiardia,
+            desc: "Previne infecções intestinais causadas pelo protozoário Giárdia.",
+          },
+          {
+            label: "Gripe Canina",
+            taken: pet.hasVaccineFlu,
+            desc: "Protege contra a 'tosse dos canis', uma doença respiratória altamente contagiosa.",
+          },
         ];
 
   // retirar dado mockado e colocar o numero real que vem da API quando tiver
@@ -202,16 +230,20 @@ export default function PetProfilePage() {
                     {vaccinesToShow.map((vaccine, index) => (
                       <li
                         key={index}
-                        className={`flex items-center gap-2 ${vaccine.taken ? "text-slate-700" : "text-slate-400"}`}
+                        className={`group relative flex items-center gap-2 w-max cursor-help ${vaccine.taken ? "text-slate-700" : "text-slate-400"}`}
                       >
                         {vaccine.taken ? (
                           <CheckCircle2
-                            className="text-emerald-500"
+                            className="text-emerald-500 min-w-[18px]"
                             size={18}
                           />
                         ) : (
-                          <XCircle className="text-red-400" size={18} />
+                          <XCircle
+                            className="text-red-400 min-w-[18px]"
+                            size={18}
+                          />
                         )}
+
                         <span
                           className={
                             vaccine.taken
@@ -221,6 +253,19 @@ export default function PetProfilePage() {
                         >
                           {vaccine.label}
                         </span>
+
+                        <Info size={14} className="text-slate-300 ml-1" />
+
+                        <div className="absolute left-0 bottom-full mb-2 hidden w-56 -translate-x-2 flex-col rounded-xl bg-slate-900 px-3 py-2.5 text-xs text-white opacity-0 transition-opacity group-hover:flex group-hover:opacity-100 z-10 shadow-xl pointer-events-none">
+                          <span className="font-bold text-emerald-400 mb-1">
+                            {vaccine.label}
+                          </span>
+                          <span className="text-slate-300 leading-relaxed">
+                            {vaccine.desc}
+                          </span>
+
+                          <div className="absolute -bottom-1 left-4 h-2 w-2 rotate-45 bg-slate-900"></div>
+                        </div>
                       </li>
                     ))}
                   </ul>
