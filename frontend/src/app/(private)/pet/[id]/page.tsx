@@ -128,7 +128,7 @@ export default function PetProfilePage() {
     }
   };
 
-  const whatsappNumber = "5582999999999";
+  const whatsappNumber = "558299999999"; // Substitua pelo número real da ONG ou responsável
   const whatsappMessage = encodeURIComponent(
     `Olá! Vi o perfil do(a) ${pet.name} no ConectaPet e tenho interesse em adotar!`,
   );
