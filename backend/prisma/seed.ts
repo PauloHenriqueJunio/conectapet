@@ -77,7 +77,7 @@ async function main() {
       passwordHash,
       cep: "30130010",
       cpf: "12345678901",
-      role: Role.ADOTANTE,
+      role: Role.PESSOA_FISICA,
     },
   });
 
@@ -88,7 +88,7 @@ async function main() {
       passwordHash,
       cep: "20040002",
       cpf: "98765432100",
-      role: Role.ADOTANTE,
+      role: Role.PESSOA_FISICA,
     },
   });
 

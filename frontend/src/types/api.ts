@@ -1,4 +1,4 @@
-export type Role = "ONG" | "ADOTANTE";
+export type Role = "ONG" | "PESSOA_FISICA";
 
 export interface AuthUser {
   id: string;

@@ -9,7 +9,7 @@ datasource db {
 
 enum Role {
   ONG
-  ADOTANTE
+  PESSOA_FISICA
 }
 
 enum AdoptionStatus {

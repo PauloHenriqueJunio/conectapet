@@ -79,7 +79,7 @@ export class AuthService {
       throw new BadRequestException("CPF inválido.");
     }
 
-    if (dto.role === Role.ADOTANTE && normalizedCnpj.length > 0) {
+    if (dto.role === Role.PESSOA_FISICA && normalizedCnpj.length > 0) {
       throw new BadRequestException("Pessoa física não deve informar CNPJ.");
     }
 

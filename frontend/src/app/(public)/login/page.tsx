@@ -28,7 +28,7 @@ export default function LoginPage() {
       await login({ email, password }, userType);
     } catch (err) {
       if (err instanceof Error && err.message === "ROLE_MISMATCH") {
-        if (userType === "ADOTANTE") {
+        if (userType === "PESSOA_FISICA") {
           setError(
             "Este e-mail pertence a uma ONG. Para entrar, selecione a aba ONG.",
           );
@@ -49,7 +49,8 @@ export default function LoginPage() {
     <main className="mx-auto flex min-h-screen max-w-md items-center px-6 py-12">
       <div className="w-full rounded-3xl bg-white p-8 shadow-2xl ring-1 ring-slate-100">
         <h1 className="text-3xl font-bold text-slate-900">
-          Entrar no ConectaPet
+          Entrar no NOME_DO_PROJETO{" "}
+          {/* Lembrete: Trocar aqui se mudar o nome! */}
         </h1>
         <p className="mt-2 text-sm text-slate-600">
           Acesse sua conta para gerenciar adoções.
@@ -61,9 +62,9 @@ export default function LoginPage() {
         <nav className="mt-6 grid grid-cols-2 rounded-xl bg-slate-100 p-1">
           <button
             type="button"
-            onClick={() => setUserType("ADOTANTE")}
+            onClick={() => setUserType("PESSOA_FISICA")}
             className={`rounded-lg px-3 py-2 text-sm font-semibold transition ${
-              userType === "ADOTANTE"
+              userType === "PESSOA_FISICA"
                 ? "bg-white text-brand-700 shadow-sm"
                 : "text-slate-600 hover:text-slate-800"
             }`}
@@ -86,7 +87,7 @@ export default function LoginPage() {
         <p className="mt-3 text-xs text-slate-500">
           {userType === "ONG"
             ? "Se você for ONG, o cadastro deve incluir CNPJ."
-            : userType === "ADOTANTE"
+            : userType === "PESSOA_FISICA"
               ? "Se você for pessoa física, o CPF no cadastro é opcional."
               : "Escolha uma aba para continuar."}
         </p>
