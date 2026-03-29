@@ -33,6 +33,7 @@ export class PetsService {
   }
 
   async findOne(id: string) {
+    console.log("ID CHEGANDO NO BACKEND:", id);
     const pet = await this.prisma.pet.findUnique({
       where: { id },
     });
