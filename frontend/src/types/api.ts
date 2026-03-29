@@ -29,6 +29,7 @@ export interface Pet {
   isAdopted: boolean;
   ongId: string;
   size: string;
+  sex: string;
   isCastrated: boolean;
   isDewormed: boolean;
   hasVaccineV8: boolean;

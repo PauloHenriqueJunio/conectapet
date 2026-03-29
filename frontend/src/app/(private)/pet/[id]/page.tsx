@@ -15,6 +15,9 @@ import {
   XCircle,
   Syringe,
   Stethoscope,
+  Share2,
+  Building2,
+  Check,
 } from "lucide-react";
 
 export default function PetProfilePage() {
@@ -24,6 +27,7 @@ export default function PetProfilePage() {
 
   const [pet, setPet] = useState<Pet | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isCopied, setIsCopied] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -71,6 +75,7 @@ export default function PetProfilePage() {
       </div>
     );
   }
+
   const vaccinesToShow =
     pet.species === "Gato"
       ? [
@@ -113,7 +118,16 @@ export default function PetProfilePage() {
           },
         ];
 
-  // retirar dado mockado e colocar o numero real que vem da API quando tiver
+  const handleShare = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2500);
+    } catch (err) {
+      console.error("Erro ao copiar o link:", err);
+    }
+  };
+
   const whatsappNumber = "5582999999999";
   const whatsappMessage = encodeURIComponent(
     `Olá! Vi o perfil do(a) ${pet.name} no ConectaPet e tenho interesse em adotar!`,
@@ -123,16 +137,48 @@ export default function PetProfilePage() {
   return (
     <div className="pb-20">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-500">
-        <button
-          onClick={() => router.back()}
-          className="flex items-center gap-2 text-slate-500 hover:text-brand-600 font-semibold mb-8 transition group"
-        >
-          <ArrowLeft
-            size={20}
-            className="group-hover:-translate-x-1 transition-transform"
-          />
-          Voltar
-        </button>
+        {/* BARRA SUPERIOR: VOLTAR & COMPARTILHAR */}
+        <div className="flex justify-between items-center mb-8">
+          <button
+            onClick={() => router.back()}
+            className="flex items-center gap-2 text-slate-500 hover:text-brand-600 font-semibold transition group"
+          >
+            <ArrowLeft
+              size={20}
+              className="group-hover:-translate-x-1 transition-transform"
+            />
+            Voltar
+          </button>
+
+          <button
+            onClick={handleShare}
+            className={`flex items-center gap-2 font-semibold transition-all duration-300 px-4 py-2 rounded-full shadow-sm border overflow-hidden ${
+              isCopied
+                ? "bg-emerald-50 text-emerald-600 border-emerald-200 w-[160px] justify-center"
+                : "bg-white text-slate-500 hover:text-brand-600 border-slate-200 w-[44px] sm:w-[155px] justify-center"
+            }`}
+          >
+            {isCopied ? (
+              <>
+                <Check size={18} className="animate-in zoom-in" />
+                <span className="animate-in fade-in whitespace-nowrap">
+                  Link copiado!
+                </span>
+              </>
+            ) : (
+              <>
+                <Share2
+                  size={18}
+                  className="transition-transform group-hover:scale-110"
+                />
+                <span className="hidden sm:inline whitespace-nowrap">
+                  Compartilhar
+                </span>
+              </>
+            )}
+          </button>
+        </div>
+
         <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden flex flex-col lg:flex-row">
           <div className="w-full lg:w-1/2 relative bg-slate-100 flex items-center justify-center min-h-[400px] lg:min-h-full">
             {pet.photoUrl ? (
@@ -172,7 +218,8 @@ export default function PetProfilePage() {
               <span>Abrigo Parceiro (Maceió, AL)</span>
             </div>
 
-            <div className="grid grid-cols-2 gap-4 mb-8">
+            {/* ADICIONADO O CARD DE SEXO NA GRID */}
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
               <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
                 <span className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">
                   Idade
@@ -187,6 +234,14 @@ export default function PetProfilePage() {
                 </span>
                 <span className="text-lg font-bold text-slate-800">
                   {pet.size || "Médio"}
+                </span>
+              </div>
+              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 col-span-2 md:col-span-1">
+                <span className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">
+                  Sexo
+                </span>
+                <span className="text-lg font-bold text-slate-800">
+                  {pet.sex || "Não informado"}
                 </span>
               </div>
             </div>
@@ -222,7 +277,7 @@ export default function PetProfilePage() {
                 </div>
 
                 <div>
-                  <h4 className="text-lg font-bold text-slate-900 mb-3 flex items-center gap-1.5">
+                  <h4 className="text-sm font-bold text-slate-900 mb-3 flex items-center gap-1.5">
                     <Syringe className="text-brand-500" size={18} />
                     Vacinas
                   </h4>
@@ -308,7 +363,7 @@ export default function PetProfilePage() {
               </div>
             </div>
 
-            <div className="mb-10 flex-1">
+            <div className="mb-8 flex-1">
               <h3 className="text-lg font-bold text-slate-900 mb-3">
                 A história do(a) {pet.name}
               </h3>
@@ -316,6 +371,23 @@ export default function PetProfilePage() {
                 {pet.description ||
                   "Este(a) lindão(ona) está procurando uma família cheia de amor para chamar de sua. É muito dócil, brincalhão(ona) e se dá bem com outros animais. Venha conhecer e se apaixonar!"}
               </p>
+            </div>
+
+            {/* CARD DO RESPONSÁVEL / ONG */}
+            <div className="mb-6 flex items-center gap-4 p-4 rounded-2xl border border-slate-100 bg-slate-50">
+              <div className="h-12 w-12 rounded-full bg-brand-100 flex items-center justify-center text-brand-600 shrink-0">
+                <Building2 size={24} />
+              </div>
+              <div>
+                <span className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-0.5">
+                  Responsável pelo pet
+                </span>
+                {/* Aqui futuramente podemos trocar por pet.ong?.name se vier da API */}
+                <span className="text-sm font-bold text-slate-800">
+                  {/* @ts-ignore - Remova isso quando adicionar 'ong' no types/api.ts */}
+                  {pet.ong?.name || "Abrigo Parceiro (ONG)"}
+                </span>
+              </div>
             </div>
 
             {!pet.isAdopted ? (
