@@ -78,7 +78,7 @@ export class PetsController {
     return this.petsService.remove(id, req.user.userId);
   }
 
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Get(":id")
   async findOne(@Param("id") id: string) {
     return this.petsService.findOne(id);
