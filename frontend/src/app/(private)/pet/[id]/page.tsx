@@ -12,6 +12,9 @@ import {
   CheckCircle2,
   Info,
   ShieldCheck,
+  XCircle,
+  Syringe,
+  Stethoscope,
 } from "lucide-react";
 
 export default function PetProfilePage() {
@@ -29,10 +32,8 @@ export default function PetProfilePage() {
 
       try {
         const data = await apiFetch<Pet>(`/pets/${id}`);
-        console.log("DADOS DA MEL CHEGARAM NO FRONT:", data);
         setPet(data);
       } catch (err) {
-        console.error("ERRO REAL QUE O FRONTEND DEU:", err);
         setError("Não foi possível carregar as informações deste pet.");
       } finally {
         setIsLoading(false);
@@ -70,6 +71,19 @@ export default function PetProfilePage() {
       </div>
     );
   }
+  const vaccinesToShow =
+    pet.species === "Gato"
+      ? [
+          { label: "Múltipla Felina", taken: pet.hasVaccineFeline },
+          { label: "Antirrábica", taken: pet.hasVaccineRabies },
+          { label: "FeLV", taken: pet.hasVaccineFelv },
+        ]
+      : [
+          { label: "Múltipla (V8/V10)", taken: pet.hasVaccineV8 },
+          { label: "Antirrábica", taken: pet.hasVaccineRabies },
+          { label: "Giárdia", taken: pet.hasVaccineGiardia },
+          { label: "Gripe Canina", taken: pet.hasVaccineFlu },
+        ];
 
   // retirar dado mockado e colocar o numero real que vem da API quando tiver
   const whatsappNumber = "5582999999999";
@@ -79,7 +93,7 @@ export default function PetProfilePage() {
   const whatsappLink = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
 
   return (
-    <div className="min-h-screen bg-slate-50/50 pb-20">
+    <div className="pb-20">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-in fade-in duration-500">
         <button
           onClick={() => router.back()}
@@ -129,6 +143,7 @@ export default function PetProfilePage() {
               <MapPin size={18} className="text-brand-500" />
               <span>Abrigo Parceiro (Maceió, AL)</span>
             </div>
+
             <div className="grid grid-cols-2 gap-4 mb-8">
               <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
                 <span className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">
@@ -143,30 +158,109 @@ export default function PetProfilePage() {
                   Porte
                 </span>
                 <span className="text-lg font-bold text-slate-800">
-                  Médio
-                </span>{" "}
+                  {pet.size || "Médio"}
+                </span>
               </div>
             </div>
 
-            <div className="mb-8">
+            <div className="mb-8 border-t border-slate-100 pt-6">
               <h3 className="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
                 <ShieldCheck className="text-brand-500" size={24} />
                 Saúde e Cuidados
               </h3>
-              <ul className="space-y-3">
-                <li className="flex items-center gap-3 text-slate-700 font-medium">
-                  <CheckCircle2 className="text-emerald-500" size={20} />
-                  Vacinado(a)
-                </li>
-                <li className="flex items-center gap-3 text-slate-700 font-medium">
-                  <CheckCircle2 className="text-emerald-500" size={20} />
-                  Castrado(a)
-                </li>
-                <li className="flex items-center gap-3 text-slate-700 font-medium">
-                  <CheckCircle2 className="text-emerald-500" size={20} />
-                  Vermifugado(a)
-                </li>
-              </ul>
+
+              <div className="space-y-6">
+                <div className="flex flex-wrap gap-3">
+                  <div
+                    className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-semibold border transition-colors ${pet.isCastrated ? "bg-emerald-50 border-emerald-200 text-emerald-700" : "bg-slate-50 border-slate-200 text-slate-500"}`}
+                  >
+                    {pet.isCastrated ? (
+                      <CheckCircle2 size={18} />
+                    ) : (
+                      <XCircle size={18} />
+                    )}
+                    {pet.isCastrated ? "Castrado(a)" : "Não castrado(a)"}
+                  </div>
+                  <div
+                    className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-semibold border transition-colors ${pet.isDewormed ? "bg-emerald-50 border-emerald-200 text-emerald-700" : "bg-slate-50 border-slate-200 text-slate-500"}`}
+                  >
+                    {pet.isDewormed ? (
+                      <CheckCircle2 size={18} />
+                    ) : (
+                      <XCircle size={18} />
+                    )}
+                    {pet.isDewormed ? "Vermifugado(a)" : "Não vermifugado(a)"}
+                  </div>
+                </div>
+
+                <div>
+                  <h4 className="text-lg font-bold text-slate-900 mb-3 flex items-center gap-1.5">
+                    <Syringe className="text-brand-500" size={18} />
+                    Vacinas
+                  </h4>
+                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                    {vaccinesToShow.map((vaccine, index) => (
+                      <li
+                        key={index}
+                        className={`flex items-center gap-2 ${vaccine.taken ? "text-slate-700" : "text-slate-400"}`}
+                      >
+                        {vaccine.taken ? (
+                          <CheckCircle2
+                            className="text-emerald-500"
+                            size={18}
+                          />
+                        ) : (
+                          <XCircle className="text-red-400" size={18} />
+                        )}
+                        <span
+                          className={
+                            vaccine.taken
+                              ? "font-medium"
+                              : "line-through opacity-70"
+                          }
+                        >
+                          {vaccine.label}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {(pet.hasHistoryOfIllness || pet.hasOtherHealthInfo) && (
+                  <div className="p-5 bg-amber-50/80 rounded-2xl border border-amber-200/60 shadow-sm">
+                    <h4 className="text-sm font-bold text-amber-900 mb-3 flex items-center gap-2">
+                      <Stethoscope className="text-amber-600" size={18} />
+                      Histórico Médico
+                    </h4>
+
+                    <div className="space-y-4">
+                      {pet.hasHistoryOfIllness && (
+                        <div>
+                          <span className="block text-[11px] font-extrabold text-amber-700 uppercase tracking-wider mb-1">
+                            Doenças / Tratamentos
+                          </span>
+                          <p className="text-sm text-amber-900 font-medium leading-relaxed">
+                            {pet.illnessDescription ||
+                              "Possui histórico. Consulte a ONG para mais detalhes."}
+                          </p>
+                        </div>
+                      )}
+
+                      {pet.hasOtherHealthInfo && (
+                        <div>
+                          <span className="block text-[11px] font-extrabold text-amber-700 uppercase tracking-wider mb-1">
+                            Outras Informações
+                          </span>
+                          <p className="text-sm text-amber-900 font-medium leading-relaxed">
+                            {pet.otherHealthInfoDescription ||
+                              "Consulte a ONG para detalhes adicionais."}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
 
             <div className="mb-10 flex-1">
@@ -200,7 +294,7 @@ export default function PetProfilePage() {
               </a>
             ) : (
               <div className="w-full bg-slate-100 text-slate-500 py-4 rounded-2xl font-bold text-lg text-center border border-slate-200 cursor-not-allowed">
-                Este pet já encontrou um lar! 🏡
+                Este pet já encontrou um lar!
               </div>
             )}
           </div>

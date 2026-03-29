@@ -28,6 +28,19 @@ export interface Pet {
   photoUrl: string;
   isAdopted: boolean;
   ongId: string;
+  size: string;
+  isCastrated: boolean;
+  isDewormed: boolean;
+  hasVaccineV8: boolean;
+  hasVaccineGiardia: boolean;
+  hasVaccineFlu: boolean;
+  hasVaccineRabies: boolean;
+  hasVaccineFeline: boolean;
+  hasVaccineFelv: boolean;
+  hasHistoryOfIllness: boolean;
+  illnessDescription?: string | null;
+  hasOtherHealthInfo: boolean;
+  otherHealthInfoDescription?: string | null;
 }
 
 export interface AdoptionRequest {
