@@ -143,11 +143,7 @@ export default function PessoaFisicaHome() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
           {filteredPets.map((pet) => (
-            <Link
-              href={`/pessoa-fisica/pet/${pet.id}`}
-              key={pet.id}
-              className="group"
-            >
+            <Link href={`/pet/${pet.id}`} key={pet.id} className="group">
               <div className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl border border-slate-100 transition-all duration-300 hover:-translate-y-2 flex flex-col h-full">
                 <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-100">
                   {pet.photoUrl ? (
