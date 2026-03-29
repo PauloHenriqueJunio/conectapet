@@ -26,10 +26,12 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
   return (
     <div className="flex min-h-screen flex-col bg-slate-50/50">
+      <SiteHeader
+        page={isOng ? "dashboard-home" : "colocar-na-adocao"}
+        variant={isOng ? "ong" : "pessoa-fisica"}
+      />
       <main className="mx-auto w-full max-w-6xl px-6 py-10 flex-1">
-        {isOng ? (
-          <SiteHeader page={ongHeaderPage} variant="ong" />
-        ) : (
+        {!isOng && (
           <header className="mb-8 rounded-2xl bg-white p-6 shadow-sm border border-slate-100">
             <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">
               Dashboard
@@ -42,7 +44,6 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
             </p>
           </header>
         )}
-
         {children}
       </main>
 
