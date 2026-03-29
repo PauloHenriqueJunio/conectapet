@@ -141,10 +141,11 @@ export default function PetProfilePage() {
         <div className="flex justify-between items-center mb-8">
           <button
             onClick={() => router.back()}
-            className="flex items-center gap-2 text-slate-500 hover:text-brand-600 font-semibold transition group"
+            className="flex items-center gap-2 px-4 py-2 rounded-full font-bold text-brand-600 bg-white border border-brand-200 hover:bg-brand-50 hover:border-brand-300 transition-all duration-300 group shadow-sm"
           >
             <ArrowLeft
-              size={20}
+              size={18}
+              strokeWidth={3}
               className="group-hover:-translate-x-1 transition-transform"
             />
             Voltar
