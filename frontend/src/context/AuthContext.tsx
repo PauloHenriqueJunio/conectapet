@@ -86,8 +86,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    if (token && (pathname === "/login" || pathname === "/register")) {
-      router.replace("/ong/dashboard");
+    if (token && user && (pathname === "/login" || pathname === "/register")) {
+      if (user.role === "ONG") {
+        router.replace("/ong/dashboard");
+      } else {
+        router.replace("/pessoa-fisica/home");
+      }
     }
   }, [pathname, token, isLoading, router]);
 
@@ -111,7 +115,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     persistSession(auth);
-    router.push("/ong/dashboard");
+    if (auth.user.role === "ONG") {
+      router.push("/ong/dashboard");
+    } else {
+      router.push("/pessoa-fisica/home");
+    }
   };
 
   const register = async (payload: RegisterPayload) => {
@@ -120,7 +128,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       body: JSON.stringify(payload),
     });
 
-    await login({ email: payload.email, password: payload.password });
+    await login(
+      { email: payload.email, password: payload.password },
+      payload.role,
+    );
   };
 
   const logout = () => {

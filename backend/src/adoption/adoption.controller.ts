@@ -22,7 +22,7 @@ import { UpdateAdoptionStatusDto } from "./dto/update-adoption-status.dto";
 export class AdoptionController {
   constructor(private readonly adoptionService: AdoptionService) {}
 
-  @Roles(Role.ADOTANTE)
+  @Roles(Role.PESSOA_FISICA)
   @Post()
   create(
     @Body() dto: CreateAdoptionRequestDto,
@@ -31,7 +31,7 @@ export class AdoptionController {
     return this.adoptionService.createRequest(dto, req.user.userId);
   }
 
-  @Roles(Role.ADOTANTE)
+  @Roles(Role.PESSOA_FISICA)
   @Get("my-requests")
   myRequests(@Req() req: { user: RequestUser }) {
     return this.adoptionService.myRequests(req.user.userId);
