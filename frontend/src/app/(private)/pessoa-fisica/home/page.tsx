@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { apiFetch } from "@/lib/api";
 import { Pet } from "@/types/api";
-import { Search, MapPin, Heart, Info } from "lucide-react";
+import { Search, MapPin, Heart, Info, Camera } from "lucide-react";
 
 type SpeciesFilter = "TODOS" | "Cão" | "Gato";
 
@@ -85,7 +85,6 @@ export default function PessoaFisicaHome() {
         </div>
       </div>
 
-      {/* BARRA DE PESQUISA E FILTROS */}
       <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 mb-8 flex flex-col sm:flex-row gap-4">
         {/* Input de Pesquisa */}
         <div className="relative flex-1">
@@ -130,8 +129,6 @@ export default function PessoaFisicaHome() {
           <p>{error}</p>
         </div>
       )}
-
-      {/* GRID DE PETS (VITRINE) */}
       {filteredPets.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20 text-center bg-slate-50 rounded-3xl border border-dashed border-slate-300">
           <Heart className="h-16 w-16 text-slate-300 mb-4" />
@@ -152,16 +149,21 @@ export default function PessoaFisicaHome() {
               className="group"
             >
               <div className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl border border-slate-100 transition-all duration-300 hover:-translate-y-2 flex flex-col h-full">
-                {/* FOTO DO PET */}
                 <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-100">
-                  <img
-                    src={
-                      pet.photoUrl ||
-                      "https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=600&q=80"
-                    }
-                    alt={pet.name}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
+                  {pet.photoUrl ? (
+                    <img
+                      src={pet.photoUrl}
+                      alt={pet.name}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                  ) : (
+                    <div className="flex flex-col items-center text-slate-400 pt-16">
+                      <Camera size={40} className="mb-2 opacity-50" />
+                      <span className="text-xs font-semibold uppercase tracking-wider">
+                        Pet sem foto
+                      </span>
+                    </div>
+                  )}
                   {/* Badge de Idade por cima da foto */}
                   <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-slate-800 shadow-sm">
                     {pet.age} {pet.age === 1 ? "ano" : "anos"}
@@ -174,7 +176,7 @@ export default function PessoaFisicaHome() {
                     <h3 className="text-xl font-extrabold text-slate-900 group-hover:text-brand-600 transition-colors">
                       {pet.name}
                     </h3>
-                    {pet.species === "Gato" ? "🐈" : "🐕"}
+                    {pet.species === "Gato" ? "Gato" : "Cão"}
                   </div>
 
                   {/* Localização (Simulada se não tiver na API) */}
