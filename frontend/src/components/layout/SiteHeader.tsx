@@ -97,7 +97,7 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
             {variant === "public" && (
               <>
                 <li>
-                  <Link href="/" className={navClass("home")}>
+                  <Link href="/home" className={navClass("home")}>
                     Home
                   </Link>
                 </li>
