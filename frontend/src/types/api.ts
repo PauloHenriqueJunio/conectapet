@@ -42,6 +42,10 @@ export interface Pet {
   illnessDescription?: string | null;
   hasOtherHealthInfo: boolean;
   otherHealthInfoDescription?: string | null;
+  ong?: {
+    name: string;
+    contact?: string;
+  };
 }
 
 export interface AdoptionRequest {

@@ -74,7 +74,7 @@ export default function PetProfilePage() {
           onClick={() => router.back()}
           className="px-6 py-3 bg-brand-600 text-white rounded-xl font-semibold hover:bg-brand-700 transition"
         >
-          Voltar para a vitrine
+          Voltar para a lista de pets
         </button>
       </div>
     );
@@ -378,7 +378,6 @@ export default function PetProfilePage() {
               </p>
             </div>
 
-            {/* CARD DO RESPONSÁVEL / ONG */}
             <div className="mb-6 flex items-center gap-4 p-4 rounded-2xl border border-slate-100 bg-slate-50">
               <div className="h-12 w-12 rounded-full bg-brand-100 flex items-center justify-center text-brand-600 shrink-0">
                 <Building2 size={24} />
@@ -387,10 +386,9 @@ export default function PetProfilePage() {
                 <span className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-0.5">
                   Responsável pelo pet
                 </span>
-                {/* Aqui futuramente podemos trocar por pet.ong?.name se vier da API */}
                 <span className="text-sm font-bold text-slate-800">
-                  {/* @ts-ignore - Remova isso quando adicionar 'ong' no types/api.ts */}
-                  {pet.ong?.name || "Abrigo Parceiro (ONG)"}
+                  {/* Se vier o nome da ONG do back, mostra. Se não, mostra um fallback */}
+                  {pet.ong?.name || "ONG Parceira"}
                 </span>
               </div>
             </div>
