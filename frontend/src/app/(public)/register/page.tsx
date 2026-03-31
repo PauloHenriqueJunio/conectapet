@@ -5,6 +5,7 @@ import { FormEvent, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { Role } from "@/types/api";
+import { ArrowLeft, Eye, EyeOff } from "lucide-react";
 
 function getRegisterErrorMessage(error: unknown) {
   if (!(error instanceof Error)) {
@@ -38,7 +39,9 @@ function getRegisterErrorMessage(error: unknown) {
 function RegisterForm() {
   const { register } = useAuth();
   const searchParams = useSearchParams();
-  const initialRole = searchParams.get("role") === "ONG" ? "ONG" : "PESSOA_FISICA";
+  const initialRole =
+    searchParams.get("role") === "ONG" ? "ONG" : "PESSOA_FISICA";
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -50,6 +53,7 @@ function RegisterForm() {
   const [cnpj, setCnpj] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -94,8 +98,16 @@ function RegisterForm() {
   };
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-md items-center px-6 py-12">
+    <main className="mx-auto flex min-h-screen max-w-xl items-center px-6 py-12">
       <div className="w-full rounded-3xl bg-white p-8 shadow-2xl ring-1 ring-slate-100">
+        <Link
+          href="/login"
+          className="mb-6 flex w-fit items-center text-sm font-medium text-slate-500 transition-colors hover:text-slate-800"
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Voltar
+        </Link>
+
         <h1 className="text-3xl font-bold text-slate-900">Criar conta</h1>
         <p className="mt-2 text-sm text-slate-600">
           Cadastre-se como ONG ou pessoa física.
@@ -140,8 +152,11 @@ function RegisterForm() {
 
         <form className="mt-8 space-y-4" onSubmit={handleSubmit}>
           <div>
-            <label className="mb-1 block text-sm font-medium">Nome</label>
+            <label htmlFor="name" className="mb-1 block text-sm font-medium">
+              Nome
+            </label>
             <input
+              id="name"
               type="text"
               required
               value={name}
@@ -150,99 +165,162 @@ function RegisterForm() {
             />
           </div>
 
-          <div>
-            <label className="mb-1 block text-sm font-medium">Email</label>
-            <input
-              type="email"
-              required
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              className="w-full rounded-xl border border-slate-300 px-4 py-2 outline-none ring-brand-300 focus:ring"
-            />
-          </div>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div>
+              <label htmlFor="email" className="mb-1 block text-sm font-medium">
+                Email
+              </label>
+              <input
+                id="email"
+                type="email"
+                required
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                className="w-full rounded-xl border border-slate-300 px-4 py-2 outline-none ring-brand-300 focus:ring"
+              />
+            </div>
 
-          <div>
-            <label className="mb-1 block text-sm font-medium">Senha</label>
-            <input
-              type="password"
-              required
-              minLength={6}
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              className="w-full rounded-xl border border-slate-300 px-4 py-2 outline-none ring-brand-300 focus:ring"
-            />
-          </div>
-
-          <div>
-            <label className="mb-1 block text-sm font-medium">
-              CEP (obrigatório)
-            </label>
-            <input
-              type="text"
-              required
-              value={cep}
-              onChange={(event) => setCep(event.target.value)}
-              placeholder="Ex: 01001-000"
-              className="w-full rounded-xl border border-slate-300 px-4 py-2 outline-none ring-brand-300 focus:ring"
-            />
+            <div>
+              <label
+                htmlFor="password"
+                className="mb-1 block text-sm font-medium"
+              >
+                Senha
+              </label>
+              <div className="relative">
+                <input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  required
+                  minLength={6}
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                  className="w-full rounded-xl border border-slate-300 py-2 pl-4 pr-10 outline-none ring-brand-300 focus:ring"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none"
+                  aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-5 w-5" />
+                  ) : (
+                    <Eye className="h-5 w-5" />
+                  )}
+                </button>
+              </div>
+            </div>
           </div>
 
           {role === "PESSOA_FISICA" && (
-            <div>
-              <label className="mb-1 block text-sm font-medium">
-                CPF (opcional)
-              </label>
-              <input
-                type="text"
-                value={cpf}
-                onChange={(event) => setCpf(event.target.value)}
-                placeholder="Ex: 123.456.789-00"
-                className="w-full rounded-xl border border-slate-300 px-4 py-2 outline-none ring-brand-300 focus:ring"
-              />
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div>
+                <label htmlFor="cep" className="mb-1 block text-sm font-medium">
+                  CEP (obrigatório)
+                </label>
+                <input
+                  id="cep"
+                  type="text"
+                  required
+                  value={cep}
+                  onChange={(event) => setCep(event.target.value)}
+                  placeholder="Ex: 01001-000"
+                  className="w-full rounded-xl border border-slate-300 px-4 py-2 outline-none ring-brand-300 focus:ring"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="cpf" className="mb-1 block text-sm font-medium">
+                  CPF (opcional)
+                </label>
+                <input
+                  id="cpf"
+                  type="text"
+                  value={cpf}
+                  onChange={(event) => setCpf(event.target.value)}
+                  placeholder="Ex: 123.456.789-00"
+                  className="w-full rounded-xl border border-slate-300 px-4 py-2 outline-none ring-brand-300 focus:ring"
+                />
+              </div>
             </div>
           )}
 
           {role === "ONG" && (
             <>
-              <div>
-                <label className="mb-1 block text-sm font-medium">
-                  CNPJ (obrigatório)
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={cnpj}
-                  onChange={(event) => setCnpj(event.target.value)}
-                  placeholder="Ex: 12.345.678/0001-90"
-                  className="w-full rounded-xl border border-slate-300 px-4 py-2 outline-none ring-brand-300 focus:ring"
-                />
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div>
+                  <label
+                    htmlFor="cnpj"
+                    className="mb-1 block text-sm font-medium"
+                  >
+                    CNPJ (obrigatório)
+                  </label>
+                  <input
+                    id="cnpj"
+                    type="text"
+                    required
+                    value={cnpj}
+                    onChange={(event) => setCnpj(event.target.value)}
+                    placeholder="Ex: 12.345.678/0001-90"
+                    className="w-full rounded-xl border border-slate-300 px-4 py-2 outline-none ring-brand-300 focus:ring"
+                  />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="contact"
+                    className="mb-1 block text-sm font-medium"
+                  >
+                    Contato (obrigatório)
+                  </label>
+                  <input
+                    id="contact"
+                    type="text"
+                    required
+                    value={contact}
+                    onChange={(event) => setContact(event.target.value)}
+                    placeholder="Ex: (11) 99999-0000"
+                    className="w-full rounded-xl border border-slate-300 px-4 py-2 outline-none ring-brand-300 focus:ring"
+                  />
+                </div>
               </div>
 
-              <div>
-                <label className="mb-1 block text-sm font-medium">
-                  Contato (obrigatório)
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={contact}
-                  onChange={(event) => setContact(event.target.value)}
-                  placeholder="Ex: (11) 99999-0000"
-                  className="w-full rounded-xl border border-slate-300 px-4 py-2 outline-none ring-brand-300 focus:ring"
-                />
-              </div>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div>
+                  <label
+                    htmlFor="cep"
+                    className="mb-1 block text-sm font-medium"
+                  >
+                    CEP (obrigatório)
+                  </label>
+                  <input
+                    id="cep"
+                    type="text"
+                    required
+                    value={cep}
+                    onChange={(event) => setCep(event.target.value)}
+                    placeholder="Ex: 01001-000"
+                    className="w-full rounded-xl border border-slate-300 px-4 py-2 outline-none ring-brand-300 focus:ring"
+                  />
+                </div>
 
-              <div>
-                <label className="mb-1 block text-sm font-medium">
-                  Endereço (opcional)
-                </label>
-                <input
-                  type="text"
-                  value={address}
-                  onChange={(event) => setAddress(event.target.value)}
-                  placeholder="Ex: Rua das Flores, 123"
-                  className="w-full rounded-xl border border-slate-300 px-4 py-2 outline-none ring-brand-300 focus:ring"
-                />
+                <div>
+                  <label
+                    htmlFor="address"
+                    className="mb-1 block text-sm font-medium"
+                  >
+                    Endereço (opcional)
+                  </label>
+                  <input
+                    id="address"
+                    type="text"
+                    value={address}
+                    onChange={(event) => setAddress(event.target.value)}
+                    placeholder="Ex: Rua das Flores, 123"
+                    className="w-full rounded-xl border border-slate-300 px-4 py-2 outline-none ring-brand-300 focus:ring"
+                  />
+                </div>
               </div>
             </>
           )}
@@ -256,17 +334,36 @@ function RegisterForm() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full rounded-xl bg-brand-600 px-4 py-2 font-semibold text-white disabled:opacity-70"
+            className="w-full rounded-xl bg-brand-600 px-4 py-2 font-semibold text-white disabled:cursor-not-allowed disabled:opacity-70"
           >
             {isSubmitting ? "Cadastrando..." : "Cadastrar"}
           </button>
         </form>
 
-        <p className="mt-6 text-sm text-slate-600">
+        <div className="mt-6 flex items-center">
+          <div className="flex-grow border-t border-slate-200"></div>
+          <span className="mx-4 text-xs text-slate-400">ou continue com</span>
+          <div className="flex-grow border-t border-slate-200"></div>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => alert("Autenticação com Google em breve!")}
+          className="mt-6 flex w-full items-center justify-center gap-3 rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-1"
+        >
+          <img
+            src="https://www.svgrepo.com/show/475656/google-color.svg"
+            alt="Logo do Google"
+            className="h-5 w-5"
+          />
+          Google
+        </button>
+
+        <p className="mt-6 text-center text-sm text-slate-600">
           Já tem conta?{" "}
           <Link
             href="/login"
-            className="font-semibold text-brand-700 hover:underline underline-offset-2"
+            className="font-semibold text-brand-700 underline-offset-2 hover:underline"
           >
             Fazer login
           </Link>
@@ -278,7 +375,13 @@ function RegisterForm() {
 
 export default function RegisterPage() {
   return (
-    <Suspense fallback={<div>Carregando...</div>}>
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center">
+          <p className="text-slate-500">Carregando...</p>
+        </div>
+      }
+    >
       <RegisterForm />
     </Suspense>
   );
