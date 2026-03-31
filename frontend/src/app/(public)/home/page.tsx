@@ -46,9 +46,8 @@ export default function HomePage() {
             Encontre seu novo melhor amigo
           </h1>
           <p className="text-lg text-brand-100 max-w-2xl mx-auto font-medium">
-            Centenas de cães e gatos resgatados por ONGs parceiras em Alagoas
-            estão esperando por um lar cheio de amor. Adote e transforme uma
-            vida!
+            Centenas de cães e gatos resgatados por ONGs parceiras estão
+            esperando por um lar cheio de amor. Adote e transforme uma vida!
           </p>
         </div>
       </section>
