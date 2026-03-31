@@ -1,4 +1,4 @@
-export type Role = "ONG" | "ADOTANTE";
+export type Role = "ONG" | "PESSOA_FISICA";
 
 export interface AuthUser {
   id: string;
@@ -28,6 +28,24 @@ export interface Pet {
   photoUrl: string;
   isAdopted: boolean;
   ongId: string;
+  size: string;
+  sex: string;
+  isCastrated: boolean;
+  isDewormed: boolean;
+  hasVaccineV8: boolean;
+  hasVaccineGiardia: boolean;
+  hasVaccineFlu: boolean;
+  hasVaccineRabies: boolean;
+  hasVaccineFeline: boolean;
+  hasVaccineFelv: boolean;
+  hasHistoryOfIllness: boolean;
+  illnessDescription?: string | null;
+  hasOtherHealthInfo: boolean;
+  otherHealthInfoDescription?: string | null;
+  ong?: {
+    name: string;
+    contact?: string;
+  };
 }
 
 export interface AdoptionRequest {

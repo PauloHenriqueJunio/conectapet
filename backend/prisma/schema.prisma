@@ -9,7 +9,7 @@ datasource db {
 
 enum Role {
   ONG
-  ADOTANTE
+  PESSOA_FISICA
 }
 
 enum AdoptionStatus {
@@ -60,7 +60,7 @@ model Pet {
   photoUrl         String            @default("")
   isAdopted        Boolean           @default(false)
   createdAt        DateTime          @default(now())
-  ongId            String            @db.Uuid
+  ongId            String            @db.Uuid // trocar no futuro para owner e ownerId no BACK TODO
   ong              User              @relation("OngPets", fields: [ongId], references: [id], onDelete: Restrict)
   adoptionRequests AdoptionRequest[] @relation("PetRequests")
 }

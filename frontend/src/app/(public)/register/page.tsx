@@ -38,7 +38,7 @@ function getRegisterErrorMessage(error: unknown) {
 function RegisterForm() {
   const { register } = useAuth();
   const searchParams = useSearchParams();
-  const initialRole = searchParams.get("role") === "ONG" ? "ONG" : "ADOTANTE";
+  const initialRole = searchParams.get("role") === "ONG" ? "ONG" : "PESSOA_FISICA";
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -105,11 +105,11 @@ function RegisterForm() {
           <button
             type="button"
             onClick={() => {
-              setRole("ADOTANTE");
+              setRole("PESSOA_FISICA");
               setCnpj("");
             }}
             className={`rounded-lg px-3 py-2 text-sm font-semibold transition ${
-              role === "ADOTANTE"
+              role === "PESSOA_FISICA"
                 ? "bg-white text-brand-700 shadow-sm"
                 : "text-slate-600 hover:text-slate-800"
             }`}
@@ -187,7 +187,7 @@ function RegisterForm() {
             />
           </div>
 
-          {role === "ADOTANTE" && (
+          {role === "PESSOA_FISICA" && (
             <div>
               <label className="mb-1 block text-sm font-medium">
                 CPF (opcional)

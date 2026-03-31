@@ -10,7 +10,7 @@ async function main() {
   await prisma.pet.deleteMany();
   await prisma.user.deleteMany();
 
-  const ong = await prisma.user.create({
+  const ongAmorAnimal = await prisma.user.create({
     data: {
       name: "ONG Amor Animal",
       email: "ong@conectapet.dev",
@@ -25,7 +25,7 @@ async function main() {
     },
   });
 
-  await prisma.user.create({
+  const ongPatasUnidas = await prisma.user.create({
     data: {
       name: "ONG Patas Unidas",
       email: "ong2@conectapet.dev",
@@ -40,7 +40,7 @@ async function main() {
     },
   });
 
-  await prisma.user.create({
+  const ongLarDosBichos = await prisma.user.create({
     data: {
       name: "ONG Lar dos Bichos",
       email: "ong3@conectapet.dev",
@@ -55,7 +55,7 @@ async function main() {
     },
   });
 
-  await prisma.user.create({
+  const ongVidaAnimal = await prisma.user.create({
     data: {
       name: "ONG Vida Animal",
       email: "ong4@conectapet.dev",
@@ -77,7 +77,7 @@ async function main() {
       passwordHash,
       cep: "30130010",
       cpf: "12345678901",
-      role: Role.ADOTANTE,
+      role: Role.PESSOA_FISICA,
     },
   });
 
@@ -88,7 +88,7 @@ async function main() {
       passwordHash,
       cep: "20040002",
       cpf: "98765432100",
-      role: Role.ADOTANTE,
+      role: Role.PESSOA_FISICA,
     },
   });
 
@@ -104,6 +104,7 @@ async function main() {
       hasVaccineFeline: true,
       hasVaccineFelv: false,
       isDewormed: true,
+      ongId: ongAmorAnimal.id,
       photoUrl:
         "https://res.cloudinary.com/du0yit3co/image/upload/v1774626180/7-racas-de-gato-com-filhotes-muito-fofos-1024x683_gmycfo.jpg",
     },
@@ -118,6 +119,7 @@ async function main() {
       hasVaccineGiardia: false,
       hasVaccineFlu: true,
       hasVaccineRabies: true,
+      ongId: ongPatasUnidas.id,
       photoUrl:
         "https://res.cloudinary.com/du0yit3co/image/upload/v1774626180/si_cachorroinstagram_home_nleqiz.webp",
     },
@@ -131,6 +133,7 @@ async function main() {
       hasHistoryOfIllness: true,
       illnessDescription:
         "Teve rinotraqueíte filhote, já 100% curada e saudável.",
+      ongId: ongLarDosBichos.id,
       photoUrl:
         "https://res.cloudinary.com/du0yit3co/image/upload/v1774626179/images_hvoalt.jpg",
     },
@@ -141,6 +144,7 @@ async function main() {
       size: "Médio",
       age: 3,
       description: "Muito amigavel, ama passeios e brinquedos de corda.",
+      ongId: ongVidaAnimal.id,
       photoUrl:
         "https://res.cloudinary.com/du0yit3co/image/upload/v1774626367/foto-inusitada-cachorro-vieler-18_z5wchg.webp",
     },
@@ -154,6 +158,7 @@ async function main() {
       hasOtherHealthInfo: true,
       otherHealthInfoDescription:
         "Alergia a carne bovina, deve comer apenas ração de frango ou salmão.",
+      ongId: adopterOne.id,
       photoUrl:
         "https://res.cloudinary.com/du0yit3co/image/upload/v1774626179/_image_rsid7p.webp",
     },
@@ -165,6 +170,7 @@ async function main() {
       age: 2,
       description: "Gato tranquilo, se adapta bem a novos ambientes.",
       isCastrated: true,
+      ongId: adopterTwo.id,
       photoUrl:
         "https://res.cloudinary.com/du0yit3co/image/upload/v1774626280/1704202114_65940f822b648_hd_krzt8l.jpg",
     },
@@ -175,6 +181,7 @@ async function main() {
       size: "Médio",
       age: 1,
       description: "Energica e alegre, perfeita para quem gosta de atividade.",
+      ongId: ongAmorAnimal.id,
       photoUrl:
         "https://res.cloudinary.com/du0yit3co/image/upload/v1774626279/golden-retriever-1_qd1ihh.webp",
     },
@@ -186,6 +193,7 @@ async function main() {
       age: 6,
       description: "Adulto docil, prefere ambientes silenciosos.",
       isDewormed: true,
+      ongId: ongPatasUnidas.id,
       photoUrl:
         "https://res.cloudinary.com/du0yit3co/image/upload/v1774626280/cat-pictures-sdue47hg2msymih2_qjxbti.jpg",
     },
@@ -194,10 +202,7 @@ async function main() {
   const pets = [];
   for (const petData of petsData) {
     const pet = await prisma.pet.create({
-      data: {
-        ...petData,
-        ongId: ong.id,
-      },
+      data: petData,
     });
     pets.push(pet);
   }
