@@ -11,7 +11,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {
     const { id } = await params;
 
-    const res = await fetch(`http://localhost:3001/pets/${id}`);
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+    const res = await fetch(`${apiUrl}/pets/${id}`);
     const pet = await res.json();
 
     if (!pet || !pet.name || pet.statusCode) {
