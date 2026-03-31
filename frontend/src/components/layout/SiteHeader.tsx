@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 
-// 👇 1. AS TRÊS VARIANTES OFICIAIS 👇
 type HeaderVariant = "public" | "ong" | "pessoa-fisica";
 
 type HeaderPage =
@@ -90,7 +89,7 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
           </span>
         </button>
 
-        {/* 👇 MENUS DESKTOP 👇 */}
+        {/* MENUS DESKTOP */}
         <div className="hidden items-center gap-6 md:flex">
           <ul className="flex flex-wrap items-center gap-5 text-sm">
             {/* MUNDO 1: PÚBLICO (VISITANTES) */}
@@ -168,103 +167,81 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
           </ul>
 
           {/* BOTÕES DE AÇÃO (DIREITA) */}
-          {variant === "public" ? (
-            // Público sempre vê os botões de entrar/registrar
-            <div className="flex items-center gap-2">
+          {isAuthenticated ? (
+            // Usuário LOGADO: Mostra o nome e o botão de Sair em qualquer página
+            <div className="flex items-center gap-4 pl-4 border-l border-slate-200">
+              <span className="text-sm font-semibold text-slate-700">
+                Olá, {user?.name?.split(" ")[0]}
+              </span>
+              <button
+                onClick={logout}
+                className="rounded-lg bg-slate-800 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-900 shadow-sm"
+              >
+                Sair
+              </button>
+            </div>
+          ) : (
+            // Usuário DESLOGADO: Mostra os botões de Entrar/Criar Conta sempre
+            <div className="flex items-center gap-3 pl-4 border-l border-slate-200">
               <Link
                 href="/login"
-                className="rounded-lg border border-brand-300 px-3 py-2 text-sm font-semibold text-brand-700 transition hover:bg-brand-50"
+                className="rounded-lg border border-brand-300 px-4 py-2 text-sm font-bold text-brand-700 transition hover:bg-brand-50"
               >
                 Entrar
               </Link>
               <Link
                 href="/register"
-                className="rounded-lg bg-brand-600 px-3 py-2 text-sm font-semibold text-white transition hover:bg-brand-700"
+                className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-brand-700 shadow-sm"
               >
                 Criar conta
               </Link>
-            </div>
-          ) : (
-            // ONG e Pessoa Física Logada veem o botão de Sair (E a PF vê o nomezinho dela)
-            <div className="flex items-center gap-4 pl-4 border-l border-slate-200">
-              {variant === "pessoa-fisica" && (
-                <span className="text-sm font-semibold text-slate-700">
-                  Olá, {user?.name?.split(" ")[0]}
-                </span>
-              )}
-              <button
-                onClick={logout}
-                className="rounded-lg bg-slate-800 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-900"
-              >
-                Sair
-              </button>
             </div>
           )}
         </div>
       </nav>
 
-      {/* 👇 MENU MOBILE 👇 */}
+      {/* MENU MOBILE */}
       <div
         className={`grid overflow-hidden transition-all duration-300 md:hidden ${isMenuOpen ? "mt-4 grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
       >
         <div className="min-h-0">
           <ul className="space-y-2 border-t border-slate-200 pt-3 text-sm font-medium text-slate-700">
-            {/* MOBILE: PÚBLICO */}
-            {variant === "public" && (
-              <>
-                <li>
-                  <Link
-                    href="/"
-                    className="block rounded-lg px-3 py-2 hover:bg-brand-50"
-                    onClick={closeMobileMenu}
-                  >
-                    Home
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/ongs"
-                    className="block rounded-lg px-3 py-2 hover:bg-brand-50"
-                    onClick={closeMobileMenu}
-                  >
-                    Verificar ONGs
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/quem-somos"
-                    className="block rounded-lg px-3 py-2 hover:bg-brand-50"
-                    onClick={closeMobileMenu}
-                  >
-                    Quem somos?
-                  </Link>
-                </li>
-                <li className="grid grid-cols-2 gap-2 pt-2 mt-2 border-t border-slate-100">
-                  <Link
-                    href="/login"
-                    className="rounded-lg border border-brand-300 px-3 py-2 text-center font-semibold text-brand-700"
-                    onClick={closeMobileMenu}
-                  >
-                    Entrar
-                  </Link>
-                  <Link
-                    href="/register"
-                    className="rounded-lg bg-brand-600 px-3 py-2 text-center font-semibold text-white"
-                    onClick={closeMobileMenu}
-                  >
-                    Criar conta
-                  </Link>
-                </li>
-              </>
-            )}
+            {/* LINKS PÚBLICOS */}
+            <li>
+              <Link
+                href="/"
+                className="block rounded-lg px-3 py-2 hover:bg-brand-50"
+                onClick={closeMobileMenu}
+              >
+                Home
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/ongs"
+                className="block rounded-lg px-3 py-2 hover:bg-brand-50"
+                onClick={closeMobileMenu}
+              >
+                Verificar ONGs
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/quem-somos"
+                className="block rounded-lg px-3 py-2 hover:bg-brand-50"
+                onClick={closeMobileMenu}
+              >
+                Quem somos?
+              </Link>
+            </li>
 
-            {/* MOBILE: PESSOA FÍSICA */}
-            {variant === "pessoa-fisica" && (
+            {/* PESSOA FÍSICA LOGADA */}
+            {isAuthenticated && variant === "pessoa-fisica" && (
               <>
                 <li>
                   <Link
                     href="/pessoa-fisica/home"
-                    className="block rounded-lg px-3 py-2 hover:bg-brand-50"
+                    className="block rounded-lg px-3 py-2 hover:bg-brand-50 text-brand-700"
                     onClick={closeMobileMenu}
                   >
                     Quero adotar
@@ -273,72 +250,74 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
                 <li>
                   <Link
                     href="/pessoa-fisica/dashboard"
-                    className="block rounded-lg px-3 py-2 hover:bg-brand-50"
+                    className="block rounded-lg px-3 py-2 hover:bg-brand-50 text-brand-700"
                     onClick={closeMobileMenu}
                   >
                     Colocar na adoção
                   </Link>
                 </li>
-                <li className="pt-2 mt-2 border-t border-slate-100">
-                  <span className="block px-3 py-2 text-slate-500 font-semibold mb-2">
-                    Olá, {user?.name?.split(" ")[0]}
+              </>
+            )}
+
+            {/* ONG LOGADA */}
+            {isAuthenticated && variant === "ong" && (
+              <>
+                <li>
+                  <Link
+                    href="/ong/dashboard"
+                    className="block rounded-lg px-3 py-2 hover:bg-brand-50 text-brand-700"
+                    onClick={closeMobileMenu}
+                  >
+                    Painel da ONG
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/ong/cadastrar-pet"
+                    className="block rounded-lg px-3 py-2 hover:bg-brand-50 text-brand-700"
+                    onClick={closeMobileMenu}
+                  >
+                    Cadastrar Pet
+                  </Link>
+                </li>
+              </>
+            )}
+
+            <li className="pt-2 mt-4 border-t border-slate-100">
+              {isAuthenticated ? (
+                <div className="flex flex-col gap-2">
+                  <span className="block px-3 text-xs font-bold uppercase tracking-wider text-slate-400">
+                    Logado como {user?.name?.split(" ")[0]}
                   </span>
                   <button
                     onClick={() => {
                       closeMobileMenu();
                       logout();
                     }}
-                    className="w-full rounded-lg bg-slate-800 px-3 py-2 text-center font-semibold text-white"
+                    className="w-full rounded-lg bg-slate-800 px-3 py-3 text-center font-bold text-white shadow-sm transition-colors hover:bg-slate-900"
                   >
                     Sair da conta
                   </button>
-                </li>
-              </>
-            )}
-
-            {/* MOBILE: ONG */}
-            {variant === "ong" && (
-              <>
-                <li>
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 gap-3">
                   <Link
-                    href="/ong/dashboard"
-                    className="block rounded-lg px-3 py-2 hover:bg-brand-50"
+                    href="/login"
+                    className="rounded-lg border-2 border-brand-100 bg-brand-50 px-3 py-3 text-center font-bold text-brand-700 transition-colors hover:bg-brand-100"
                     onClick={closeMobileMenu}
                   >
-                    Home
+                    Entrar
                   </Link>
-                </li>
-                <li>
                   <Link
-                    href="/ong/cadastrar-pet"
-                    className="block rounded-lg px-3 py-2 hover:bg-brand-50"
+                    href="/register"
+                    className="rounded-lg bg-brand-600 px-3 py-3 text-center font-bold text-white shadow-sm transition-colors hover:bg-brand-700"
                     onClick={closeMobileMenu}
                   >
-                    Cadastrar Pet
+                    Criar conta
                   </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/ong/editar"
-                    className="block rounded-lg px-3 py-2 hover:bg-brand-50"
-                    onClick={closeMobileMenu}
-                  >
-                    Editar
-                  </Link>
-                </li>
-                <li className="pt-2 mt-2 border-t border-slate-100">
-                  <button
-                    onClick={() => {
-                      closeMobileMenu();
-                      logout();
-                    }}
-                    className="w-full rounded-lg bg-slate-800 px-3 py-2 text-center font-semibold text-white"
-                  >
-                    Sair
-                  </button>
-                </li>
-              </>
-            )}
+                </div>
+              )}
+            </li>
           </ul>
         </div>
       </div>
