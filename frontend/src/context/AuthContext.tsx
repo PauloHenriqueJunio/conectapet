@@ -41,7 +41,7 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-const PUBLIC_PATHS = ["/", "/login", "/register", "/quem-somos", "/ongs"];
+const PUBLIC_PATHS = ["/", "/pet", "/home", "/login", "/register", "/quem-somos", "/ongs"];
 const STORAGE_KEY = "conectapet_auth";
 
 function isRoutePublic(pathname: string) {

@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useAuth } from "@/context/AuthContext";
+import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { apiFetch } from "@/lib/api";
 import { Pet } from "@/types/api";
@@ -24,6 +26,8 @@ export default function PetProfilePage() {
   const params = useParams();
   const router = useRouter();
   const id = params?.id as string;
+  const { user } = useAuth();
+  const isAuthenticated = !!user;
 
   const [pet, setPet] = useState<Pet | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -70,7 +74,7 @@ export default function PetProfilePage() {
           onClick={() => router.back()}
           className="px-6 py-3 bg-brand-600 text-white rounded-xl font-semibold hover:bg-brand-700 transition"
         >
-          Voltar para a vitrine
+          Voltar para a lista de pets
         </button>
       </div>
     );
@@ -374,7 +378,6 @@ export default function PetProfilePage() {
               </p>
             </div>
 
-            {/* CARD DO RESPONSÁVEL / ONG */}
             <div className="mb-6 flex items-center gap-4 p-4 rounded-2xl border border-slate-100 bg-slate-50">
               <div className="h-12 w-12 rounded-full bg-brand-100 flex items-center justify-center text-brand-600 shrink-0">
                 <Building2 size={24} />
@@ -383,15 +386,18 @@ export default function PetProfilePage() {
                 <span className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-0.5">
                   Responsável pelo pet
                 </span>
-                {/* Aqui futuramente podemos trocar por pet.ong?.name se vier da API */}
                 <span className="text-sm font-bold text-slate-800">
-                  {/* @ts-ignore - Remova isso quando adicionar 'ong' no types/api.ts */}
-                  {pet.ong?.name || "Abrigo Parceiro (ONG)"}
+                  {/* Se vier o nome da ONG do back, mostra. Se não, mostra um fallback */}
+                  {pet.ong?.name || "ONG Parceira"}
                 </span>
               </div>
             </div>
 
-            {!pet.isAdopted ? (
+            {pet.isAdopted ? (
+              <div className="w-full bg-slate-100 text-slate-500 py-4 rounded-2xl font-bold text-lg text-center border border-slate-200 cursor-not-allowed">
+                Este pet já encontrou um lar!
+              </div>
+            ) : isAuthenticated ? (
               <a
                 href={whatsappLink}
                 target="_blank"
@@ -411,8 +417,26 @@ export default function PetProfilePage() {
                 Quero Adotar
               </a>
             ) : (
-              <div className="w-full bg-slate-100 text-slate-500 py-4 rounded-2xl font-bold text-lg text-center border border-slate-200 cursor-not-allowed">
-                Este pet já encontrou um lar!
+              <div className="w-full bg-slate-50 border border-slate-200 p-5 rounded-2xl flex flex-col items-center justify-center text-center gap-4 shadow-inner">
+                <p className="text-slate-600 font-medium text-sm leading-relaxed">
+                  Para seguir com a adoção você precisa estar logado.
+                  <br />
+                  Caso não tenha uma conta, crie uma!
+                </p>
+                <div className="flex gap-3 w-full">
+                  <Link
+                    href="/login"
+                    className="flex-1 bg-brand-600 hover:bg-brand-700 text-white py-3 rounded-xl font-bold transition-colors shadow-sm"
+                  >
+                    Fazer Login
+                  </Link>
+                  <Link
+                    href="/register"
+                    className="flex-1 bg-white hover:bg-slate-100 text-brand-600 border border-brand-200 py-3 rounded-xl font-bold transition-colors shadow-sm"
+                  >
+                    Criar Conta
+                  </Link>
+                </div>
               </div>
             )}
           </div>
