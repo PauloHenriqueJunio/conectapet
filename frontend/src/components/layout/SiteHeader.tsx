@@ -14,7 +14,8 @@ type HeaderPage =
   | "colocar-na-adocao"
   | "dashboard-home"
   | "dashboard-cadastrar-pet"
-  | "dashboard-editar";
+  | "dashboard-editar"
+  | "pet-profile";
 
 type HeaderNavKey = HeaderPage; // Simplifiquei para usar as mesmas chaves
 
