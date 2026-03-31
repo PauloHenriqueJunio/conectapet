@@ -54,11 +54,12 @@ export default function HomePage() {
 
       <main className="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 lg:px-8 flex-1">
         <section className="mb-10 flex flex-col items-center justify-between gap-4 sm:flex-row">
-          <div className="flex items-center gap-2">
-            <h2 className="text-2xl font-bold text-slate-900">
+          <div className="mb-6 flex flex-col items-center justify-center gap-2 text-center md:flex-col md:justify-start md:text-left md:items-start">
+            <h2 className="text-3xl font-bold text-slate-900">
               Pets para adoção
             </h2>
-            <div className="flex items-center gap-1.5 text-sm font-medium text-slate-400 ml-2">
+
+            <div className="flex items-center gap-1.5 text-sm font-medium text-slate-400">
               <MousePointerClick size={16} />
               <span>Aperte para saber mais</span>
             </div>
