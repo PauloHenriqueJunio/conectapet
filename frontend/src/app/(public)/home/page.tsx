@@ -6,7 +6,7 @@ import { apiFetch } from "@/lib/api";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { Pet } from "@/types/api";
-import { MapPin, Camera, Heart } from "lucide-react";
+import { MapPin, Camera, Heart, MousePointerClick } from "lucide-react";
 
 export default function HomePage() {
   const [pets, setPets] = useState<Pet[]>([]);
@@ -54,9 +54,15 @@ export default function HomePage() {
 
       <main className="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 lg:px-8 flex-1">
         <section className="mb-10 flex flex-col items-center justify-between gap-4 sm:flex-row">
-          <h2 className="text-2xl font-bold text-slate-800">
-            Pets para adoção
-          </h2>
+          <div className="flex items-center gap-2">
+            <h2 className="text-2xl font-bold text-slate-900">
+              Pets para adoção
+            </h2>
+            <div className="flex items-center gap-1.5 text-sm font-medium text-slate-400 ml-2">
+              <MousePointerClick size={16} />
+              <span>Aperte para saber mais</span>
+            </div>
+          </div>
 
           <div className="flex gap-2 bg-white p-1.5 rounded-full shadow-sm border border-slate-200">
             <button
