@@ -138,6 +138,7 @@ Pets:
 - POST /pets (ONG)
 - PATCH /pets/:id (ONG dona)
 - GET /pets/my-pets (ONG)
+- DELETE /pets/:id (ONG dona)
 
 Adoções:
 
@@ -149,8 +150,36 @@ Adoções:
 ## Segurança implementada
 
 - Hash de senha com Bcrypt (salt rounds 12)
-- JWT com payload contendo userId e role
+- JWT com payload contendo userId e role (JWT_SECRET obrigatório)
 - Guard de autenticação JWT
 - Guard de autorização por role (ONG e ADOTANTE)
 - Validação de DTO com class-validator e ValidationPipe global (whitelist + forbidNonWhitelisted)
 - Validação de ownership para edição de pet e atualização de status de adoção
+- Rate limit global (100 req/60s por cliente)
+- Rate limit em endpoints sensíveis (login/register: 5 req/60s)
+- Bloqueio temporário por conta após múltiplas falhas de login
+- Mensagem padronizada para erro 429 com tempo de espera
+
+## Frontend (rotas inexistentes)
+
+- Rotas inválidas no frontend exibem página customizada em vez do 404 padrão.
+- Arquivo da tela: `frontend/src/app/not-found.tsx`
+
+## Testes e validação
+
+Backend:
+
+```bash
+cd backend
+npm test
+npm run build
+```
+
+Frontend:
+
+```bash
+cd frontend
+npm run build
+```
+
+Observação: o comando `npm run lint` no frontend pode falhar com a versão atual do Next CLI. Use `npm run build` para validação de compilação e tipos.
