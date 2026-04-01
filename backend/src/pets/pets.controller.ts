@@ -72,9 +72,10 @@ export class PetsController {
     return this.petsService.findByOng(req.user.userId);
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Delete(':id')
-  async remove(@Param('id') id: string, @Req() req: { user: RequestUser }) {
+  @Roles(Role.ONG)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Delete(":id")
+  async remove(@Param("id") id: string, @Req() req: { user: RequestUser }) {
     return this.petsService.remove(id, req.user.userId);
   }
 

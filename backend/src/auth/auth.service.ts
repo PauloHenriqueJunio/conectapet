@@ -1,8 +1,6 @@
 import {
-  BadGatewayException,
   BadRequestException,
   Injectable,
-  ServiceUnavailableException,
   UnauthorizedException,
 } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
@@ -11,58 +9,18 @@ import * as bcrypt from "bcrypt";
 import { PrismaService } from "../prisma/prisma.service";
 import { LoginDto } from "./dto/login.dto";
 import { RegisterDto } from "./dto/register.dto";
+import { CepValidationService } from "./services/cep-validation.service";
+import { LoginAttemptService } from "./services/login-attempt.service";
 import { JwtPayload } from "./types/jwt-payload.type";
-
-interface BrasilApiCepResponse {
-  state: string;
-  city: string;
-}
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
+    private readonly cepValidationService: CepValidationService,
+    private readonly loginAttemptService: LoginAttemptService,
   ) {}
-
-  private async validateCepWithBrasilApi(cep: string) {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 5000);
-
-    let response: Response;
-
-    try {
-      response = await fetch(`https://brasilapi.com.br/api/cep/v1/${cep}`, {
-        signal: controller.signal,
-      });
-    } catch (error) {
-      if (error instanceof Error && error.name === "AbortError") {
-        throw new ServiceUnavailableException(
-          "Tempo de validação do CEP esgotado. Tente novamente.",
-        );
-      }
-
-      throw new ServiceUnavailableException(
-        "Serviço de validação de CEP indisponível no momento.",
-      );
-    } finally {
-      clearTimeout(timeout);
-    }
-
-    if (!response.ok) {
-      if (response.status === 400 || response.status === 404) {
-        throw new BadRequestException("CEP inválido ou não encontrado.");
-      }
-
-      throw new BadGatewayException("Falha ao consultar serviço de CEP.");
-    }
-
-    const data = (await response.json()) as BrasilApiCepResponse;
-    return {
-      state: data.state,
-      city: data.city,
-    };
-  }
 
   async register(dto: RegisterDto) {
     const normalizedCpf = dto.cpf?.replace(/\D/g, "") ?? "";
@@ -125,7 +83,7 @@ export class AuthService {
       }
     }
 
-    const cepData = await this.validateCepWithBrasilApi(normalizedCep);
+    const cepData = await this.cepValidationService.validate(normalizedCep);
 
     const passwordHash = await bcrypt.hash(dto.password, 12);
 
@@ -178,11 +136,16 @@ export class AuthService {
   }
 
   async login(dto: LoginDto) {
+    const normalizedEmail = dto.email.toLowerCase();
+
+    this.loginAttemptService.assertNotBlocked(normalizedEmail);
+
     const user = await this.prisma.user.findUnique({
-      where: { email: dto.email.toLowerCase() },
+      where: { email: normalizedEmail },
     });
 
     if (!user) {
+      this.loginAttemptService.registerFailure(normalizedEmail);
       throw new UnauthorizedException("Credenciais inválidas.");
     }
 
@@ -192,8 +155,11 @@ export class AuthService {
     );
 
     if (!passwordMatches) {
+      this.loginAttemptService.registerFailure(normalizedEmail);
       throw new UnauthorizedException("Credenciais inválidas.");
     }
+
+    this.loginAttemptService.registerSuccess(normalizedEmail);
 
     const payload: JwtPayload = {
       userId: user.id,

@@ -41,13 +41,13 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-const PUBLIC_PATHS = ["/", "/pet", "/home", "/login", "/register", "/quem-somos", "/ongs"];
+const PRIVATE_PREFIXES = ["/ong", "/pessoa-fisica"];
 const STORAGE_KEY = "conectapet_auth";
 
-function isRoutePublic(pathname: string) {
-  return PUBLIC_PATHS.some(
-    (publicPath) =>
-      pathname === publicPath || pathname.startsWith(`${publicPath}/`),
+function isRoutePrivate(pathname: string) {
+  return PRIVATE_PREFIXES.some(
+    (privatePrefix) =>
+      pathname === privatePrefix || pathname.startsWith(`${privatePrefix}/`),
   );
 }
 
@@ -79,9 +79,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    const isPublicPath = isRoutePublic(pathname);
-
-    if (!token && !isPublicPath) {
+    if (!token && isRoutePrivate(pathname)) {
       router.replace("/login");
       return;
     }
