@@ -214,14 +214,14 @@ export function ImageUpload({
 
   return (
     <div className="space-y-3 rounded-xl border border-slate-200 bg-slate-50/70 p-4">
-      <div className="flex items-center justify-between gap-3">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-sm font-semibold text-slate-800">Foto do Pet</p>
           <p className="text-xs text-slate-500">PNG, JPG ou WEBP ate 5MB | {photos.length}/{MAX_PHOTOS}</p>
         </div>
         <label
           htmlFor="photo-upload"
-          className={`inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-semibold transition ${
+          className={`inline-flex items-center justify-center gap-2 rounded-lg border px-3 py-2 text-sm font-semibold transition sm:w-auto ${
             photos.length >= MAX_PHOTOS
               ? "cursor-not-allowed border-slate-200 bg-slate-100 text-slate-400"
               : "cursor-pointer border-emerald-200 bg-white text-emerald-700 hover:border-emerald-300 hover:bg-emerald-50"
@@ -295,7 +295,7 @@ export function ImageUpload({
 
           <div className="space-y-3 rounded-xl border border-slate-200 bg-white p-3">
             <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-500">
-              Prévias do foto do pet
+              Previas da foto do pet
             </p>
             <div className="flex flex-wrap items-end justify-center gap-3">
               {[56, 72, 96].map((size, index) => (
@@ -348,21 +348,25 @@ export function ImageUpload({
           </div>
         </div>
       ) : (
-        <div className="flex items-center gap-4 rounded-xl border border-dashed border-slate-300 bg-white p-3">
-          <div className="h-20 w-20 overflow-hidden rounded-full border-2 border-slate-200 bg-slate-100">
-            {featuredPhoto ? (
-              <img
-                src={featuredPhoto.previewUrl}
-                alt="Foto atual do pet"
-                className="h-full w-full object-cover"
-              />
-            ) : (
-              <div className="flex h-full w-full items-center justify-center text-slate-400">
-                <ImageIcon className="h-7 w-7" />
+        <div className="flex flex-col gap-4 rounded-xl border border-dashed border-slate-300 bg-white p-3 sm:flex-row sm:items-center">
+          <div className="mx-auto w-full max-w-[190px] sm:mx-0 sm:w-[120px] sm:max-w-none">
+            <div className="overflow-hidden rounded-2xl border border-slate-200 bg-slate-100 shadow-sm sm:rounded-full sm:border-2">
+              <div className="relative aspect-[3/4] sm:aspect-square">
+                {featuredPhoto ? (
+                  <img
+                    src={featuredPhoto.previewUrl}
+                    alt="Foto de destaque do pet"
+                    className="absolute inset-0 h-full w-full object-cover"
+                  />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center text-slate-400">
+                    <ImageIcon className="h-7 w-7" />
+                  </div>
+                )}
               </div>
-            )}
+            </div>
           </div>
-          <div className="text-sm text-slate-600">
+          <div className="text-sm text-slate-600 sm:text-left">
             <p className="font-medium text-slate-700">
               {featuredPhoto
                 ? "A foto de destaque aparece aqui. Você pode adicionar mais fotos e escolher o destaque."
@@ -383,7 +387,7 @@ export function ImageUpload({
         {photos.length === 0 ? (
           <p className="text-sm text-slate-500">Nenhuma foto adicionada ainda.</p>
         ) : (
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5">
+          <div className="grid grid-cols-1 gap-3 min-[380px]:grid-cols-2 sm:grid-cols-3 md:grid-cols-5">
             {photos.map((photo, index) => {
               const isFeatured = index === featuredPhotoIndex;
               return (

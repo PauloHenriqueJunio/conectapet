@@ -12,7 +12,7 @@ interface PetFormProps {
 }
 
 export function PetForm({ initialData, onSubmitSuccess }: PetFormProps) {
-  const { token } = useAuth();
+  const { token, logout } = useAuth();
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -159,7 +159,9 @@ export function PetForm({ initialData, onSubmitSuccess }: PetFormProps) {
         .filter((photo) => !photo.isExisting && photo.file)
         .map((photo) => photo.file as File);
 
-      formData.append("retainedPhotoUrls", JSON.stringify(retainedPhotoUrls));
+      if (initialData) {
+        formData.append("retainedPhotoUrls", JSON.stringify(retainedPhotoUrls));
+      }
       formData.append("featuredPhotoIndex", String(featuredPhotoIndex));
 
       newPhotoFiles.forEach((file) => {
@@ -178,7 +180,32 @@ export function PetForm({ initialData, onSubmitSuccess }: PetFormProps) {
         body: formData,
       });
 
-      if (!response.ok) throw new Error("Falha ao salvar o pet no servidor");
+      if (!response.ok) {
+        const responseText = await response.text();
+        let apiMessage = "";
+
+        try {
+          const parsed = JSON.parse(responseText) as {
+            message?: string | string[];
+          };
+          if (Array.isArray(parsed.message)) {
+            apiMessage = parsed.message.join(" | ");
+          } else if (typeof parsed.message === "string") {
+            apiMessage = parsed.message;
+          }
+        } catch {
+          apiMessage = responseText;
+        }
+
+        if (response.status === 401) {
+          logout();
+          throw new Error(
+            "Sua sessão expirou. Faça login novamente.",
+          );
+        }
+
+        throw new Error(apiMessage || "Falha ao salvar o pet no servidor.");
+      }
 
       setSuccess(
         initialData
@@ -189,8 +216,12 @@ export function PetForm({ initialData, onSubmitSuccess }: PetFormProps) {
       setTimeout(() => {
         onSubmitSuccess();
       }, 1500);
-    } catch {
-      setError("Não foi possível salvar os dados do pet.");
+    } catch (error) {
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Não foi possível salvar os dados do pet.",
+      );
       setIsSubmitting(false);
     }
   };
