@@ -65,26 +65,9 @@ export function PetForm({ initialData, onSubmitSuccess }: PetFormProps) {
     });
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setError(null);
-    const file = e.target.files?.[0];
-
-    if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        setError("Tamanho máximo permitido é de 5MB.");
-        e.target.value = "";
-        return;
-      }
-      const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
-      if (!allowedTypes.includes(file.type)) {
-        setError("Apenas imagens JPG, PNG ou WEBP.");
-        e.target.value = "";
-        return;
-      }
-
-      setPhotoFile(file);
-      setPhotoPreview(URL.createObjectURL(file));
-    }
+  const handleFileChange = (file: File | null, previewUrl: string | null) => {
+    setPhotoFile(file);
+    setPhotoPreview(previewUrl);
   };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -155,6 +138,7 @@ export function PetForm({ initialData, onSubmitSuccess }: PetFormProps) {
         <ImageUpload
           photoPreview={photoPreview}
           onFileChange={handleFileChange}
+          onError={setError}
         />
 
         <div className="grid gap-6 md:grid-cols-2">
