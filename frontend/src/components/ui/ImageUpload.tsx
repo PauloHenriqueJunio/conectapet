@@ -332,11 +332,11 @@ export function ImageUpload({
           <div className="text-sm text-slate-600">
             <p className="font-medium text-slate-700">
               {photoPreview
-                ? "A foto ja esta pronta. Clique em Trocar foto para ajustar outra."
+                ? "A foto atual do pet é exibida aqui. Clique para selecionar uma nova foto e ajustar o enquadramento."
                 : "Selecione uma foto e ajuste o enquadramento em formato de perfil."}
             </p>
             <p className="text-xs text-slate-500">
-              Apos selecionar, arraste e aplique para ver como vai ficar.
+              Após selecionar, arraste e aplique para ver como vai ficar.
             </p>
           </div>
         </div>
