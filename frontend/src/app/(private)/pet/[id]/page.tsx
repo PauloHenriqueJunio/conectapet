@@ -270,7 +270,7 @@ export default function PetProfilePage() {
                   className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
                 />
 
-                <div className="absolute inset-x-4 bottom-4 flex items-center justify-between gap-3 rounded-2xl bg-slate-950/60 px-4 py-3 text-white backdrop-blur-sm transition-opacity duration-300 group-hover:bg-slate-950/70">
+                <div className="absolute inset-x-4 top-4 flex items-center justify-between gap-3 rounded-2xl bg-slate-950/60 px-4 py-3 text-white backdrop-blur-sm transition-opacity duration-300 group-hover:bg-slate-950/70">
                   <div className="flex items-center gap-2 text-sm font-semibold">
                     <Images size={18} />
                     <span>
