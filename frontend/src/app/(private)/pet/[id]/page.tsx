@@ -8,6 +8,9 @@ import { apiFetch } from "@/lib/api";
 import { Pet } from "@/types/api";
 import {
   ArrowLeft,
+  ChevronLeft,
+  ChevronRight,
+  Images,
   MapPin,
   Camera,
   Heart,
@@ -20,6 +23,7 @@ import {
   Share2,
   Building2,
   Check,
+  X,
 } from "lucide-react";
 
 export default function PetProfilePage() {
@@ -33,6 +37,8 @@ export default function PetProfilePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isCopied, setIsCopied] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isGalleryOpen, setIsGalleryOpen] = useState(false);
+  const [activePhotoIndex, setActivePhotoIndex] = useState(0);
 
   useEffect(() => {
     const fetchPetDetails = async () => {
@@ -50,6 +56,71 @@ export default function PetProfilePage() {
 
     fetchPetDetails();
   }, [id]);
+
+  const petPhotoUrls = Array.isArray(pet?.photoUrls) ? pet.photoUrls : [];
+  const legacyPhotoUrl = pet?.photoUrl ?? "";
+  const currentFeaturedPhotoIndex = pet?.featuredPhotoIndex ?? 0;
+  const petPhotos =
+    petPhotoUrls.length > 0
+      ? petPhotoUrls.filter((photo) => Boolean(photo))
+      : legacyPhotoUrl
+        ? [legacyPhotoUrl]
+        : [];
+  const featuredPhotoIndex =
+    currentFeaturedPhotoIndex >= 0 &&
+    currentFeaturedPhotoIndex < petPhotos.length
+      ? currentFeaturedPhotoIndex
+      : 0;
+  const featuredPhoto = petPhotos[featuredPhotoIndex] ?? petPhotos[0] ?? "";
+
+  const openGallery = () => {
+    if (petPhotos.length === 0) return;
+
+    setActivePhotoIndex(featuredPhotoIndex);
+    setIsGalleryOpen(true);
+  };
+
+  const closeGallery = () => {
+    setIsGalleryOpen(false);
+  };
+
+  const showPreviousPhoto = () => {
+    setActivePhotoIndex((current) =>
+      petPhotos.length > 0
+        ? (current - 1 + petPhotos.length) % petPhotos.length
+        : 0,
+    );
+  };
+
+  const showNextPhoto = () => {
+    setActivePhotoIndex((current) =>
+      petPhotos.length > 0 ? (current + 1) % petPhotos.length : 0,
+    );
+  };
+
+  useEffect(() => {
+    if (!isGalleryOpen) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        closeGallery();
+      }
+
+      if (event.key === "ArrowLeft") {
+        showPreviousPhoto();
+      }
+
+      if (event.key === "ArrowRight") {
+        showNextPhoto();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isGalleryOpen, petPhotos.length]);
 
   if (isLoading) {
     return (
@@ -185,13 +256,32 @@ export default function PetProfilePage() {
         </div>
 
         <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden flex flex-col lg:flex-row">
-          <div className="w-full lg:w-1/2 relative bg-slate-100 flex items-center justify-center min-h-[400px] lg:min-h-full">
-            {pet.photoUrl ? (
-              <img
-                src={pet.photoUrl}
-                alt={pet.name}
-                className="absolute inset-0 w-full h-full object-cover"
-              />
+          <div className="w-full lg:w-1/2 relative bg-slate-100 flex items-center justify-center min-h-[400px] lg:min-h-full group">
+            {featuredPhoto ? (
+              <button
+                type="button"
+                onClick={openGallery}
+                className="absolute inset-0 block h-full w-full cursor-zoom-in"
+                aria-label={`Abrir galeria de fotos de ${pet.name}`}
+              >
+                <img
+                  src={featuredPhoto}
+                  alt={pet.name}
+                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+                />
+
+                <div className="absolute inset-x-4 bottom-4 flex items-center justify-between gap-3 rounded-2xl bg-slate-950/60 px-4 py-3 text-white backdrop-blur-sm transition-opacity duration-300 group-hover:bg-slate-950/70">
+                  <div className="flex items-center gap-2 text-sm font-semibold">
+                    <Images size={18} />
+                    <span>
+                      {petPhotos.length} foto{petPhotos.length > 1 ? "s" : ""}
+                    </span>
+                  </div>
+                  <span className="text-xs font-medium uppercase tracking-[0.2em] text-white/80">
+                    Clique para ver a galeria
+                  </span>
+                </div>
+              </button>
             ) : (
               <div className="flex flex-col items-center text-slate-400">
                 <Camera size={64} className="mb-4 opacity-30" />
@@ -441,6 +531,89 @@ export default function PetProfilePage() {
             )}
           </div>
         </div>
+
+        {isGalleryOpen && petPhotos.length > 0 && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 px-4 py-6 backdrop-blur-sm">
+            <div className="relative flex max-h-[92vh] w-full max-w-6xl flex-col overflow-hidden rounded-3xl bg-white shadow-2xl">
+              <div className="flex items-center justify-between gap-4 border-b border-slate-100 px-5 py-4 sm:px-6">
+                <div>
+                  <p className="text-sm font-semibold text-slate-900">
+                    Galeria de fotos do(a) {pet.name}
+                  </p>
+                  <p className="text-xs text-slate-500">
+                    Foto {activePhotoIndex + 1} de {petPhotos.length}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={closeGallery}
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
+                  aria-label="Fechar galeria"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+
+              <div className="grid flex-1 gap-0 lg:grid-cols-[1fr_260px]">
+                <div className="relative flex min-h-[320px] items-center justify-center bg-slate-950">
+                  <img
+                    src={petPhotos[activePhotoIndex]}
+                    alt={`${pet.name} - foto ${activePhotoIndex + 1}`}
+                    className="max-h-[72vh] w-full object-contain"
+                  />
+
+                  {petPhotos.length > 1 && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={showPreviousPhoto}
+                        className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-white/90 p-3 text-slate-900 shadow-lg transition hover:bg-white"
+                        aria-label="Foto anterior"
+                      >
+                        <ChevronLeft size={22} />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={showNextPhoto}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-white/90 p-3 text-slate-900 shadow-lg transition hover:bg-white"
+                        aria-label="Próxima foto"
+                      >
+                        <ChevronRight size={22} />
+                      </button>
+                    </>
+                  )}
+                </div>
+
+                <div className="border-t border-slate-100 bg-slate-50 p-4 lg:border-l lg:border-t-0">
+                  <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-slate-500">
+                    Miniaturas
+                  </p>
+                  <div className="grid grid-cols-3 gap-3 overflow-y-auto pr-1 lg:grid-cols-1">
+                    {petPhotos.map((photo, index) => {
+                      const isSelected = index === activePhotoIndex;
+
+                      return (
+                        <button
+                          key={`${photo}-${index}`}
+                          type="button"
+                          onClick={() => setActivePhotoIndex(index)}
+                          className={`overflow-hidden rounded-2xl border-2 transition ${isSelected ? "border-brand-500 ring-2 ring-brand-200" : "border-transparent opacity-80 hover:opacity-100"}`}
+                          aria-label={`Ver foto ${index + 1}`}
+                        >
+                          <img
+                            src={photo}
+                            alt={`${pet.name} miniatura ${index + 1}`}
+                            className="aspect-square h-full w-full object-cover"
+                          />
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
