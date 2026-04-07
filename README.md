@@ -89,9 +89,15 @@ npm run prisma:seed
 O seed cria:
 
 - 4 ONGs mockadas
-- 2 ADOTANTES
-- pets com status disponivel e adotado
-- solicitacoes de adocao com status PENDING, APPROVED e REJECTED
+- 2 adotantes (role `PESSOA_FISICA`)
+- 8 pets com dados de saude (castracao, vacinas, vermifugacao e observacoes)
+- 4 solicitacoes de adocao com status PENDING, APPROVED e REJECTED
+- 1 pet marcado como adotado (`isAdopted = true`)
+
+Aviso sobre adotantes:
+
+- No banco, os adotantes sao usuarios com role `PESSOA_FISICA`.
+- Onde aparecer "ADOTANTE" no frontend/fluxo da aplicacao, considere equivalente a `PESSOA_FISICA`.
 
 Usuarios de teste (somente ambiente local/dev):
 
@@ -99,8 +105,8 @@ Usuarios de teste (somente ambiente local/dev):
 - ONG: ong2@conectapet.dev
 - ONG: ong3@conectapet.dev
 - ONG: ong4@conectapet.dev
-- ADOTANTE: adotante1@conectapet.dev
-- ADOTANTE: adotante2@conectapet.dev
+- PESSOA_FISICA (adotante): adotante1@conectapet.dev
+- PESSOA_FISICA (adotante): adotante2@conectapet.dev
 - Senha para todos: 123456
 
 ## 5. Iniciar os servidores em desenvolvimento
@@ -142,8 +148,8 @@ Pets:
 
 Adoções:
 
-- POST /adoptions (ADOTANTE)
-- GET /adoptions/my-requests (ADOTANTE)
+- POST /adoptions (PESSOA_FISICA/adotante)
+- GET /adoptions/my-requests (PESSOA_FISICA/adotante)
 - GET /adoptions/ong-requests (ONG)
 - PATCH /adoptions/:id/status (ONG dona do pet)
 
@@ -152,7 +158,7 @@ Adoções:
 - Hash de senha com Bcrypt (salt rounds 12)
 - JWT com payload contendo userId e role (JWT_SECRET obrigatório)
 - Guard de autenticação JWT
-- Guard de autorização por role (ONG e ADOTANTE)
+- Guard de autorização por role (ONG e PESSOA_FISICA/adotante)
 - Validação de DTO com class-validator e ValidationPipe global (whitelist + forbidNonWhitelisted)
 - Validação de ownership para edição de pet e atualização de status de adoção
 - Rate limit global (100 req/60s por cliente)
