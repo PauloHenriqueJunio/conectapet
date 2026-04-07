@@ -538,7 +538,7 @@ export default function PetProfilePage() {
               <div className="flex items-center justify-between gap-4 border-b border-slate-100 px-4 py-3 sm:px-5 sm:py-4">
                 <div>
                   <p className="text-sm font-semibold text-slate-900">
-                    Galeria de fotos do(a) {pet.name}
+                    Galeria de fotos de {pet.name}
                   </p>
                   <p className="text-xs text-slate-500">
                     Foto {activePhotoIndex + 1} de {petPhotos.length}
@@ -586,7 +586,7 @@ export default function PetProfilePage() {
 
                 <div className="border-t border-slate-100 bg-slate-50 p-3 sm:p-4 lg:border-l lg:border-t-0">
                   <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-slate-500">
-                    Miniaturas
+                    Fotos
                   </p>
                   <div className="grid grid-flow-col auto-cols-[88px] gap-3 overflow-x-auto pb-1 pr-1 lg:grid-flow-row lg:auto-cols-auto lg:grid-cols-1 lg:overflow-y-auto lg:overflow-x-hidden lg:pb-0">
                     {petPhotos.map((photo, index) => {
