@@ -6,10 +6,14 @@ import {
 } from "cloudinary";
 import * as streamifier from "streamifier";
 
+type UploadableFile = {
+  buffer: Buffer;
+};
+
 @Injectable()
 export class CloudinaryService {
   uploadFile(
-    file: Express.Multer.File,
+    file: UploadableFile,
   ): Promise<UploadApiResponse | UploadApiErrorResponse> {
     return new Promise((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(

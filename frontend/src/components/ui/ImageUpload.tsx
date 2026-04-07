@@ -1,10 +1,21 @@
 import { useEffect, useRef, useState } from "react";
 import Cropper, { Area } from "react-easy-crop";
-import { Image as ImageIcon, UploadCloud, Move } from "lucide-react";
+import { Image as ImageIcon, Move, Star, Trash2, UploadCloud } from "lucide-react";
+
+const MAX_PHOTOS = 5;
+
+export interface PetPhotoPreviewItem {
+  id: string;
+  previewUrl: string;
+  isExisting: boolean;
+}
 
 interface ImageUploadProps {
-  photoPreview: string | null;
-  onFileChange: (file: File | null, previewUrl: string | null) => void;
+  photos: PetPhotoPreviewItem[];
+  featuredPhotoIndex: number;
+  onAddPhoto: (file: File, previewUrl: string) => void;
+  onRemovePhoto: (index: number) => void;
+  onSetFeatured: (index: number) => void;
   onError: (message: string | null) => void;
 }
 
@@ -57,8 +68,11 @@ async function getCroppedBlob(imageSrc: string, crop: Area): Promise<Blob> {
 }
 
 export function ImageUpload({
-  photoPreview,
-  onFileChange,
+  photos,
+  featuredPhotoIndex,
+  onAddPhoto,
+  onRemovePhoto,
+  onSetFeatured,
   onError,
 }: ImageUploadProps) {
   const [crop, setCrop] = useState({ x: 0, y: 0 });
@@ -112,6 +126,13 @@ export function ImageUpload({
 
   const handleSelectFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     onError(null);
+
+    if (photos.length >= MAX_PHOTOS) {
+      onError("Você pode adicionar no máximo 5 fotos por pet.");
+      e.target.value = "";
+      return;
+    }
+
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -147,6 +168,11 @@ export function ImageUpload({
       return;
     }
 
+    if (photos.length >= MAX_PHOTOS) {
+      onError("Você pode adicionar no máximo 5 fotos por pet.");
+      return;
+    }
+
     try {
       const blob = await getCroppedBlob(selectedImageUrl, croppedAreaPixels);
       const finalPreview = URL.createObjectURL(blob);
@@ -154,8 +180,9 @@ export function ImageUpload({
         type: "image/jpeg",
       });
 
-      onFileChange(file, finalPreview);
+      onAddPhoto(file, finalPreview);
       setIsEditing(false);
+      onError(null);
 
       if (selectedImageUrl) {
         URL.revokeObjectURL(selectedImageUrl);
@@ -182,21 +209,26 @@ export function ImageUpload({
     }
   };
 
-  const previewSource = livePreview || selectedImageUrl || photoPreview;
+  const featuredPhoto = photos[featuredPhotoIndex] ?? photos[0] ?? null;
+  const previewSource = livePreview || selectedImageUrl || featuredPhoto?.previewUrl || null;
 
   return (
     <div className="space-y-3 rounded-xl border border-slate-200 bg-slate-50/70 p-4">
       <div className="flex items-center justify-between gap-3">
         <div>
           <p className="text-sm font-semibold text-slate-800">Foto do Pet</p>
-          <p className="text-xs text-slate-500">PNG, JPG ou WEBP ate 5MB</p>
+          <p className="text-xs text-slate-500">PNG, JPG ou WEBP ate 5MB | {photos.length}/{MAX_PHOTOS}</p>
         </div>
         <label
           htmlFor="photo-upload"
-          className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-emerald-200 bg-white px-3 py-2 text-sm font-semibold text-emerald-700 transition hover:border-emerald-300 hover:bg-emerald-50"
+          className={`inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-semibold transition ${
+            photos.length >= MAX_PHOTOS
+              ? "cursor-not-allowed border-slate-200 bg-slate-100 text-slate-400"
+              : "cursor-pointer border-emerald-200 bg-white text-emerald-700 hover:border-emerald-300 hover:bg-emerald-50"
+          }`}
         >
           <UploadCloud className="h-4 w-4" />
-          {photoPreview ? "Trocar foto" : "Selecionar foto"}
+          {photos.length === 0 ? "Selecionar foto" : "Adicionar foto"}
         </label>
         <input
           id="photo-upload"
@@ -204,6 +236,7 @@ export function ImageUpload({
           accept="image/jpeg,image/png,image/webp"
           className="hidden"
           onChange={handleSelectFile}
+          disabled={photos.length >= MAX_PHOTOS}
         />
       </div>
 
@@ -317,9 +350,9 @@ export function ImageUpload({
       ) : (
         <div className="flex items-center gap-4 rounded-xl border border-dashed border-slate-300 bg-white p-3">
           <div className="h-20 w-20 overflow-hidden rounded-full border-2 border-slate-200 bg-slate-100">
-            {photoPreview ? (
+            {featuredPhoto ? (
               <img
-                src={photoPreview}
+                src={featuredPhoto.previewUrl}
                 alt="Foto atual do pet"
                 className="h-full w-full object-cover"
               />
@@ -331,16 +364,74 @@ export function ImageUpload({
           </div>
           <div className="text-sm text-slate-600">
             <p className="font-medium text-slate-700">
-              {photoPreview
-                ? "A foto atual do pet é exibida aqui. Clique para selecionar uma nova foto e ajustar o enquadramento."
-                : "Selecione uma foto e ajuste o enquadramento em formato de perfil."}
+              {featuredPhoto
+                ? "A foto de destaque aparece aqui. Você pode adicionar mais fotos e escolher o destaque."
+                : "Selecione uma foto e ajuste o enquadramento antes de adicionar."}
             </p>
             <p className="text-xs text-slate-500">
-              Após selecionar, arraste e aplique para ver como vai ficar.
+              Após selecionar, arraste e aplique para salvar na galeria.
             </p>
           </div>
         </div>
       )}
+
+      <div className="space-y-2 rounded-xl border border-slate-200 bg-white p-3">
+        <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+          Galeria de fotos do pet
+        </p>
+
+        {photos.length === 0 ? (
+          <p className="text-sm text-slate-500">Nenhuma foto adicionada ainda.</p>
+        ) : (
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5">
+            {photos.map((photo, index) => {
+              const isFeatured = index === featuredPhotoIndex;
+              return (
+                <div
+                  key={photo.id}
+                  className={`rounded-lg border p-2 ${
+                    isFeatured
+                      ? "border-emerald-300 bg-emerald-50/50"
+                      : "border-slate-200 bg-slate-50"
+                  }`}
+                >
+                  <div className="mb-2 aspect-square overflow-hidden rounded-md bg-slate-100">
+                    <img
+                      src={photo.previewUrl}
+                      alt={`Foto ${index + 1} do pet`}
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between gap-2">
+                    <button
+                      type="button"
+                      onClick={() => onSetFeatured(index)}
+                      className={`inline-flex items-center gap-1 rounded px-2 py-1 text-[11px] font-semibold ${
+                        isFeatured
+                          ? "bg-emerald-100 text-emerald-700"
+                          : "bg-white text-slate-600 hover:bg-slate-100"
+                      }`}
+                    >
+                      <Star className="h-3 w-3" />
+                      {isFeatured ? "Destaque" : "Destacar"}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => onRemovePhoto(index)}
+                      className="rounded p-1 text-slate-500 hover:bg-red-50 hover:text-red-600"
+                      title="Remover foto"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

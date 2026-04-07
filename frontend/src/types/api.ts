@@ -26,6 +26,8 @@ export interface Pet {
   age: number;
   description: string;
   photoUrl: string;
+  photoUrls: string[];
+  featuredPhotoIndex: number;
   isAdopted: boolean;
   ongId: string;
   size: string;

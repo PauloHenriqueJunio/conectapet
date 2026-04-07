@@ -58,6 +58,8 @@ model Pet {
   hasOtherHealthInfo         Boolean  @default(false)
   otherHealthInfoDescription String?
   photoUrl         String            @default("")
+  photoUrls        String[]          @default([])
+  featuredPhotoIndex Int             @default(0)
   isAdopted        Boolean           @default(false)
   createdAt        DateTime          @default(now())
   ongId            String            @db.Uuid // trocar no futuro para owner e ownerId no BACK TODO

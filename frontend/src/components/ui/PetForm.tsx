@@ -3,7 +3,7 @@
 import { FormEvent, useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { AlertCircle, CheckCircle2, Loader2, PawPrint } from "lucide-react";
-import { ImageUpload } from "@/components/ui/ImageUpload";
+import { ImageUpload, PetPhotoPreviewItem } from "@/components/ui/ImageUpload";
 import { HealthChecklist } from "@/components/ui/HealthCheckList";
 
 interface PetFormProps {
@@ -16,10 +16,28 @@ export function PetForm({ initialData, onSubmitSuccess }: PetFormProps) {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [photoPreview, setPhotoPreview] = useState<string | null>(
-    initialData?.photoUrl || null,
-  );
-  const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [petPhotos, setPetPhotos] = useState<
+    Array<PetPhotoPreviewItem & { file?: File; existingUrl?: string }>
+  >(() => {
+    const initialUrls: string[] = Array.isArray(initialData?.photoUrls)
+      ? initialData.photoUrls
+      : initialData?.photoUrl
+        ? [initialData.photoUrl]
+        : [];
+
+    return initialUrls.slice(0, 5).map((url, index) => ({
+      id: `existing-${index}-${url}`,
+      previewUrl: url,
+      existingUrl: url,
+      isExisting: true,
+    }));
+  });
+
+  const [featuredPhotoIndex, setFeaturedPhotoIndex] = useState(() => {
+    const initialIndex = Number(initialData?.featuredPhotoIndex ?? 0);
+    if (!Number.isFinite(initialIndex) || initialIndex < 0) return 0;
+    return initialIndex;
+  });
 
   const [petForm, setPetForm] = useState({
     name: initialData?.name || "",
@@ -65,9 +83,57 @@ export function PetForm({ initialData, onSubmitSuccess }: PetFormProps) {
     });
   };
 
-  const handleFileChange = (file: File | null, previewUrl: string | null) => {
-    setPhotoFile(file);
-    setPhotoPreview(previewUrl);
+  const handleAddPhoto = (file: File, previewUrl: string) => {
+    setPetPhotos((prev) => {
+      if (prev.length >= 5) {
+        URL.revokeObjectURL(previewUrl);
+        setError("Você pode adicionar no máximo 5 fotos por pet.");
+        return prev;
+      }
+
+      const next = [
+        ...prev,
+        {
+          id: `new-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+          previewUrl,
+          file,
+          isExisting: false,
+        },
+      ];
+
+      if (next.length === 1) {
+        setFeaturedPhotoIndex(0);
+      }
+
+      return next;
+    });
+  };
+
+  const handleRemovePhoto = (indexToRemove: number) => {
+    setPetPhotos((prev) => {
+      const removed = prev[indexToRemove];
+      if (!removed) return prev;
+
+      if (!removed.isExisting) {
+        URL.revokeObjectURL(removed.previewUrl);
+      }
+
+      const next = prev.filter((_, index) => index !== indexToRemove);
+
+      setFeaturedPhotoIndex((currentFeatured) => {
+        if (next.length === 0) return 0;
+        if (currentFeatured === indexToRemove) return 0;
+        if (currentFeatured > indexToRemove) return currentFeatured - 1;
+        if (currentFeatured >= next.length) return next.length - 1;
+        return currentFeatured;
+      });
+
+      return next;
+    });
+  };
+
+  const handleSetFeatured = (index: number) => {
+    setFeaturedPhotoIndex(index);
   };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -85,9 +151,20 @@ export function PetForm({ initialData, onSubmitSuccess }: PetFormProps) {
         formData.append(key, String(value));
       });
 
-      if (photoFile) {
-        formData.append("photo", photoFile);
-      }
+      const retainedPhotoUrls = petPhotos
+        .filter((photo) => photo.isExisting && photo.existingUrl)
+        .map((photo) => photo.existingUrl as string);
+
+      const newPhotoFiles = petPhotos
+        .filter((photo) => !photo.isExisting && photo.file)
+        .map((photo) => photo.file as File);
+
+      formData.append("retainedPhotoUrls", JSON.stringify(retainedPhotoUrls));
+      formData.append("featuredPhotoIndex", String(featuredPhotoIndex));
+
+      newPhotoFiles.forEach((file) => {
+        formData.append("photos", file);
+      });
 
       const url = initialData
         ? `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"}/pets/${initialData.id}`
@@ -136,8 +213,11 @@ export function PetForm({ initialData, onSubmitSuccess }: PetFormProps) {
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-8 w-full">
         <ImageUpload
-          photoPreview={photoPreview}
-          onFileChange={handleFileChange}
+          photos={petPhotos}
+          featuredPhotoIndex={featuredPhotoIndex}
+          onAddPhoto={handleAddPhoto}
+          onRemovePhoto={handleRemovePhoto}
+          onSetFeatured={handleSetFeatured}
           onError={setError}
         />
 

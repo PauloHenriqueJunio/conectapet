@@ -9,12 +9,10 @@ import {
   UseGuards,
   Param,
   UseInterceptors,
-  UploadedFile,
-  ParseFilePipeBuilder,
-  HttpStatus,
+  UploadedFiles,
   Delete,
 } from "@nestjs/common";
-import { FileInterceptor } from "@nestjs/platform-express";
+import { FileFieldsInterceptor } from "@nestjs/platform-express";
 import { Role } from "@prisma/client";
 import { JwtAuthGuard } from "../auth/guards/jwt-auth.guard";
 import { RolesGuard } from "../auth/guards/roles.guard";
@@ -24,6 +22,12 @@ import { CreatePetDto } from "./dto/create-pet.dto";
 import { UpdatePetDto } from "./dto/update-pet.dto";
 import { PetsService } from "./pets.service";
 
+type UploadedImageFile = {
+  mimetype: string;
+  size: number;
+  buffer: Buffer;
+};
+
 @Controller("pets")
 export class PetsController {
   constructor(private readonly petsService: PetsService) {}
@@ -31,22 +35,19 @@ export class PetsController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ONG)
   @Post()
-  @UseInterceptors(FileInterceptor("photo"))
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: "photo", maxCount: 1 },
+      { name: "photos", maxCount: 5 },
+    ]),
+  )
   create(
     @Body() dto: CreatePetDto,
     @Req() req: any,
-    @UploadedFile(
-      new ParseFilePipeBuilder()
-        .addFileTypeValidator({ fileType: /(jpg|jpeg|png|webp)$/ })
-        .addMaxSizeValidator({ maxSize: 5 * 1024 * 1024 }) // 5MB
-        .build({
-          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
-          fileIsRequired: false,
-        }),
-    )
-    file?: Express.Multer.File,
+    @UploadedFiles()
+    files?: { photo?: UploadedImageFile[]; photos?: UploadedImageFile[] },
   ) {
-    return this.petsService.create(dto, req.user.userId, file);
+    return this.petsService.create(dto, req.user.userId, files);
   }
 
   @Get()
@@ -57,12 +58,20 @@ export class PetsController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ONG)
   @Patch(":id")
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: "photo", maxCount: 1 },
+      { name: "photos", maxCount: 5 },
+    ]),
+  )
   update(
     @Param("id") id: string,
     @Body() dto: UpdatePetDto,
     @Req() req: { user: RequestUser },
+    @UploadedFiles()
+    files?: { photo?: UploadedImageFile[]; photos?: UploadedImageFile[] },
   ) {
-    return this.petsService.update(id, dto, req.user.userId);
+    return this.petsService.update(id, dto, req.user.userId, files);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
