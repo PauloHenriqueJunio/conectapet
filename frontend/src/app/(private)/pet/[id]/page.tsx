@@ -533,9 +533,9 @@ export default function PetProfilePage() {
         </div>
 
         {isGalleryOpen && petPhotos.length > 0 && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 px-4 py-6 backdrop-blur-sm">
-            <div className="relative flex max-h-[92vh] w-full max-w-6xl flex-col overflow-hidden rounded-3xl bg-white shadow-2xl">
-              <div className="flex items-center justify-between gap-4 border-b border-slate-100 px-5 py-4 sm:px-6">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 px-2 py-2 backdrop-blur-sm sm:px-4 sm:py-6">
+            <div className="relative flex max-h-[96vh] w-full max-w-6xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl sm:rounded-3xl">
+              <div className="flex items-center justify-between gap-4 border-b border-slate-100 px-4 py-3 sm:px-5 sm:py-4">
                 <div>
                   <p className="text-sm font-semibold text-slate-900">
                     Galeria de fotos do(a) {pet.name}
@@ -554,12 +554,12 @@ export default function PetProfilePage() {
                 </button>
               </div>
 
-              <div className="grid flex-1 gap-0 lg:grid-cols-[1fr_260px]">
-                <div className="relative flex min-h-[320px] items-center justify-center bg-slate-950">
+              <div className="grid min-h-0 flex-1 gap-0 lg:grid-cols-[1fr_260px]">
+                <div className="relative flex min-h-[48vh] items-center justify-center bg-slate-950 sm:min-h-[56vh] lg:min-h-[320px]">
                   <img
                     src={petPhotos[activePhotoIndex]}
                     alt={`${pet.name} - foto ${activePhotoIndex + 1}`}
-                    className="max-h-[72vh] w-full object-contain"
+                    className="max-h-[56vh] w-full object-contain sm:max-h-[64vh] lg:max-h-[72vh]"
                   />
 
                   {petPhotos.length > 1 && (
@@ -584,11 +584,11 @@ export default function PetProfilePage() {
                   )}
                 </div>
 
-                <div className="border-t border-slate-100 bg-slate-50 p-4 lg:border-l lg:border-t-0">
+                <div className="border-t border-slate-100 bg-slate-50 p-3 sm:p-4 lg:border-l lg:border-t-0">
                   <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-slate-500">
                     Miniaturas
                   </p>
-                  <div className="grid grid-cols-3 gap-3 overflow-y-auto pr-1 lg:grid-cols-1">
+                  <div className="grid grid-flow-col auto-cols-[88px] gap-3 overflow-x-auto pb-1 pr-1 lg:grid-flow-row lg:auto-cols-auto lg:grid-cols-1 lg:overflow-y-auto lg:overflow-x-hidden lg:pb-0">
                     {petPhotos.map((photo, index) => {
                       const isSelected = index === activePhotoIndex;
 
