@@ -173,7 +173,7 @@ export function AdoptionContactModal({
           <button
             type="button"
             onClick={onClose}
-            className="h-10 w-10 rounded-full border border-slate-200 text-slate-500 hover:text-slate-700 hover:bg-slate-50 flex items-center justify-center"
+            className="hidden sm:flex h-10 w-10 rounded-full border border-slate-200 text-slate-500 hover:text-slate-700 hover:bg-slate-50 items-center justify-center"
           >
             <X size={18} />
           </button>
@@ -229,7 +229,7 @@ export function AdoptionContactModal({
               value={adoptionMessage}
               onChange={(e) => setAdoptionMessage(e.target.value)}
               placeholder="Conte por que você quer adotar e como pode cuidar do pet..."
-              className="w-full min-h-[130px] resize-y rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-200"
+              className="w-full min-h-[96px] sm:min-h-[130px] resize-y rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 outline-none focus:border-brand-400 focus:ring-2 focus:ring-brand-200"
               maxLength={1200}
             />
             <div className="mt-2 text-right text-xs text-slate-400">
