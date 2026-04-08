@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { apiFetch } from "@/lib/api";
-import { Pet } from "@/types/api";
+import { AdoptionRequest, Pet } from "@/types/api";
 import { MessageCircle, Send, X } from "lucide-react";
 
 interface AdoptionContactModalProps {
@@ -71,6 +71,24 @@ export function AdoptionContactModal({
       setIsSubmittingAdoption(true);
       setAdoptionFeedback(null);
 
+      const myRequests = await apiFetch<AdoptionRequest[]>(
+        "/adoptions/my-requests",
+        undefined,
+        token,
+      );
+
+      const alreadyRequested = myRequests.some(
+        (request) => (request.pet?.id ?? request.petId) === pet.id,
+      );
+
+      if (alreadyRequested) {
+        setAdoptionFeedback({
+          type: "error",
+          message: "Você já enviou uma solicitação para este pet.",
+        });
+        return;
+      }
+
       await apiFetch(
         "/adoptions",
         {
@@ -92,9 +110,23 @@ export function AdoptionContactModal({
       const rawMessage = err instanceof Error ? err.message : "";
       const normalizedMessage = rawMessage.toLowerCase();
 
+      let parsedMessage = "";
+
+      try {
+        const parsed = JSON.parse(rawMessage) as { message?: string | string[] };
+        if (Array.isArray(parsed.message)) {
+          parsedMessage = parsed.message.join(" ");
+        } else if (typeof parsed.message === "string") {
+          parsedMessage = parsed.message;
+        }
+      } catch {
+        parsedMessage = "";
+      }
+
       if (
         normalizedMessage.includes("unique") ||
-        normalizedMessage.includes("duplic")
+        normalizedMessage.includes("duplic") ||
+        parsedMessage.toLowerCase().includes("já enviou")
       ) {
         setAdoptionFeedback({
           type: "error",
@@ -106,6 +138,7 @@ export function AdoptionContactModal({
       setAdoptionFeedback({
         type: "error",
         message:
+          parsedMessage ||
           "Não foi possível enviar sua mensagem agora. Tente novamente em instantes.",
       });
     } finally {
