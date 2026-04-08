@@ -33,7 +33,7 @@ export class PetsController {
   constructor(private readonly petsService: PetsService) {}
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.ONG)
+  @Roles(Role.ONG, Role.PESSOA_FISICA)
   @Post()
   @UseInterceptors(
     FileFieldsInterceptor([
@@ -56,7 +56,7 @@ export class PetsController {
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.ONG)
+  @Roles(Role.ONG, Role.PESSOA_FISICA)
   @Patch(":id")
   @UseInterceptors(
     FileFieldsInterceptor([
@@ -75,13 +75,13 @@ export class PetsController {
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.ONG)
+  @Roles(Role.ONG, Role.PESSOA_FISICA)
   @Get("my-pets")
   findMyPets(@Req() req: { user: RequestUser }) {
     return this.petsService.findByOng(req.user.userId);
   }
 
-  @Roles(Role.ONG)
+  @Roles(Role.ONG, Role.PESSOA_FISICA)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Delete(":id")
   async remove(@Param("id") id: string, @Req() req: { user: RequestUser }) {

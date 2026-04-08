@@ -127,7 +127,7 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
                 </li>
                 <li>
                   <Link
-                    href="/pessoa-fisica/dashboard"
+                    href="/pessoa-fisica/cadastrar-pet"
                     className={navClass("colocar-na-adocao")}
                   >
                     Colocar na adoção
@@ -250,7 +250,7 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
                 </li>
                 <li>
                   <Link
-                    href="/pessoa-fisica/dashboard"
+                    href="/pessoa-fisica/cadastrar-pet"
                     className="block rounded-lg px-3 py-2 hover:bg-brand-50 text-brand-700"
                     onClick={closeMobileMenu}
                   >
