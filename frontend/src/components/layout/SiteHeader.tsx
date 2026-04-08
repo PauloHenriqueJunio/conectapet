@@ -15,6 +15,7 @@ type HeaderPage =
   | "dashboard-home"
   | "dashboard-cadastrar-pet"
   | "dashboard-editar"
+  | "minhas-solicitacoes"
   | "pet-profile";
 
 type HeaderNavKey = HeaderPage; // Simplifiquei para usar as mesmas chaves
@@ -131,6 +132,14 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
                     className={navClass("colocar-na-adocao")}
                   >
                     Colocar na adoção
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/pessoa-fisica/#"
+                    className={navClass("minhas-solicitacoes")}
+                  >
+                    Minha solicitações
                   </Link>
                 </li>
               </>
