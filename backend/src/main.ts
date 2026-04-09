@@ -6,7 +6,11 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.enableCors({
-    origin: ["http://localhost:3000"],
+    origin: [
+      "http://localhost:3000",
+      "https://conectapet-frontend.vercel.app",
+      /^https:\/\/conectapet-frontend-[a-zA-Z0-9]+-paulo-henriques-projects\.vercel\.app$/,
+    ],
     credentials: true,
   });
 
