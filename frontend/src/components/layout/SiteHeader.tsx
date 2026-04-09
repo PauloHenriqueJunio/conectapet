@@ -159,10 +159,10 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
                 </li>
                 <li>
                   <Link
-                    href="/pessoa-fisica/#"
+                    href="/pessoa-fisica/minhas-solicitacoes"
                     className={navClass("minhas-solicitacoes")}
                   >
-                    Minha solicitações
+                    Minhas solicitações
                   </Link>
                 </li>
                 <li>
