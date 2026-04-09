@@ -4,8 +4,6 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { apiFetch } from "@/lib/api";
-import { SiteHeader } from "@/components/layout/SiteHeader";
-import { SiteFooter } from "@/components/layout/SiteFooter";
 import { Mail, Phone, MapPin, Building2, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
@@ -79,20 +77,14 @@ export default function EditarPerfilONGPage() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen flex-col bg-slate-50">
-        <SiteHeader page="dashboard-home" variant="ong" />
-        <main className="flex-1 flex items-center justify-center">
-          <div className="h-12 w-12 animate-spin rounded-full border-4 border-brand-500 border-t-transparent"></div>
-        </main>
+      <div className="flex min-h-[300px] items-center justify-center">
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-brand-500 border-t-transparent"></div>
       </div>
     );
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-slate-50">
-      <SiteHeader page="dashboard-home" variant="ong" />
-
-      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-12 sm:px-6 lg:px-8">
+    <div>
         <div className="mb-8">
           <Link
             href="/ong/dashboard"
@@ -215,9 +207,6 @@ export default function EditarPerfilONGPage() {
             </div>
           </form>
         </div>
-      </main>
-
-      <SiteFooter />
     </div>
   );
 }
