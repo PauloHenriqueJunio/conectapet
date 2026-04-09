@@ -9,7 +9,8 @@ async function bootstrap() {
     origin: [
       "http://localhost:3000",
       "https://conectapet-app.vercel.app",
-      /^https:\/\/conectapet-app-[a-zA-Z0-9-]+-paulo-henriques-projects(?:-[a-zA-Z0-9-]+)?\.vercel\.app$/,
+      "https://conectapet-frontend.vercel.app",
+      /^https:\/\/conectapet-(?:app|frontend)-[a-zA-Z0-9-]+-paulo-henriques-projects(?:-[a-zA-Z0-9-]+)?\.vercel\.app$/,
     ],
     credentials: true,
   });
