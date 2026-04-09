@@ -1,11 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { apiFetch } from "@/lib/api";
 import { Mail, Phone, MapPin, Building2, ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { useCepLookup } from "@/app/(public)/register/hooks/useCepLookup";
+import { maskCEP, maskPhone } from "@/utils/masks";
 
 export default function EditarPerfilPFPage() {
   const { user, token, isLoading } = useAuth();
@@ -33,9 +35,27 @@ export default function EditarPerfilPFPage() {
     }
   }, [user, isLoading]);
 
+  const handleAddressResolved = useCallback((resolvedAddress: string) => {
+    setFormData((prev) => ({ ...prev, address: resolvedAddress }));
+  }, []);
+
+  const handleClearError = useCallback(() => {
+    setError(null);
+  }, []);
+
+  const { isLoadingCep } = useCepLookup({
+    cep: formData.cep,
+    onAddressResolved: handleAddressResolved,
+    onErrorClear: handleClearError,
+  });
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    const finalValue =
+      name === "cep" ? maskCEP(value) : name === "contact" ? maskPhone(value) : value;
+
+    setFormData((prev) => ({ ...prev, [name]: finalValue }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -154,7 +174,12 @@ export default function EditarPerfilPFPage() {
               {/* CEP */}
               <div>
                 <label htmlFor="cep" className="block text-sm font-bold text-slate-900 mb-2">
-                  CEP
+                  CEP{" "}
+                  {isLoadingCep && (
+                    <span className="animate-pulse text-xs text-brand-500">
+                      (Buscando...)
+                    </span>
+                  )}
                 </label>
                 <div className="relative">
                   <Building2 size={18} className="absolute left-3 top-3 text-slate-400" />
