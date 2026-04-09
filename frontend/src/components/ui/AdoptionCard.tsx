@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { HealthBadge } from "@/components/ui/HealthBadge";
 import { AdoptionCardDetails } from "./AdoptionCardDetails";
+import { BRAND_COLORS, STATUS_COLORS } from "@/constants/theme";
 
 interface AdoptionCardProps {
   request: AdoptionRequest;
@@ -26,12 +27,30 @@ export function AdoptionCard({
 }: AdoptionCardProps) {
   const petData = request.pet;
 
+  const statusStyles: Record<AdoptionRequest["status"], React.CSSProperties> = {
+    APPROVED: {
+      backgroundColor: BRAND_COLORS[100],
+      color: BRAND_COLORS[700],
+      borderColor: BRAND_COLORS[200],
+    },
+    REJECTED: {
+      backgroundColor: STATUS_COLORS.danger[100],
+      color: STATUS_COLORS.danger[700],
+      borderColor: STATUS_COLORS.danger[200],
+    },
+    PENDING: {
+      backgroundColor: STATUS_COLORS.warning[100],
+      color: STATUS_COLORS.warning[700],
+      borderColor: STATUS_COLORS.warning[200],
+    },
+  };
+
   const cardStyle =
     request.status === "APPROVED"
-      ? `bg-emerald-50/30 border-emerald-100 ${isExpanded ? "shadow-lg border-emerald-200" : ""}`
+      ? `bg-brand-50/30 border-brand-100 ${isExpanded ? "shadow-lg border-brand-200" : ""}`
       : request.status === "REJECTED"
         ? `bg-red-50/30 border-red-100 ${isExpanded ? "shadow-lg border-red-200" : ""}`
-        : `bg-white border-slate-200 hover:shadow-md ${isExpanded ? "shadow-xl border-emerald-200" : ""}`;
+        : `bg-white border-slate-200 hover:shadow-md ${isExpanded ? "shadow-xl border-brand-200" : ""}`;
 
   return (
     <article
@@ -58,20 +77,15 @@ export function AdoptionCard({
               {petData?.name ?? request.petId}
               <ChevronDown
                 size={18}
-                className={`text-slate-400 transition-transform duration-300 ${isExpanded ? "rotate-180 text-emerald-600" : ""}`}
+                className={`text-slate-400 transition-transform duration-300 ${isExpanded ? "rotate-180 text-brand-600" : ""}`}
               />
             </h3>
             <span className="rounded-full bg-white px-2.5 py-0.5 text-xs font-semibold text-slate-600 border border-slate-200">
               {petData?.species ?? "N/A"}
             </span>
             <span
-              className={`rounded-full px-2.5 py-0.5 text-xs font-bold border ${
-                request.status === "APPROVED"
-                  ? "bg-emerald-100 text-emerald-700 border-emerald-200"
-                  : request.status === "REJECTED"
-                    ? "bg-red-100 text-red-700 border-red-200"
-                    : "bg-amber-100 text-amber-700 border-amber-200"
-              }`}
+              className="rounded-full border px-2.5 py-0.5 text-xs font-bold"
+              style={statusStyles[request.status]}
             >
               {request.status}
             </span>
@@ -91,7 +105,7 @@ export function AdoptionCard({
                 <a
                   href={`mailto:${request.adopter.email}`}
                   onClick={(e) => e.stopPropagation()}
-                  className="text-emerald-600 hover:text-emerald-700 hover:underline flex items-center gap-1 transition-colors z-10"
+                  className="text-brand-600 hover:text-brand-700 hover:underline flex items-center gap-1 transition-colors z-10"
                 >
                   <Mail size={14} />
                   {request.adopter.email}
@@ -119,7 +133,7 @@ export function AdoptionCard({
                   e.stopPropagation();
                   onUpdateStatus(request.id, "APPROVED");
                 }}
-                className="flex-1 sm:flex-none w-full rounded-lg bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-700 transition-colors focus:ring-2 focus:ring-green-500 focus:ring-offset-1 z-10"
+                className="flex-1 sm:flex-none w-full rounded-lg bg-brand-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand-700 transition-colors focus:ring-2 focus:ring-brand-500 focus:ring-offset-1 z-10"
               >
                 Aprovar
               </button>
@@ -136,7 +150,7 @@ export function AdoptionCard({
           ) : (
             <div className="hidden sm:flex flex-col items-center justify-center h-full w-full">
               {request.status === "APPROVED" ? (
-                <div className="flex flex-col items-center text-emerald-600/70">
+                <div className="flex flex-col items-center text-brand-600/70">
                   <CheckCircle2 className="w-8 h-8" />
                   <span className="text-[10px] font-bold uppercase tracking-widest mt-1 whitespace-nowrap">
                     Concluído

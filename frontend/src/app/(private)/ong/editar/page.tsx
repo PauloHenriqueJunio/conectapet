@@ -24,6 +24,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { STATUS_COLORS } from "@/constants/theme";
 
 type FilterStatus = "todos" | "disponiveis" | "adotados";
 
@@ -77,7 +78,7 @@ export default function EditarPage() {
   if (isLoading) {
     return (
       <div className="flex min-h-[400px] items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-emerald-500 border-t-transparent"></div>
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-brand-500 border-t-transparent"></div>
       </div>
     );
   }
@@ -85,7 +86,14 @@ export default function EditarPage() {
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-0">
       {error && (
-        <p className="mb-6 rounded-lg bg-red-100 border border-red-200 px-4 py-3 text-sm text-red-700 shadow-sm">
+        <p
+          className="mb-6 rounded-lg border px-4 py-3 text-sm shadow-sm"
+          style={{
+            backgroundColor: STATUS_COLORS.danger[100],
+            borderColor: STATUS_COLORS.danger[200],
+            color: STATUS_COLORS.danger[700],
+          }}
+        >
           {error}
         </p>
       )}
@@ -149,14 +157,14 @@ function FilterBar({ activeFilter, setActiveFilter, counts }: FilterBarProps) {
             className={`flex-1 sm:flex-initial px-4 py-2 text-sm font-semibold rounded-lg transition-all flex items-center justify-center gap-2 whitespace-nowrap 
               ${
                 isActive
-                  ? "bg-white text-emerald-700 shadow"
+                  ? "bg-white text-brand-700 shadow"
                   : "text-slate-600 hover:bg-white/60 hover:text-slate-900"
               }`}
           >
-            {isActive && <Filter size={15} className="text-emerald-500" />}
+            {isActive && <Filter size={15} className="text-brand-500" />}
             {filter.label}
             <span
-              className={`px-2 py-0.5 rounded-full text-xs transition-colors ${isActive ? "bg-emerald-50 text-emerald-800" : "bg-slate-200 text-slate-600"}`}
+              className={`px-2 py-0.5 rounded-full text-xs transition-colors ${isActive ? "bg-brand-50 text-brand-800" : "bg-slate-200 text-slate-600"}`}
             >
               {filter.count}
             </span>
@@ -188,7 +196,7 @@ function EmptyState({ isFiltering }: { isFiltering: boolean }) {
 function StatusBadge({ isAdopted }: { isAdopted: boolean }) {
   return (
     <span
-      className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold ${isAdopted ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-blue-50 text-blue-700 border-blue-200"}`}
+      className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold ${isAdopted ? "bg-brand-50 text-brand-700 border-brand-200" : "bg-blue-50 text-blue-700 border-blue-200"}`}
     >
       {isAdopted ? "Adotado" : "Disponível"}
     </span>
@@ -231,14 +239,14 @@ function MobilePetList({
           </div>
           <div className="grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
             <div className="flex items-center gap-2 text-slate-600">
-              <PawPrint size={16} className="text-emerald-500" />
+              <PawPrint size={16} className="text-brand-500" />
               <span>
                 <strong className="text-slate-900">Espécie:</strong>{" "}
                 {pet.species}
               </span>
             </div>
             <div className="flex items-center gap-2 text-slate-600">
-              <CalendarDays size={16} className="text-emerald-500" />
+              <CalendarDays size={16} className="text-brand-500" />
               <span>
                 <strong className="text-slate-900">Idade:</strong> {pet.age}{" "}
                 anos
@@ -248,7 +256,7 @@ function MobilePetList({
           <div className="flex flex-col sm:flex-row gap-3 pt-2 border-t border-slate-100 mt-4">
             <button
               onClick={() => onEdit(pet.id)}
-              className="flex-1 flex items-center justify-center gap-2 rounded-lg bg-emerald-50 px-4 py-2.5 text-sm font-semibold text-emerald-700 transition hover:bg-emerald-100"
+              className="flex-1 flex items-center justify-center gap-2 rounded-lg bg-brand-50 px-4 py-2.5 text-sm font-semibold text-brand-700 transition hover:bg-brand-100"
             >
               <Pencil size={16} /> Editar
             </button>
@@ -314,7 +322,7 @@ function DesktopPetTable({
                   <button
                     title="Editar Pet"
                     onClick={() => onEdit(pet.id)}
-                    className="p-2 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
+                    className="p-2 text-brand-600 hover:bg-brand-50 rounded-lg transition-colors"
                   >
                     <Pencil size={18} />
                   </button>

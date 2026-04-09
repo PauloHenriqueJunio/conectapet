@@ -5,6 +5,7 @@ import { useAuth } from "@/context/AuthContext";
 import { AlertCircle, CheckCircle2, Loader2, PawPrint } from "lucide-react";
 import { ImageUpload, PetPhotoPreviewItem } from "@/components/ui/ImageUpload";
 import { HealthChecklist } from "@/components/ui/HealthCheckList";
+import { STATUS_COLORS } from "@/constants/theme";
 
 interface PetFormProps {
   initialData?: any;
@@ -199,9 +200,7 @@ export function PetForm({ initialData, onSubmitSuccess }: PetFormProps) {
 
         if (response.status === 401) {
           logout();
-          throw new Error(
-            "Sua sessão expirou. Faça login novamente.",
-          );
+          throw new Error("Sua sessão expirou. Faça login novamente.");
         }
 
         throw new Error(apiMessage || "Falha ao salvar o pet no servidor.");
@@ -229,14 +228,21 @@ export function PetForm({ initialData, onSubmitSuccess }: PetFormProps) {
   return (
     <div className="w-full">
       {error && (
-        <div className="mb-6 flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 p-4 text-sm font-medium text-red-700 shadow-sm">
+        <div
+          className="mb-6 flex items-center gap-2 rounded-lg border p-4 text-sm font-medium shadow-sm"
+          style={{
+            backgroundColor: STATUS_COLORS.danger[50],
+            borderColor: STATUS_COLORS.danger[200],
+            color: STATUS_COLORS.danger[700],
+          }}
+        >
           <AlertCircle className="h-5 w-5 shrink-0" />
           <p>{error}</p>
         </div>
       )}
 
       {success && (
-        <div className="mb-6 flex items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-sm font-medium text-emerald-700 shadow-sm">
+        <div className="mb-6 flex items-center gap-2 rounded-lg border border-brand-200 bg-brand-50 p-4 text-sm font-medium text-brand-700 shadow-sm">
           <CheckCircle2 className="h-5 w-5 shrink-0" />
           <p>{success}</p>
         </div>
@@ -262,7 +268,7 @@ export function PetForm({ initialData, onSubmitSuccess }: PetFormProps) {
             </label>
             <input
               id="name"
-              className="rounded-lg border border-slate-300 bg-slate-50 px-4 py-2.5 text-slate-900 outline-none focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-500/20"
+              className="rounded-lg border border-slate-300 bg-slate-50 px-4 py-2.5 text-slate-900 outline-none focus:border-brand-500 focus:bg-white focus:ring-2 focus:ring-brand-500/20"
               placeholder="Ex: Rex, Luna..."
               value={petForm.name}
               onChange={handleChange}
@@ -279,7 +285,7 @@ export function PetForm({ initialData, onSubmitSuccess }: PetFormProps) {
             </label>
             <select
               id="species"
-              className="rounded-lg border border-slate-300 bg-slate-50 px-4 py-2.5 text-slate-900 outline-none focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-500/20"
+              className="rounded-lg border border-slate-300 bg-slate-50 px-4 py-2.5 text-slate-900 outline-none focus:border-brand-500 focus:bg-white focus:ring-2 focus:ring-brand-500/20"
               value={petForm.species}
               onChange={handleChange}
               required
@@ -304,7 +310,7 @@ export function PetForm({ initialData, onSubmitSuccess }: PetFormProps) {
             </label>
             <select
               id="sex"
-              className="rounded-lg border border-slate-300 bg-slate-50 px-4 py-2.5 text-slate-900 outline-none focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-500/20"
+              className="rounded-lg border border-slate-300 bg-slate-50 px-4 py-2.5 text-slate-900 outline-none focus:border-brand-500 focus:bg-white focus:ring-2 focus:ring-brand-500/20"
               value={petForm.sex}
               onChange={handleChange}
               required
@@ -326,7 +332,7 @@ export function PetForm({ initialData, onSubmitSuccess }: PetFormProps) {
             </label>
             <select
               id="size"
-              className="rounded-lg border border-slate-300 bg-slate-50 px-4 py-2.5 text-slate-900 outline-none focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-500/20"
+              className="rounded-lg border border-slate-300 bg-slate-50 px-4 py-2.5 text-slate-900 outline-none focus:border-brand-500 focus:bg-white focus:ring-2 focus:ring-brand-500/20"
               value={petForm.size}
               onChange={handleChange}
               required
@@ -351,7 +357,7 @@ export function PetForm({ initialData, onSubmitSuccess }: PetFormProps) {
               id="age"
               type="number"
               min={0}
-              className="rounded-lg border border-slate-300 bg-slate-50 px-4 py-2.5 text-slate-900 outline-none focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-500/20"
+              className="rounded-lg border border-slate-300 bg-slate-50 px-4 py-2.5 text-slate-900 outline-none focus:border-brand-500 focus:bg-white focus:ring-2 focus:ring-brand-500/20"
               placeholder="0"
               value={petForm.age === 0 ? "" : petForm.age}
               onChange={handleChange}
@@ -369,7 +375,7 @@ export function PetForm({ initialData, onSubmitSuccess }: PetFormProps) {
             </label>
             <input
               id="donationReason"
-              className="rounded-lg border border-slate-300 bg-slate-50 px-4 py-2.5 text-slate-900 outline-none focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-500/20"
+              className="rounded-lg border border-slate-300 bg-slate-50 px-4 py-2.5 text-slate-900 outline-none focus:border-brand-500 focus:bg-white focus:ring-2 focus:ring-brand-500/20"
               placeholder="Ex: Encontrei na rua, mudança..."
               value={petForm.donationReason}
               onChange={handleChange}
@@ -404,7 +410,7 @@ export function PetForm({ initialData, onSubmitSuccess }: PetFormProps) {
           <textarea
             id="description"
             rows={4}
-            className="resize-none rounded-lg border border-slate-300 bg-slate-50 px-4 py-3 text-slate-900 outline-none focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-500/20"
+            className="resize-none rounded-lg border border-slate-300 bg-slate-50 px-4 py-3 text-slate-900 outline-none focus:border-brand-500 focus:bg-white focus:ring-2 focus:ring-brand-500/20"
             placeholder="Conte um pouco sobre a história do pet..."
             value={petForm.description}
             onChange={handleChange}
@@ -416,7 +422,7 @@ export function PetForm({ initialData, onSubmitSuccess }: PetFormProps) {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="flex w-full items-center justify-center gap-2 rounded-lg bg-emerald-600 px-6 py-3 font-semibold text-white shadow-sm transition-all hover:bg-emerald-700 focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
+            className="flex w-full items-center justify-center gap-2 rounded-lg bg-brand-600 px-6 py-3 font-semibold text-white shadow-sm transition-all hover:bg-brand-700 focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
           >
             {isSubmitting ? (
               <>

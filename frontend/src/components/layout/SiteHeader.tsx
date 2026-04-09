@@ -4,14 +4,6 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { Settings } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
-import {
-  COLOR_COMBINATIONS,
-  NEUTRAL_COLORS,
-  BRAND_COLORS,
-  combineClasses,
-  TRANSITIONS,
-  Z_INDEX,
-} from "@/constants/theme";
 
 type HeaderVariant = "public" | "ong" | "pessoa-fisica";
 
@@ -235,7 +227,7 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
                 <button
                   type="button"
                   onClick={() => setIsUserDropdownOpen((prev) => !prev)}
-                  className="rounded-lg p-2 text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
+                  className="rounded-lg p-2 text-slate-600 transition hover:text-slate-900"
                   aria-label="Abrir menu do perfil"
                 >
                   <Settings size={21} />

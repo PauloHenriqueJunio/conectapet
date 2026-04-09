@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Home, Search, ShieldAlert } from "lucide-react";
+import { STATUS_COLORS } from "@/constants/theme";
 
 export default function NotFound() {
   return (
@@ -7,7 +8,13 @@ export default function NotFound() {
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(14,165,233,0.14),transparent_42%),radial-gradient(circle_at_80%_0%,rgba(34,197,94,0.12),transparent_35%),radial-gradient(circle_at_50%_90%,rgba(249,115,22,0.10),transparent_40%)]" />
 
       <section className="relative w-full max-w-2xl rounded-3xl border border-slate-200/70 bg-white/90 p-8 text-center shadow-2xl backdrop-blur sm:p-12">
-        <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-amber-100 text-amber-700">
+        <div
+          className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl"
+          style={{
+            backgroundColor: STATUS_COLORS.warning[100],
+            color: STATUS_COLORS.warning[700],
+          }}
+        >
           <ShieldAlert className="h-8 w-8" />
         </div>
 

@@ -5,6 +5,7 @@ import { SiteHeader } from "@/components/layout/SiteHeader";
 import { apiFetch } from "@/lib/api";
 import { useEffect, useState } from "react";
 import { Mail, ShieldCheck, Phone, MapPin } from "lucide-react";
+import { STATUS_COLORS } from "@/constants/theme";
 
 interface ONG {
   id: string;
@@ -71,7 +72,7 @@ export default function OngsPage() {
 
       {error && (
         <div className="text-center py-10">
-          <p className="text-red-600">Erro: {error}</p>
+          <p style={{ color: STATUS_COLORS.danger[700] }}>Erro: {error}</p>
         </div>
       )}
 
@@ -101,7 +102,7 @@ export default function OngsPage() {
                 <p className="text-base font-medium text-brand-700 flex items-center gap-1">
                   <Mail size={19} />
                   <a
-                    className="text-emerald-600 hover:text-emerald-700 font-medium underline-offset-2 hover:underline"
+                    className="text-brand-600 hover:text-brand-700 font-medium underline-offset-2 hover:underline"
                     href={`mailto:${ong.email}`}
                   >
                     <span className="text-neutral-800 font-semibold">:</span>{" "}

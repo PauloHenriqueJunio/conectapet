@@ -4,10 +4,18 @@ import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { apiFetch } from "@/lib/api";
-import { Mail, Phone, MapPin, Building2, ArrowLeft, LandPlot } from "lucide-react";
+import {
+  Mail,
+  Phone,
+  MapPin,
+  Building2,
+  ArrowLeft,
+  LandPlot,
+} from "lucide-react";
 import Link from "next/link";
 import { useCepLookup } from "@/app/(public)/register/hooks/useCepLookup";
 import { maskCEP, maskPhone } from "@/utils/masks";
+import { STATUS_COLORS } from "@/constants/theme";
 
 export default function EditarPerfilPFPage() {
   const { user, token, isLoading } = useAuth();
@@ -151,7 +159,14 @@ export default function EditarPerfilPFPage() {
 
       <div className="max-w-2xl">
         {error && (
-          <div className="mb-6 rounded-2xl bg-red-50 p-4 border border-red-100 text-red-600 text-center font-medium animate-in fade-in duration-300">
+          <div
+            className="mb-6 rounded-2xl border p-4 text-center font-medium animate-in fade-in duration-300"
+            style={{
+              backgroundColor: STATUS_COLORS.danger[50],
+              borderColor: STATUS_COLORS.danger[100],
+              color: STATUS_COLORS.danger[700],
+            }}
+          >
             {error}
           </div>
         )}

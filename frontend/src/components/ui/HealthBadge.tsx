@@ -1,5 +1,5 @@
 import React from "react";
-import { getBadgeClasses } from "@/constants/theme";
+import { NEUTRAL_COLORS, STATUS_COLORS } from "@/constants/theme";
 
 export interface HealthBadgeProps {
   label: string;
@@ -12,13 +12,26 @@ export const HealthBadge = ({
   variant = "default",
   isLarge,
 }: HealthBadgeProps) => {
-  const baseStyles = {
-    default: "bg-slate-100 text-slate-700 border-slate-200",
-    success: "bg-emerald-50 text-emerald-700 border-emerald-100",
-    warning: "bg-amber-50 text-amber-700 border-amber-100",
+  const styleByVariant: Record<
+    NonNullable<HealthBadgeProps["variant"]>,
+    React.CSSProperties
+  > = {
+    default: {
+      backgroundColor: NEUTRAL_COLORS[100],
+      color: NEUTRAL_COLORS[700],
+      borderColor: NEUTRAL_COLORS[200],
+    },
+    success: {
+      backgroundColor: STATUS_COLORS.success[50],
+      color: STATUS_COLORS.success[700],
+      borderColor: STATUS_COLORS.success[200],
+    },
+    warning: {
+      backgroundColor: STATUS_COLORS.warning[50],
+      color: STATUS_COLORS.warning[700],
+      borderColor: STATUS_COLORS.warning[200],
+    },
   };
-
-  const styles = baseStyles;
 
   const sizeClasses = isLarge
     ? "px-3 py-1.5 text-xs font-semibold"
@@ -26,7 +39,8 @@ export const HealthBadge = ({
 
   return (
     <span
-      className={`rounded-full border transition-all duration-300 ${styles[variant]} ${sizeClasses}`}
+      className={`rounded-full border transition-all duration-300 ${sizeClasses}`}
+      style={styleByVariant[variant]}
     >
       {label}
     </span>
