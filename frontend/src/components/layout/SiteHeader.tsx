@@ -16,6 +16,7 @@ type HeaderPage =
   | "dashboard-cadastrar-pet"
   | "dashboard-editar"
   | "minhas-solicitacoes"
+  | "editar-perfil"
   | "pet-profile";
 
 type HeaderNavKey = HeaderPage; // Simplifiquei para usar as mesmas chaves
@@ -142,6 +143,14 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
                     Minha solicitações
                   </Link>
                 </li>
+                <li>
+                  <Link
+                    href="/pessoa-fisica/editar-perfil"
+                    className={navClass("editar-perfil")}
+                  >
+                    Editar Perfil
+                  </Link>
+                </li>
               </>
             )}
 
@@ -169,7 +178,15 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
                     href="/ong/editar"
                     className={navClass("dashboard-editar")}
                   >
-                    Editar
+                    Editar Pets
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/ong/editar-perfil"
+                    className={navClass("editar-perfil")}
+                  >
+                    Editar Perfil
                   </Link>
                 </li>
               </>
@@ -266,6 +283,15 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
                     Colocar na adoção
                   </Link>
                 </li>
+                <li>
+                  <Link
+                    href="/pessoa-fisica/editar-perfil"
+                    className="block rounded-lg px-3 py-2 hover:bg-brand-50 text-brand-700"
+                    onClick={closeMobileMenu}
+                  >
+                    Editar Perfil
+                  </Link>
+                </li>
               </>
             )}
 
@@ -288,6 +314,15 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
                     onClick={closeMobileMenu}
                   >
                     Cadastrar Pet
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/ong/editar-perfil"
+                    className="block rounded-lg px-3 py-2 hover:bg-brand-50 text-brand-700"
+                    onClick={closeMobileMenu}
+                  >
+                    Editar Perfil
                   </Link>
                 </li>
               </>
