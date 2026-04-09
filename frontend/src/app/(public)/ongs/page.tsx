@@ -4,7 +4,7 @@ import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { apiFetch } from "@/lib/api";
 import { useEffect, useState } from "react";
-import { Mail, ShieldCheck, Phone, MapPin } from "lucide-react";
+import { Mail, ShieldCheck, Phone, MapPin, Building2 } from "lucide-react";
 import { STATUS_COLORS } from "@/constants/theme";
 
 interface ONG {
@@ -75,11 +75,11 @@ export default function OngsPage() {
           </div>
         )}
 
-      {error && (
-        <div className="text-center py-10">
-          <p style={{ color: STATUS_COLORS.danger[700] }}>Erro: {error}</p>
-        </div>
-      )}
+        {error && (
+          <div className="text-center py-10">
+            <p style={{ color: STATUS_COLORS.danger[700] }}>Erro: {error}</p>
+          </div>
+        )}
 
         {!loading && !error && ongs.length === 0 && (
           <div className="py-20 text-center">
@@ -90,54 +90,54 @@ export default function OngsPage() {
           </div>
         )}
 
-      {!loading && !error && ongs.length > 0 && (
-        <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {ongs.map((ong) => (
-            <article
-              key={ong.id}
-              className="rounded-2xl bg-white p-5 shadow-lg ring-1 ring-slate-100 hover:shadow-xl transition-shadow"
-            >
-              <div className="flex flex-col justify-between items-start gap-2">
-                <h2 className="text-2xl font-bold text-slate-800 flex-1">
-                  {ong.name}
-                </h2>
-                <p className="text-base text-brand-700 font-medium flex items-center gap-1">
-                  <ShieldCheck size={19} />
-                  <span className="text-neutral-800 font-semibold">
-                    : {formatCnpj(ong.cnpj)}
-                  </span>
-                </p>
-                <p className="text-base font-medium text-brand-700 flex items-center gap-1">
-                  <Mail size={19} />
-                  <a
-                    className="text-brand-600 hover:text-brand-700 font-medium underline-offset-2 hover:underline"
-                    href={`mailto:${ong.email}`}
-                  >
-                    <span className="text-neutral-800 font-semibold">:</span>{" "}
-                    {ong.email}
-                  </a>
-                </p>
-                <p className="text-base font-medium text-brand-700 flex items-center gap-1">
-                  <Phone size={19} />
-                  <span className="text-neutral-800 font-semibold">
-                    : {ong.contact ?? "Não informado"}
-                  </span>
-                </p>
+        {!loading && !error && ongs.length > 0 && (
+          <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {ongs.map((ong) => (
+              <article
+                key={ong.id}
+                className="rounded-2xl bg-white p-5 shadow-lg ring-1 ring-slate-100 hover:shadow-xl transition-shadow"
+              >
+                <div className="flex flex-col justify-between items-start gap-2">
+                  <h2 className="text-2xl font-bold text-slate-800 flex-1">
+                    {ong.name}
+                  </h2>
+                  <p className="text-base text-brand-700 font-medium flex items-center gap-1">
+                    <ShieldCheck size={19} />
+                    <span className="text-neutral-800 font-semibold">
+                      : {formatCnpj(ong.cnpj)}
+                    </span>
+                  </p>
+                  <p className="text-base font-medium text-brand-700 flex items-center gap-1">
+                    <Mail size={19} />
+                    <a
+                      className="text-brand-600 hover:text-brand-700 font-medium underline-offset-2 hover:underline"
+                      href={`mailto:${ong.email}`}
+                    >
+                      <span className="text-neutral-800 font-semibold">:</span>{" "}
+                      {ong.email}
+                    </a>
+                  </p>
+                  <p className="text-base font-medium text-brand-700 flex items-center gap-1">
+                    <Phone size={19} />
+                    <span className="text-neutral-800 font-semibold">
+                      : {ong.contact ?? "Não informado"}
+                    </span>
+                  </p>
 
-                <p className="text-base font-medium text-brand-700 flex items-center gap-1">
-                  <MapPin size={19} />
-                  <span className="text-neutral-800 font-semibold">
-                    :{" "}
-                    {ong.state && ong.city
-                      ? `${ong.state} - ${ong.city}`
-                      : "Não informado"}
-                  </span>
-                </p>
-              </div>
-            </article>
-          ))}
-        </section>
-      )}
+                  <p className="text-base font-medium text-brand-700 flex items-center gap-1">
+                    <MapPin size={19} />
+                    <span className="text-neutral-800 font-semibold">
+                      :{" "}
+                      {ong.state && ong.city
+                        ? `${ong.state} - ${ong.city}`
+                        : "Não informado"}
+                    </span>
+                  </p>
+                </div>
+              </article>
+            ))}
+          </section>
+        )}
         {!loading && !error && ongs.length > 0 && (
           <>
             <div className="mb-8">
