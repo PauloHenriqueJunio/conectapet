@@ -80,8 +80,19 @@ export function RegisterForm() {
         cpf: cpf || undefined,
         cnpj: cnpj || undefined,
       });
-    } catch {
-      setError("Falha ao cadastrar. Verifique os dados.");
+    } catch (err) {
+      const rawMessage = err instanceof Error ? err.message : "";
+      try {
+        const parsed = JSON.parse(rawMessage) as {
+          message?: string | string[];
+        };
+        const backendMessage = Array.isArray(parsed.message)
+          ? parsed.message[0]
+          : parsed.message;
+        setError(backendMessage || "Falha ao cadastrar. Verifique os dados.");
+      } catch {
+        setError(rawMessage || "Falha ao cadastrar. Verifique os dados.");
+      }
     } finally {
       setIsSubmitting(false);
     }

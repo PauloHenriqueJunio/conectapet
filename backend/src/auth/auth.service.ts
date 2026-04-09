@@ -9,6 +9,7 @@ import * as bcrypt from "bcrypt";
 import { PrismaService } from "../prisma/prisma.service";
 import { LoginDto } from "./dto/login.dto";
 import { RegisterDto } from "./dto/register.dto";
+import { UpdateProfileDto } from "./dto/update-profile.dto";
 import { CepValidationService } from "./services/cep-validation.service";
 import { LoginAttemptService } from "./services/login-attempt.service";
 import { JwtPayload } from "./types/jwt-payload.type";
@@ -185,7 +186,7 @@ export class AuthService {
       },
     };
   }
-  async updateProfile(userId: string, dto: any) {
+  async updateProfile(userId: string, dto: UpdateProfileDto) {
     const normalizedCep = dto.cep?.replace(/\D/g, "") ?? "";
     const trimmedContact = dto.contact?.trim() ?? "";
     const trimmedAddress = dto.address?.trim() ?? "";
@@ -194,7 +195,14 @@ export class AuthService {
       throw new BadRequestException("CEP inválido. Deve conter 8 dígitos.");
     }
 
-    const updateData: any = {};
+    const updateData: {
+      email?: string;
+      contact?: string | null;
+      address?: string | null;
+      cep?: string;
+      state?: string;
+      city?: string;
+    } = {};
 
     if (dto.email) {
       const existingEmail = await this.prisma.user.findUnique({
