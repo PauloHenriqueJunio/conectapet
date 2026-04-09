@@ -89,9 +89,15 @@ npm run prisma:seed
 O seed cria:
 
 - 4 ONGs mockadas
-- 2 ADOTANTES
-- pets com status disponivel e adotado
-- solicitacoes de adocao com status PENDING, APPROVED e REJECTED
+- 2 adotantes (role `PESSOA_FISICA`)
+- 8 pets com dados de saude (castracao, vacinas, vermifugacao e observacoes)
+- 4 solicitacoes de adocao com status PENDING, APPROVED e REJECTED
+- 1 pet marcado como adotado (`isAdopted = true`)
+
+Aviso sobre adotantes:
+
+- No banco, os adotantes sao usuarios com role `PESSOA_FISICA`.
+- Onde aparecer "ADOTANTE" no frontend/fluxo da aplicacao, considere equivalente a `PESSOA_FISICA`.
 
 Usuarios de teste (somente ambiente local/dev):
 
@@ -99,8 +105,8 @@ Usuarios de teste (somente ambiente local/dev):
 - ONG: ong2@conectapet.dev
 - ONG: ong3@conectapet.dev
 - ONG: ong4@conectapet.dev
-- ADOTANTE: adotante1@conectapet.dev
-- ADOTANTE: adotante2@conectapet.dev
+- PESSOA_FISICA (adotante): adotante1@conectapet.dev
+- PESSOA_FISICA (adotante): adotante2@conectapet.dev
 - Senha para todos: 123456
 
 ## 5. Iniciar os servidores em desenvolvimento
@@ -138,19 +144,48 @@ Pets:
 - POST /pets (ONG)
 - PATCH /pets/:id (ONG dona)
 - GET /pets/my-pets (ONG)
+- DELETE /pets/:id (ONG dona)
 
 Adoções:
 
-- POST /adoptions (ADOTANTE)
-- GET /adoptions/my-requests (ADOTANTE)
+- POST /adoptions (PESSOA_FISICA/adotante)
+- GET /adoptions/my-requests (PESSOA_FISICA/adotante)
 - GET /adoptions/ong-requests (ONG)
 - PATCH /adoptions/:id/status (ONG dona do pet)
 
 ## Segurança implementada
 
 - Hash de senha com Bcrypt (salt rounds 12)
-- JWT com payload contendo userId e role
+- JWT com payload contendo userId e role (JWT_SECRET obrigatório)
 - Guard de autenticação JWT
-- Guard de autorização por role (ONG e ADOTANTE)
+- Guard de autorização por role (ONG e PESSOA_FISICA/adotante)
 - Validação de DTO com class-validator e ValidationPipe global (whitelist + forbidNonWhitelisted)
 - Validação de ownership para edição de pet e atualização de status de adoção
+- Rate limit global (100 req/60s por cliente)
+- Rate limit em endpoints sensíveis (login/register: 5 req/60s)
+- Bloqueio temporário por conta após múltiplas falhas de login
+- Mensagem padronizada para erro 429 com tempo de espera
+
+## Frontend (rotas inexistentes)
+
+- Rotas inválidas no frontend exibem página customizada em vez do 404 padrão.
+- Arquivo da tela: `frontend/src/app/not-found.tsx`
+
+## Testes e validação
+
+Backend:
+
+```bash
+cd backend
+npm test
+npm run build
+```
+
+Frontend:
+
+```bash
+cd frontend
+npm run build
+```
+
+Observação: o comando `npm run lint` no frontend pode falhar com a versão atual do Next CLI. Use `npm run build` para validação de compilação e tipos.

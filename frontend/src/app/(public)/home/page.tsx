@@ -7,6 +7,7 @@ import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { Pet } from "@/types/api";
 import { MapPin, Camera, Heart, MousePointerClick } from "lucide-react";
+import { STATUS_COLORS } from "@/constants/theme";
 
 export default function HomePage() {
   const [pets, setPets] = useState<Pet[]>([]);
@@ -100,7 +101,14 @@ export default function HomePage() {
         </section>
 
         {error && (
-          <div className="mb-8 rounded-2xl bg-red-50 p-4 border border-red-100 text-red-600 text-center font-medium">
+          <div
+            className="mb-8 rounded-2xl border p-4 text-center font-medium"
+            style={{
+              backgroundColor: STATUS_COLORS.danger[50],
+              borderColor: STATUS_COLORS.danger[100],
+              color: STATUS_COLORS.danger[700],
+            }}
+          >
             {error}
           </div>
         )}

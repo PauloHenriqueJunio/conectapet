@@ -1,4 +1,5 @@
 import { AlertCircle } from "lucide-react";
+import { STATUS_COLORS } from "@/constants/theme";
 
 interface HealthChecklistProps {
   species: string;
@@ -39,7 +40,7 @@ export function HealthChecklist({ species, ...props }: HealthChecklistProps) {
         <label className="group flex cursor-pointer items-center gap-3">
           <input
             type="checkbox"
-            className="h-5 w-5 cursor-pointer rounded border-slate-300 text-emerald-600 transition-colors focus:ring-emerald-500"
+            className="h-5 w-5 cursor-pointer rounded border-slate-300 text-brand-600 transition-colors focus:ring-brand-500"
             checked={props.isCastrated}
             onChange={(e) => props.onChange("isCastrated", e.target.checked)}
           />
@@ -51,7 +52,7 @@ export function HealthChecklist({ species, ...props }: HealthChecklistProps) {
         <label className="group flex cursor-pointer items-center gap-3">
           <input
             type="checkbox"
-            className="h-5 w-5 cursor-pointer rounded border-slate-300 text-emerald-600 transition-colors focus:ring-emerald-500"
+            className="h-5 w-5 cursor-pointer rounded border-slate-300 text-brand-600 transition-colors focus:ring-brand-500"
             checked={props.isDewormed}
             onChange={(e) => props.onChange("isDewormed", e.target.checked)}
           />
@@ -64,7 +65,7 @@ export function HealthChecklist({ species, ...props }: HealthChecklistProps) {
           <label className="group flex cursor-pointer items-center gap-3">
             <input
               type="checkbox"
-              className="h-5 w-5 cursor-pointer rounded border-slate-300 text-emerald-600 transition-colors focus:ring-emerald-500"
+              className="h-5 w-5 cursor-pointer rounded border-slate-300 text-brand-600 transition-colors focus:ring-brand-500"
               checked={props.hasVaccineRabies}
               onChange={(e) =>
                 props.onChange("hasVaccineRabies", e.target.checked)
@@ -82,7 +83,7 @@ export function HealthChecklist({ species, ...props }: HealthChecklistProps) {
             <label className="group flex cursor-pointer items-center gap-3">
               <input
                 type="checkbox"
-                className="h-5 w-5 cursor-pointer rounded border-slate-300 text-emerald-600 transition-colors focus:ring-emerald-500"
+                className="h-5 w-5 cursor-pointer rounded border-slate-300 text-brand-600 transition-colors focus:ring-brand-500"
                 checked={props.hasVaccineV8}
                 onChange={(e) =>
                   props.onChange("hasVaccineV8", e.target.checked)
@@ -95,7 +96,7 @@ export function HealthChecklist({ species, ...props }: HealthChecklistProps) {
             <label className="group flex cursor-pointer items-center gap-3">
               <input
                 type="checkbox"
-                className="h-5 w-5 cursor-pointer rounded border-slate-300 text-emerald-600 transition-colors focus:ring-emerald-500"
+                className="h-5 w-5 cursor-pointer rounded border-slate-300 text-brand-600 transition-colors focus:ring-brand-500"
                 checked={props.hasVaccineGiardia}
                 onChange={(e) =>
                   props.onChange("hasVaccineGiardia", e.target.checked)
@@ -108,7 +109,7 @@ export function HealthChecklist({ species, ...props }: HealthChecklistProps) {
             <label className="group flex cursor-pointer items-center gap-3">
               <input
                 type="checkbox"
-                className="h-5 w-5 cursor-pointer rounded border-slate-300 text-emerald-600 transition-colors focus:ring-emerald-500"
+                className="h-5 w-5 cursor-pointer rounded border-slate-300 text-brand-600 transition-colors focus:ring-brand-500"
                 checked={props.hasVaccineFlu}
                 onChange={(e) =>
                   props.onChange("hasVaccineFlu", e.target.checked)
@@ -127,7 +128,7 @@ export function HealthChecklist({ species, ...props }: HealthChecklistProps) {
             <label className="group flex cursor-pointer items-center gap-3">
               <input
                 type="checkbox"
-                className="h-5 w-5 cursor-pointer rounded border-slate-300 text-emerald-600 transition-colors focus:ring-emerald-500"
+                className="h-5 w-5 cursor-pointer rounded border-slate-300 text-brand-600 transition-colors focus:ring-brand-500"
                 checked={props.hasVaccineFeline}
                 onChange={(e) =>
                   props.onChange("hasVaccineFeline", e.target.checked)
@@ -140,7 +141,7 @@ export function HealthChecklist({ species, ...props }: HealthChecklistProps) {
             <label className="group flex cursor-pointer items-center gap-3">
               <input
                 type="checkbox"
-                className="h-5 w-5 cursor-pointer rounded border-slate-300 text-emerald-600 transition-colors focus:ring-emerald-500"
+                className="h-5 w-5 cursor-pointer rounded border-slate-300 text-brand-600 transition-colors focus:ring-brand-500"
                 checked={props.hasVaccineFelv}
                 onChange={(e) =>
                   props.onChange("hasVaccineFelv", e.target.checked)
@@ -157,7 +158,7 @@ export function HealthChecklist({ species, ...props }: HealthChecklistProps) {
           <label className="group flex cursor-pointer items-center gap-3">
             <input
               type="checkbox"
-              className="h-5 w-5 cursor-pointer rounded border-slate-300 text-emerald-600 transition-colors focus:ring-emerald-500"
+              className="h-5 w-5 cursor-pointer rounded border-slate-300 text-brand-600 transition-colors focus:ring-brand-500"
               checked={props.hasHistoryOfIllness}
               onChange={(e) =>
                 props.onChange("hasHistoryOfIllness", e.target.checked)
@@ -170,7 +171,7 @@ export function HealthChecklist({ species, ...props }: HealthChecklistProps) {
           <label className="group flex cursor-pointer items-center gap-3 mt-3">
             <input
               type="checkbox"
-              className="h-5 w-5 cursor-pointer rounded border-slate-300 text-emerald-600 transition-colors focus:ring-emerald-500"
+              className="h-5 w-5 cursor-pointer rounded border-slate-300 text-brand-600 transition-colors focus:ring-brand-500"
               checked={props.hasOtherHealthInfo}
               onChange={(e) =>
                 props.onChange("hasOtherHealthInfo", e.target.checked)
@@ -185,7 +186,10 @@ export function HealthChecklist({ species, ...props }: HealthChecklistProps) {
 
       {props.hasHistoryOfIllness && (
         <div className="flex flex-col gap-2 rounded-lg bg-white p-4 shadow-sm ring-1 ring-slate-200 animate-in fade-in slide-in-from-top-2 duration-300">
-          <div className="flex items-center gap-2 text-amber-600">
+          <div
+            className="flex items-center gap-2"
+            style={{ color: STATUS_COLORS.warning[700] }}
+          >
             <AlertCircle size={14} />
             <span className="text-xs font-bold uppercase tracking-wider">
               Detalhes Médicos
@@ -207,7 +211,7 @@ export function HealthChecklist({ species, ...props }: HealthChecklistProps) {
 
       {props.hasOtherHealthInfo && (
         <div className="flex flex-col gap-2 rounded-lg bg-white p-4 shadow-sm ring-1 ring-slate-200 animate-in fade-in slide-in-from-top-2 duration-300">
-          <div className="flex items-center gap-2 text-emerald-600">
+          <div className="flex items-center gap-2 text-brand-600">
             <AlertCircle size={14} />
             <span className="text-xs font-bold uppercase tracking-wider">
               Outras Informações

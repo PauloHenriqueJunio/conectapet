@@ -1,8 +1,6 @@
 import {
-  BadGatewayException,
   BadRequestException,
   Injectable,
-  ServiceUnavailableException,
   UnauthorizedException,
 } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
@@ -11,58 +9,19 @@ import * as bcrypt from "bcrypt";
 import { PrismaService } from "../prisma/prisma.service";
 import { LoginDto } from "./dto/login.dto";
 import { RegisterDto } from "./dto/register.dto";
+import { UpdateProfileDto } from "./dto/update-profile.dto";
+import { CepValidationService } from "./services/cep-validation.service";
+import { LoginAttemptService } from "./services/login-attempt.service";
 import { JwtPayload } from "./types/jwt-payload.type";
-
-interface BrasilApiCepResponse {
-  state: string;
-  city: string;
-}
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
+    private readonly cepValidationService: CepValidationService,
+    private readonly loginAttemptService: LoginAttemptService,
   ) {}
-
-  private async validateCepWithBrasilApi(cep: string) {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 5000);
-
-    let response: Response;
-
-    try {
-      response = await fetch(`https://brasilapi.com.br/api/cep/v1/${cep}`, {
-        signal: controller.signal,
-      });
-    } catch (error) {
-      if (error instanceof Error && error.name === "AbortError") {
-        throw new ServiceUnavailableException(
-          "Tempo de validação do CEP esgotado. Tente novamente.",
-        );
-      }
-
-      throw new ServiceUnavailableException(
-        "Serviço de validação de CEP indisponível no momento.",
-      );
-    } finally {
-      clearTimeout(timeout);
-    }
-
-    if (!response.ok) {
-      if (response.status === 400 || response.status === 404) {
-        throw new BadRequestException("CEP inválido ou não encontrado.");
-      }
-
-      throw new BadGatewayException("Falha ao consultar serviço de CEP.");
-    }
-
-    const data = (await response.json()) as BrasilApiCepResponse;
-    return {
-      state: data.state,
-      city: data.city,
-    };
-  }
 
   async register(dto: RegisterDto) {
     const normalizedCpf = dto.cpf?.replace(/\D/g, "") ?? "";
@@ -125,7 +84,7 @@ export class AuthService {
       }
     }
 
-    const cepData = await this.validateCepWithBrasilApi(normalizedCep);
+    const cepData = await this.cepValidationService.validate(normalizedCep);
 
     const passwordHash = await bcrypt.hash(dto.password, 12);
 
@@ -178,11 +137,16 @@ export class AuthService {
   }
 
   async login(dto: LoginDto) {
+    const normalizedEmail = dto.email.toLowerCase();
+
+    this.loginAttemptService.assertNotBlocked(normalizedEmail);
+
     const user = await this.prisma.user.findUnique({
-      where: { email: dto.email.toLowerCase() },
+      where: { email: normalizedEmail },
     });
 
     if (!user) {
+      this.loginAttemptService.registerFailure(normalizedEmail);
       throw new UnauthorizedException("Credenciais inválidas.");
     }
 
@@ -192,8 +156,11 @@ export class AuthService {
     );
 
     if (!passwordMatches) {
+      this.loginAttemptService.registerFailure(normalizedEmail);
       throw new UnauthorizedException("Credenciais inválidas.");
     }
+
+    this.loginAttemptService.registerSuccess(normalizedEmail);
 
     const payload: JwtPayload = {
       userId: user.id,
@@ -219,7 +186,72 @@ export class AuthService {
       },
     };
   }
+  async updateProfile(userId: string, dto: UpdateProfileDto) {
+    const normalizedCep = dto.cep?.replace(/\D/g, "") ?? "";
+    const trimmedContact = dto.contact?.trim() ?? "";
+    const trimmedAddress = dto.address?.trim() ?? "";
 
+    if (normalizedCep && normalizedCep.length !== 8) {
+      throw new BadRequestException("CEP inválido. Deve conter 8 dígitos.");
+    }
+
+    const updateData: {
+      email?: string;
+      contact?: string | null;
+      address?: string | null;
+      cep?: string;
+      state?: string;
+      city?: string;
+    } = {};
+
+    if (dto.email) {
+      const existingEmail = await this.prisma.user.findUnique({
+        where: { email: dto.email.toLowerCase() },
+        select: { id: true },
+      });
+
+      if (existingEmail && existingEmail.id !== userId) {
+        throw new BadRequestException("Este email já está cadastrado.");
+      }
+
+      updateData.email = dto.email.toLowerCase();
+    }
+
+    if (dto.contact !== undefined) {
+      updateData.contact = trimmedContact || null;
+    }
+
+    if (dto.address !== undefined) {
+      updateData.address = trimmedAddress || null;
+    }
+
+    if (normalizedCep) {
+      const cepData = await this.cepValidationService.validate(normalizedCep);
+      updateData.cep = normalizedCep;
+      updateData.state = cepData.state;
+      updateData.city = cepData.city;
+    }
+
+    const user = await this.prisma.user.update({
+      where: { id: userId },
+      data: updateData,
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        cep: true,
+        state: true,
+        city: true,
+        contact: true,
+        address: true,
+        cpf: true,
+        cnpj: true,
+        role: true,
+      },
+    });
+
+    return user;
+  }
   async getOngs() {
     return this.prisma.user.findMany({
       where: { role: Role.ONG },

@@ -30,17 +30,30 @@ export class AdoptionService {
       );
     }
 
-    return this.prisma.adoptionRequest.create({
-      data: {
-        petId: dto.petId,
-        adopterId,
-        message: dto.message,
-        status: AdoptionStatus.PENDING,
-      },
-      include: {
-        pet: true,
-      },
-    });
+    try {
+      return await this.prisma.adoptionRequest.create({
+        data: {
+          petId: dto.petId,
+          adopterId,
+          message: dto.message,
+          status: AdoptionStatus.PENDING,
+        },
+        include: {
+          pet: true,
+        },
+      });
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === "P2002"
+      ) {
+        throw new BadRequestException(
+          "Você já enviou uma solicitação para este pet.",
+        );
+      }
+
+      throw error;
+    }
   }
 
   myRequests(adopterId: string) {

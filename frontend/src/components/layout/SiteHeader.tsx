@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Settings } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 
 type HeaderVariant = "public" | "ong" | "pessoa-fisica";
@@ -15,6 +16,8 @@ type HeaderPage =
   | "dashboard-home"
   | "dashboard-cadastrar-pet"
   | "dashboard-editar"
+  | "minhas-solicitacoes"
+  | "editar-perfil"
   | "pet-profile";
 
 type HeaderNavKey = HeaderPage; // Simplifiquei para usar as mesmas chaves
@@ -28,6 +31,8 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
   const { logout, isAuthenticated, user } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
+  const userDropdownRef = useRef<HTMLDivElement | null>(null);
 
   const [activeNav, setActiveNav] = useState<HeaderNavKey>(page);
 
@@ -38,6 +43,20 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        userDropdownRef.current &&
+        !userDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsUserDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   const navClass = (key: HeaderNavKey) =>
     `rounded-md px-2 py-1 transition ${
       activeNav === key
@@ -46,6 +65,11 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
     }`;
 
   const closeMobileMenu = () => setIsMenuOpen(false);
+
+  const getEditProfileLink = () => {
+    if (variant === "ong" || user?.role === "ONG") return "/ong/editar-perfil";
+    return "/pessoa-fisica/editar-perfil";
+  };
 
   // Define para onde o clique no Logo vai levar, dependendo de quem está logado
   const getLogoLink = () => {
@@ -127,10 +151,26 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
                 </li>
                 <li>
                   <Link
-                    href="/pessoa-fisica/dashboard"
+                    href="/pessoa-fisica/cadastrar-pet"
                     className={navClass("colocar-na-adocao")}
                   >
                     Colocar na adoção
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/pessoa-fisica/minhas-solicitacoes"
+                    className={navClass("minhas-solicitacoes")}
+                  >
+                    Minhas solicitações
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/pessoa-fisica/editar-perfil"
+                    className={navClass("editar-perfil")}
+                  >
+                    Editar Perfil
                   </Link>
                 </li>
               </>
@@ -160,7 +200,15 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
                     href="/ong/editar"
                     className={navClass("dashboard-editar")}
                   >
-                    Editar
+                    Editar Pets
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/ong/editar-perfil"
+                    className={navClass("editar-perfil")}
+                  >
+                    Editar Perfil
                   </Link>
                 </li>
               </>
@@ -174,6 +222,44 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
               <span className="text-sm font-semibold text-slate-700">
                 Olá, {user?.name?.split(" ")[0]}
               </span>
+
+              <div className="relative" ref={userDropdownRef}>
+                <button
+                  type="button"
+                  onClick={() => setIsUserDropdownOpen((prev) => !prev)}
+                  className="rounded-lg p-2 text-slate-600 transition hover:text-slate-900"
+                  aria-label="Abrir menu do perfil"
+                  aria-expanded={isUserDropdownOpen}
+                >
+                  <Settings
+                    size={21}
+                    className={`transition-transform duration-300 ${isUserDropdownOpen ? "rotate-180" : "rotate-0"}`}
+                  />
+                </button>
+
+                <div
+                  className={`absolute right-0 top-12 z-50 w-44 origin-top-right rounded-xl border border-slate-200 bg-white p-1 shadow-lg transition-all duration-200 ${
+                    isUserDropdownOpen
+                      ? "pointer-events-auto translate-y-0 scale-100 opacity-100"
+                      : "pointer-events-none -translate-y-1 scale-95 opacity-0"
+                  }`}
+                >
+                  <Link
+                    href={getEditProfileLink()}
+                    onClick={() => setIsUserDropdownOpen(false)}
+                    className="block rounded-lg px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+                  >
+                    Editar Perfil
+                  </Link>
+                  <button
+                    type="button"
+                    className="block w-full cursor-default rounded-lg px-3 py-2 text-left text-sm font-medium text-slate-500"
+                  >
+                    Excluir conta
+                  </button>
+                </div>
+              </div>
+
               <button
                 onClick={logout}
                 className="rounded-lg bg-slate-800 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-900 shadow-sm"
@@ -250,11 +336,20 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
                 </li>
                 <li>
                   <Link
-                    href="/pessoa-fisica/dashboard"
+                    href="/pessoa-fisica/cadastrar-pet"
                     className="block rounded-lg px-3 py-2 hover:bg-brand-50 text-brand-700"
                     onClick={closeMobileMenu}
                   >
                     Colocar na adoção
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/pessoa-fisica/editar-perfil"
+                    className="block rounded-lg px-3 py-2 hover:bg-brand-50 text-brand-700"
+                    onClick={closeMobileMenu}
+                  >
+                    Editar Perfil
                   </Link>
                 </li>
               </>
@@ -279,6 +374,15 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
                     onClick={closeMobileMenu}
                   >
                     Cadastrar Pet
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/ong/editar-perfil"
+                    className="block rounded-lg px-3 py-2 hover:bg-brand-50 text-brand-700"
+                    onClick={closeMobileMenu}
+                  >
+                    Editar Perfil
                   </Link>
                 </li>
               </>

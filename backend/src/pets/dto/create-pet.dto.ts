@@ -1,12 +1,36 @@
 import {
+  IsArray,
   IsBoolean,
   IsInt,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
   IsString,
+  Max,
   Min,
 } from "class-validator";
 import { Type, Transform } from "class-transformer";
+
+function parseStringArray(value: unknown): string[] | undefined {
+  if (Array.isArray(value)) {
+    return value.filter((item): item is string => typeof item === "string");
+  }
+
+  if (typeof value === "string") {
+    try {
+      const parsed = JSON.parse(value);
+      if (Array.isArray(parsed)) {
+        return parsed.filter(
+          (item): item is string => typeof item === "string",
+        );
+      }
+    } catch {
+      return undefined;
+    }
+  }
+
+  return undefined;
+}
 
 export class CreatePetDto {
   @IsNotEmpty()
@@ -93,4 +117,17 @@ export class CreatePetDto {
   @IsOptional()
   @IsString()
   photoUrl?: string;
+
+  @Transform(({ value }) => parseStringArray(value))
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  photoUrls?: string[];
+
+  @Type(() => Number)
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  @Max(4)
+  featuredPhotoIndex?: number;
 }

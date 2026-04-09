@@ -6,6 +6,7 @@ import { useAuth } from "@/context/AuthContext";
 import { apiFetch } from "@/lib/api";
 import { Pet } from "@/types/api";
 import { PetForm } from "@/components/ui/PetForm";
+import { STATUS_COLORS } from "@/constants/theme";
 
 export default function EditarPetPage() {
   const params = useParams();
@@ -42,14 +43,21 @@ export default function EditarPetPage() {
   if (loading || authLoading) {
     return (
       <div className="flex min-h-[400px] items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-emerald-500 border-t-transparent"></div>
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-brand-500 border-t-transparent"></div>
       </div>
     );
   }
 
   if (error || !pet) {
     return (
-      <div className="max-w-3xl mx-auto mt-8 p-6 bg-red-50 border border-red-200 rounded-xl text-red-700">
+      <div
+        className="mx-auto mt-8 max-w-3xl rounded-xl border p-6"
+        style={{
+          backgroundColor: STATUS_COLORS.danger[50],
+          borderColor: STATUS_COLORS.danger[200],
+          color: STATUS_COLORS.danger[700],
+        }}
+      >
         <p>{error || "Pet não encontrado."}</p>
         <button
           onClick={() => router.back()}
