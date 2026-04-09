@@ -11,6 +11,7 @@ import { DocumentInput } from "./DocumentInput";
 import { PasswordInput } from "./PasswordInput";
 import { RoleSelector } from "./RoleSelector";
 import { useCepLookup } from "../hooks/useCepLookup";
+import { STATUS_COLORS } from "@/constants/theme";
 
 export function RegisterForm() {
   const { register } = useAuth();
@@ -230,7 +231,13 @@ export function RegisterForm() {
           )}
 
           {error && (
-            <p className="rounded-xl bg-red-100 px-3 py-2 text-sm text-red-700">
+            <p
+              className="rounded-xl px-3 py-2 text-sm"
+              style={{
+                backgroundColor: STATUS_COLORS.danger[100],
+                color: STATUS_COLORS.danger[700],
+              }}
+            >
               {error}
             </p>
           )}

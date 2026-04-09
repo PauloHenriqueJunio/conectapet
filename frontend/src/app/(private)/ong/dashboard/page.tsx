@@ -5,6 +5,7 @@ import { useAuth } from "@/context/AuthContext";
 import { apiFetch } from "@/lib/api";
 import { AdoptionRequest } from "@/types/api";
 import { AdoptionCard } from "@/components/ui/AdoptionCard";
+import { STATUS_COLORS } from "@/constants/theme";
 
 type FilterType = "ALL" | "PENDING" | "APPROVED" | "REJECTED";
 
@@ -71,7 +72,7 @@ export default function DashboardPage() {
   if (isLoading) {
     return (
       <div className="flex min-h-[400px] items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-emerald-500 border-t-transparent"></div>
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-brand-500 border-t-transparent"></div>
       </div>
     );
   }
@@ -79,7 +80,14 @@ export default function DashboardPage() {
   return (
     <div className="max-w-5xl mx-auto">
       {error && (
-        <div className="mb-6 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-600 shadow-sm animate-in fade-in duration-300">
+        <div
+          className="mb-6 rounded-lg border p-4 text-sm shadow-sm animate-in fade-in duration-300"
+          style={{
+            backgroundColor: STATUS_COLORS.danger[50],
+            borderColor: STATUS_COLORS.danger[200],
+            color: STATUS_COLORS.danger[700],
+          }}
+        >
           {error}
         </div>
       )}

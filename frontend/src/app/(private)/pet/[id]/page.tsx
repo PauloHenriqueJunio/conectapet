@@ -26,6 +26,7 @@ import {
   Check,
   X,
 } from "lucide-react";
+import { STATUS_COLORS } from "@/constants/theme";
 
 const sanitizeWhatsappNumber = (value?: string) =>
   (value ?? "").replace(/\D/g, "");
@@ -238,7 +239,7 @@ export default function PetProfilePage() {
             onClick={handleShare}
             className={`flex items-center gap-2 font-semibold transition-all duration-300 px-4 py-2 rounded-full shadow-sm border overflow-hidden ${
               isCopied
-                ? "bg-emerald-50 text-emerald-600 border-emerald-200 w-[160px] justify-center"
+                ? "bg-brand-50 text-brand-600 border-brand-200 w-[160px] justify-center"
                 : "bg-white text-slate-500 hover:text-brand-600 border-slate-200 w-[44px] sm:w-[155px] justify-center"
             }`}
           >
@@ -358,7 +359,7 @@ export default function PetProfilePage() {
               <div className="space-y-6">
                 <div className="flex flex-wrap gap-3">
                   <div
-                    className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-semibold border transition-colors ${pet.isCastrated ? "bg-emerald-50 border-emerald-200 text-emerald-700" : "bg-slate-50 border-slate-200 text-slate-500"}`}
+                    className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-semibold border transition-colors ${pet.isCastrated ? "bg-brand-50 border-brand-200 text-brand-700" : "bg-slate-50 border-slate-200 text-slate-500"}`}
                   >
                     {pet.isCastrated ? (
                       <CheckCircle2 size={18} />
@@ -368,7 +369,7 @@ export default function PetProfilePage() {
                     {pet.isCastrated ? "Castrado(a)" : "Não castrado(a)"}
                   </div>
                   <div
-                    className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-semibold border transition-colors ${pet.isDewormed ? "bg-emerald-50 border-emerald-200 text-emerald-700" : "bg-slate-50 border-slate-200 text-slate-500"}`}
+                    className={`flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-semibold border transition-colors ${pet.isDewormed ? "bg-brand-50 border-brand-200 text-brand-700" : "bg-slate-50 border-slate-200 text-slate-500"}`}
                   >
                     {pet.isDewormed ? (
                       <CheckCircle2 size={18} />
@@ -392,7 +393,7 @@ export default function PetProfilePage() {
                       >
                         {vaccine.taken ? (
                           <CheckCircle2
-                            className="text-emerald-500 min-w-[18px]"
+                            className="text-brand-500 min-w-[18px]"
                             size={18}
                           />
                         ) : (
@@ -415,7 +416,7 @@ export default function PetProfilePage() {
                         <Info size={14} className="text-slate-300 ml-1" />
 
                         <div className="absolute left-0 bottom-full mb-2 hidden w-56 -translate-x-2 flex-col rounded-xl bg-slate-900 px-3 py-2.5 text-xs text-white opacity-0 transition-opacity group-hover:flex group-hover:opacity-100 z-10 shadow-xl pointer-events-none">
-                          <span className="font-bold text-emerald-400 mb-1">
+                          <span className="font-bold text-brand-400 mb-1">
                             {vaccine.label}
                           </span>
                           <span className="text-slate-300 leading-relaxed">
@@ -430,19 +431,38 @@ export default function PetProfilePage() {
                 </div>
 
                 {(pet.hasHistoryOfIllness || pet.hasOtherHealthInfo) && (
-                  <div className="p-5 bg-amber-50/80 rounded-2xl border border-amber-200/60 shadow-sm">
-                    <h4 className="text-sm font-bold text-amber-900 mb-3 flex items-center gap-2">
-                      <Stethoscope className="text-amber-600" size={18} />
+                  <div
+                    className="rounded-2xl border p-5 shadow-sm"
+                    style={{
+                      backgroundColor: `${STATUS_COLORS.warning[50]}cc`,
+                      borderColor: `${STATUS_COLORS.warning[200]}99`,
+                    }}
+                  >
+                    <h4
+                      className="mb-3 flex items-center gap-2 text-sm font-bold"
+                      style={{ color: STATUS_COLORS.warning[950] }}
+                    >
+                      <Stethoscope
+                        className="text-slate-500"
+                        style={{ color: STATUS_COLORS.warning[700] }}
+                        size={18}
+                      />
                       Histórico Médico
                     </h4>
 
                     <div className="space-y-4">
                       {pet.hasHistoryOfIllness && (
                         <div>
-                          <span className="block text-[11px] font-extrabold text-amber-700 uppercase tracking-wider mb-1">
+                          <span
+                            className="mb-1 block text-[11px] font-extrabold uppercase tracking-wider"
+                            style={{ color: STATUS_COLORS.warning[700] }}
+                          >
                             Doenças / Tratamentos
                           </span>
-                          <p className="text-sm text-amber-900 font-medium leading-relaxed">
+                          <p
+                            className="text-sm font-medium leading-relaxed"
+                            style={{ color: STATUS_COLORS.warning[950] }}
+                          >
                             {pet.illnessDescription ||
                               "Possui histórico. Consulte a ONG para mais detalhes."}
                           </p>
@@ -451,10 +471,16 @@ export default function PetProfilePage() {
 
                       {pet.hasOtherHealthInfo && (
                         <div>
-                          <span className="block text-[11px] font-extrabold text-amber-700 uppercase tracking-wider mb-1">
+                          <span
+                            className="mb-1 block text-[11px] font-extrabold uppercase tracking-wider"
+                            style={{ color: STATUS_COLORS.warning[700] }}
+                          >
                             Outras Informações
                           </span>
-                          <p className="text-sm text-amber-900 font-medium leading-relaxed">
+                          <p
+                            className="text-sm font-medium leading-relaxed"
+                            style={{ color: STATUS_COLORS.warning[950] }}
+                          >
                             {pet.otherHealthInfoDescription ||
                               "Consulte a ONG para detalhes adicionais."}
                           </p>

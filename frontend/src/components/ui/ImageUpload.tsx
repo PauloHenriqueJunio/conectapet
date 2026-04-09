@@ -1,6 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import Cropper, { Area } from "react-easy-crop";
-import { Image as ImageIcon, Move, Star, Trash2, UploadCloud } from "lucide-react";
+import {
+  Image as ImageIcon,
+  Move,
+  Star,
+  Trash2,
+  UploadCloud,
+} from "lucide-react";
 
 const MAX_PHOTOS = 5;
 
@@ -210,21 +216,24 @@ export function ImageUpload({
   };
 
   const featuredPhoto = photos[featuredPhotoIndex] ?? photos[0] ?? null;
-  const previewSource = livePreview || selectedImageUrl || featuredPhoto?.previewUrl || null;
+  const previewSource =
+    livePreview || selectedImageUrl || featuredPhoto?.previewUrl || null;
 
   return (
     <div className="space-y-3 rounded-xl border border-slate-200 bg-slate-50/70 p-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-sm font-semibold text-slate-800">Foto do Pet</p>
-          <p className="text-xs text-slate-500">PNG, JPG ou WEBP ate 5MB | {photos.length}/{MAX_PHOTOS}</p>
+          <p className="text-xs text-slate-500">
+            PNG, JPG ou WEBP ate 5MB | {photos.length}/{MAX_PHOTOS}
+          </p>
         </div>
         <label
           htmlFor="photo-upload"
           className={`inline-flex items-center justify-center gap-2 rounded-lg border px-3 py-2 text-sm font-semibold transition sm:w-auto ${
             photos.length >= MAX_PHOTOS
               ? "cursor-not-allowed border-slate-200 bg-slate-100 text-slate-400"
-              : "cursor-pointer border-emerald-200 bg-white text-emerald-700 hover:border-emerald-300 hover:bg-emerald-50"
+              : "cursor-pointer border-brand-200 bg-white text-brand-700 hover:border-brand-300 hover:bg-brand-50"
           }`}
         >
           <UploadCloud className="h-4 w-4" />
@@ -272,14 +281,14 @@ export function ImageUpload({
                 step={0.05}
                 value={zoom}
                 onChange={(e) => setZoom(Number(e.target.value))}
-                className="w-full accent-emerald-600"
+                className="w-full accent-brand-600"
               />
             </div>
             <div className="flex flex-wrap items-center gap-2">
               <button
                 type="button"
                 onClick={handleApplyCrop}
-                className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-700"
+                className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-700"
               >
                 Aplicar enquadramento
               </button>
@@ -385,7 +394,9 @@ export function ImageUpload({
         </p>
 
         {photos.length === 0 ? (
-          <p className="text-sm text-slate-500">Nenhuma foto adicionada ainda.</p>
+          <p className="text-sm text-slate-500">
+            Nenhuma foto adicionada ainda.
+          </p>
         ) : (
           <div className="grid grid-cols-1 gap-3 min-[380px]:grid-cols-2 sm:grid-cols-3 md:grid-cols-5">
             {photos.map((photo, index) => {
@@ -395,7 +406,7 @@ export function ImageUpload({
                   key={photo.id}
                   className={`rounded-lg border p-2 ${
                     isFeatured
-                      ? "border-emerald-300 bg-emerald-50/50"
+                      ? "border-brand-300 bg-brand-50/50"
                       : "border-slate-200 bg-slate-50"
                   }`}
                 >
@@ -413,7 +424,7 @@ export function ImageUpload({
                       onClick={() => onSetFeatured(index)}
                       className={`inline-flex items-center gap-1 rounded px-2 py-1 text-[11px] font-semibold ${
                         isFeatured
-                          ? "bg-emerald-100 text-emerald-700"
+                          ? "bg-brand-100 text-brand-700"
                           : "bg-white text-slate-600 hover:bg-slate-100"
                       }`}
                     >

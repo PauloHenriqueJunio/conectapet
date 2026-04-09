@@ -5,6 +5,7 @@ import { FormEvent, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { Role } from "@/types/api";
 import { ArrowLeft, Eye, EyeOff } from "lucide-react";
+import { STATUS_COLORS } from "@/constants/theme";
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -155,7 +156,13 @@ export default function LoginPage() {
           </div>
 
           {error && (
-            <p className="rounded-xl bg-red-100 px-3 py-2 text-sm text-red-700">
+            <p
+              className="rounded-xl px-3 py-2 text-sm"
+              style={{
+                backgroundColor: STATUS_COLORS.danger[100],
+                color: STATUS_COLORS.danger[700],
+              }}
+            >
               {error}
             </p>
           )}

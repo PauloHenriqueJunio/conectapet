@@ -1,5 +1,6 @@
 import { AlertTriangle, Info, ShieldCheck } from "lucide-react";
 import { HealthBadge } from "@/components/ui/HealthBadge";
+import { STATUS_COLORS } from "@/constants/theme";
 
 interface AdoptionCardDetailsProps {
   petData: any;
@@ -23,14 +24,29 @@ export function AdoptionCardDetails({
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
         {/* hist clinico detalhado */}
         {petData.hasHistoryOfIllness && (
-          <div className="rounded-xl border border-amber-100 bg-amber-50 p-5 shadow-inner">
-            <div className="flex items-center gap-2 mb-3 text-amber-700">
+          <div
+            className="rounded-xl border p-5 shadow-inner"
+            style={{
+              backgroundColor: STATUS_COLORS.warning[50],
+              borderColor: STATUS_COLORS.warning[100],
+            }}
+          >
+            <div
+              className="mb-3 flex items-center gap-2"
+              style={{ color: STATUS_COLORS.warning[700] }}
+            >
               <AlertTriangle size={16} />
               <span className="font-semibold text-sm">
                 Detalhamento do Histórico Clínico
               </span>
             </div>
-            <p className="text-sm text-amber-950 bg-white/70 p-4 rounded-lg border border-amber-100 whitespace-pre-wrap leading-relaxed shadow-sm">
+            <p
+              className="rounded-lg border bg-white/70 p-4 text-sm whitespace-pre-wrap leading-relaxed shadow-sm"
+              style={{
+                borderColor: STATUS_COLORS.warning[100],
+                color: STATUS_COLORS.warning[950],
+              }}
+            >
               "{petData.illnessDescription || "Não informado."}"
             </p>
           </div>
@@ -54,7 +70,7 @@ export function AdoptionCardDetails({
         {/* a parte da ampliação*/}
         <div className="rounded-xl border border-slate-100 bg-white p-5 md:col-span-full shadow-inner">
           <div className="flex items-center gap-2.5 mb-4 text-slate-500">
-            <ShieldCheck size={18} className="text-emerald-600" />
+            <ShieldCheck size={18} className="text-brand-600" />
             <span className="text-sm font-semibold text-slate-800">
               Carteira de Vacinação
             </span>

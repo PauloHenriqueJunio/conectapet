@@ -185,7 +185,65 @@ export class AuthService {
       },
     };
   }
+  async updateProfile(userId: string, dto: any) {
+    const normalizedCep = dto.cep?.replace(/\D/g, "") ?? "";
+    const trimmedContact = dto.contact?.trim() ?? "";
+    const trimmedAddress = dto.address?.trim() ?? "";
 
+    if (normalizedCep && normalizedCep.length !== 8) {
+      throw new BadRequestException("CEP inválido. Deve conter 8 dígitos.");
+    }
+
+    const updateData: any = {};
+
+    if (dto.email) {
+      const existingEmail = await this.prisma.user.findUnique({
+        where: { email: dto.email.toLowerCase() },
+        select: { id: true },
+      });
+
+      if (existingEmail && existingEmail.id !== userId) {
+        throw new BadRequestException("Este email já está cadastrado.");
+      }
+
+      updateData.email = dto.email.toLowerCase();
+    }
+
+    if (dto.contact !== undefined) {
+      updateData.contact = trimmedContact || null;
+    }
+
+    if (dto.address !== undefined) {
+      updateData.address = trimmedAddress || null;
+    }
+
+    if (normalizedCep) {
+      const cepData = await this.cepValidationService.validate(normalizedCep);
+      updateData.cep = normalizedCep;
+      updateData.state = cepData.state;
+      updateData.city = cepData.city;
+    }
+
+    const user = await this.prisma.user.update({
+      where: { id: userId },
+      data: updateData,
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        cep: true,
+        state: true,
+        city: true,
+        contact: true,
+        address: true,
+        cpf: true,
+        cnpj: true,
+        role: true,
+      },
+    });
+
+    return user;
+  }
   async getOngs() {
     return this.prisma.user.findMany({
       where: { role: Role.ONG },
