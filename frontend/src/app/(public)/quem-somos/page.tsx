@@ -1,3 +1,5 @@
+import { StoryScroll } from "./StoryScroll";
+
 export default function QuemSomosPage() {
   return (
     <div className="flex w-full flex-col gap-10 py-10">
@@ -189,120 +191,7 @@ export default function QuemSomosPage() {
         </section>
       </div>
 
-      <section className="relative w-full overflow-hidden bg-slate-950 text-white">
-        <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
-          <div className="max-w-3xl pb-10">
-            <p className="text-sm font-semibold uppercase tracking-[0.24em] text-brand-300">
-              Narrativa visual
-            </p>
-            <h2 className="mt-3 text-4xl font-black tracking-tight sm:text-5xl">
-              A história vai se revelando conforme a pessoa desce a página.
-            </h2>
-            <p className="mt-4 max-w-2xl text-base leading-7 text-slate-300">
-              Este trecho ocupa a tela inteira para criar uma experiência mais
-              emocional. A cada rolagem, novas imagens de jornais e recortes
-              podem aparecer, ajudando a contar o contexto de abandono e maus-
-              tratos que motivou o projeto.
-            </p>
-          </div>
-
-          <div className="grid flex-1 gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-            <div className="space-y-24 pb-20 lg:space-y-[28vh]">
-              <article className="min-h-[78vh] rounded-[2rem] border border-white/10 bg-white/5 p-8 backdrop-blur-sm">
-                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-brand-300">
-                  Capítulo 01
-                </p>
-                <h3 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">
-                  A primeira manchete abre a dor do problema.
-                </h3>
-                <p className="mt-4 max-w-xl text-sm leading-7 text-slate-300 sm:text-base">
-                  Aqui entra a primeira imagem de jornal, trazendo o impacto
-                  inicial e preparando o visitante para entender por que o
-                  ConectaPet existe.
-                </p>
-              </article>
-
-              <article className="min-h-[78vh] rounded-[2rem] border border-white/10 bg-white/5 p-8 backdrop-blur-sm">
-                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-brand-300">
-                  Capítulo 02
-                </p>
-                <h3 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">
-                  Os recortes mostram que o abandono não é um caso isolado.
-                </h3>
-                <p className="mt-4 max-w-xl text-sm leading-7 text-slate-300 sm:text-base">
-                  Nesta etapa, você pode destacar outra imagem de jornal, um
-                  dado ou uma manchete complementar para aprofundar o contexto.
-                </p>
-              </article>
-
-              <article className="min-h-[78vh] rounded-[2rem] border border-white/10 bg-white/5 p-8 backdrop-blur-sm">
-                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-brand-300">
-                  Capítulo 03
-                </p>
-                <h3 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">
-                  A narrativa fecha conectando problema e transformação.
-                </h3>
-                <p className="mt-4 max-w-xl text-sm leading-7 text-slate-300 sm:text-base">
-                  O último bloco pode fechar com a imagem mais forte e conduzir
-                  para a missão do projeto: transformar atenção em adoção.
-                </p>
-              </article>
-            </div>
-
-            <div className="relative hidden lg:block">
-              <div className="sticky top-28 space-y-6">
-                <div className="overflow-hidden rounded-[2rem] border border-white/10 bg-slate-900 shadow-2xl">
-                  <img
-                    src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=1200&q=80"
-                    alt="Cachorro olhando para a câmera"
-                    className="h-[28rem] w-full object-cover"
-                  />
-                  <div className="border-t border-white/10 px-6 py-5 text-center">
-                    <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">
-                      Imagem de jornal 01
-                    </p>
-                    <p className="mt-3 text-lg font-bold text-white">
-                      primeira manchete em destaque
-                    </p>
-                  </div>
-                </div>
-
-                <div className="translate-x-10 overflow-hidden rounded-[2rem] border border-white/10 bg-slate-900 shadow-2xl">
-                  <img
-                    src="https://images.unsplash.com/photo-1450778869180-41d0601e046e?auto=format&fit=crop&w=1200&q=80"
-                    alt="Gato sentado olhando para frente"
-                    className="h-[24rem] w-full object-cover"
-                  />
-                  <div className="border-t border-white/10 px-6 py-5 text-center">
-                    <p className="text-xs font-semibold uppercase tracking-[0.24em] text-brand-100/80">
-                      Imagem de jornal 02
-                    </p>
-                    <p className="mt-3 text-lg font-bold text-white">
-                      recorte que reforça o contexto
-                    </p>
-                  </div>
-                </div>
-
-                <div className="-translate-x-8 overflow-hidden rounded-[2rem] border border-white/10 bg-slate-900 shadow-2xl">
-                  <img
-                    src="https://images.unsplash.com/photo-1450778869180-41d0601e046e?auto=format&fit=crop&w=1200&q=80"
-                    alt="Cachorro deitado em ambiente externo"
-                    className="h-[20rem] w-full object-cover"
-                  />
-                  <div className="border-t border-white/10 px-6 py-5 text-center">
-                    <p className="text-xs font-semibold uppercase tracking-[0.24em] text-emerald-100/80">
-                      Imagem de jornal 03
-                    </p>
-                    <p className="mt-3 text-lg font-bold text-white">
-                      desfecho emocional da história
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <StoryScroll />
     </div>
   );
 }
