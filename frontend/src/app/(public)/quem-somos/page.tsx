@@ -8,10 +8,10 @@ export default function QuemSomosPage() {
             <span className="inline-flex rounded-full border border-white/20 bg-white/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-white/90 backdrop-blur-sm">
               Quem somos
             </span>
-            <h1 className="mt-5 text-4xl font-black tracking-tight sm:text-5xl lg:text-6xl">
+            <h1 className="mt-5 max-w-xl text-5xl font-black leading-[0.95] tracking-tight sm:text-6xl lg:text-7xl">
               Tecnologia com propósito para transformar adoções.
             </h1>
-            <p className="mt-5 max-w-xl text-base leading-7 text-white/88 sm:text-lg">
+            <p className="mt-5 max-w-2xl text-base leading-7 text-white/90 sm:text-lg lg:text-xl">
               O ConectaPet aproxima ONGs, pets e pessoas que querem adotar com
               uma experiência clara, humana e organizada. O foco é reduzir o
               atrito da jornada e ajudar mais animais a encontrarem um lar com
@@ -184,6 +184,96 @@ export default function QuemSomosPage() {
             adoção de forma mais organizada, humana e acessível, com espaço para
             crescer e receber novas melhorias ao longo do tempo.
           </p>
+        </div>
+      </section>
+
+      <section className="rounded-[1.75rem] border border-slate-200/80 bg-white p-8 shadow-sm sm:p-10">
+        <div className="grid gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
+          <div className="lg:sticky lg:top-28">
+            <p className="text-sm font-semibold uppercase tracking-[0.22em] text-brand-600">
+              Narrativa visual
+            </p>
+            <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900">
+              A cada bloco, a história pode ganhar novas imagens e contexto.
+            </h2>
+            <p className="mt-4 text-sm leading-7 text-slate-600">
+              Aqui você pode adicionar imagens de jornais, manchetes e recortes
+              que mostram o cenário de maus-tratos e abandono. A ideia é que, ao
+              rolar a página, cada seção revele uma nova parte dessa narrativa.
+            </p>
+            <p className="mt-4 text-sm leading-7 text-slate-600">
+              Esta área já fica pronta para você encaixar fotos, textos curtos e
+              destaques visuais sem precisar refazer a estrutura novamente.
+            </p>
+          </div>
+
+          <div className="grid gap-4">
+            <article className="overflow-hidden rounded-[1.5rem] border border-slate-200 bg-slate-50">
+              <div className="grid gap-4 p-5 sm:grid-cols-[1fr_auto] sm:items-center">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+                    Bloco 01
+                  </p>
+                  <h3 className="mt-2 text-xl font-bold text-slate-900">
+                    Manchete sobre abandono
+                  </h3>
+                  <p className="mt-2 text-sm leading-6 text-slate-600">
+                    Espaço para inserir a primeira imagem de jornal e abrir a
+                    narrativa da página.
+                  </p>
+                </div>
+                <div className="h-28 w-full rounded-2xl border border-dashed border-slate-300 bg-white px-4 py-3 sm:w-44">
+                  <div className="flex h-full items-center justify-center text-center text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+                    Imagem de jornal 01
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <article className="overflow-hidden rounded-[1.5rem] border border-slate-200 bg-slate-50">
+              <div className="grid gap-4 p-5 sm:grid-cols-[1fr_auto] sm:items-center">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+                    Bloco 02
+                  </p>
+                  <h3 className="mt-2 text-xl font-bold text-slate-900">
+                    Dados sobre maus-tratos
+                  </h3>
+                  <p className="mt-2 text-sm leading-6 text-slate-600">
+                    Ideal para uma sequência com outro recorte ou destaque de
+                    reportagem.
+                  </p>
+                </div>
+                <div className="h-28 w-full rounded-2xl border border-dashed border-slate-300 bg-white px-4 py-3 sm:w-44">
+                  <div className="flex h-full items-center justify-center text-center text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+                    Imagem de jornal 02
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <article className="overflow-hidden rounded-[1.5rem] border border-slate-200 bg-slate-50">
+              <div className="grid gap-4 p-5 sm:grid-cols-[1fr_auto] sm:items-center">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
+                    Bloco 03
+                  </p>
+                  <h3 className="mt-2 text-xl font-bold text-slate-900">
+                    Consequência e esperança
+                  </h3>
+                  <p className="mt-2 text-sm leading-6 text-slate-600">
+                    Um fechamento para conectar o problema à missão do
+                    ConectaPet.
+                  </p>
+                </div>
+                <div className="h-28 w-full rounded-2xl border border-dashed border-slate-300 bg-white px-4 py-3 sm:w-44">
+                  <div className="flex h-full items-center justify-center text-center text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+                    Imagem de jornal 03
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
         </div>
       </section>
     </div>
