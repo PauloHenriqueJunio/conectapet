@@ -161,6 +161,31 @@ export default function QuemSomosPage() {
           </div>
         </div>
       </section>
+
+      <section className="rounded-[1.75rem] border border-slate-200/80 bg-white p-8 shadow-sm sm:p-10">
+        <div className="max-w-4xl">
+          <p className="text-sm font-semibold uppercase tracking-[0.22em] text-brand-600">
+            Por quê o ConectaPet foi criado?
+          </p>
+          <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900">
+            Um projeto acadêmico que evoluiu para algo maior.
+          </h2>
+          <p className="mt-4 text-sm leading-7 text-slate-600">
+            O ConectaPet inicialmente foi criado com o intuito de um ser um
+            projeto acadêmico, desenvolvido para unir aprendizado técnico com
+            uma causa social real. A ideia surgiu da vontade de aplicar o
+            desenvolvimento de software em um cenário que pudesse gerar impacto
+            positivo, ajudando a aproximar pessoas, ONGs e animais que precisam
+            de um novo lar.
+          </p>
+          <p className="mt-4 text-sm leading-7 text-slate-600">
+            Com o tempo, o projeto passou a representar mais do que apenas uma
+            entrega acadêmica. Ele se tornou uma base para apoiar o processo de
+            adoção de forma mais organizada, humana e acessível, com espaço para
+            crescer e receber novas melhorias ao longo do tempo.
+          </p>
+        </div>
+      </section>
     </div>
   );
 }
