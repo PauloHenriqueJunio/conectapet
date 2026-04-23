@@ -9,7 +9,7 @@ const STORY_ITEMS = [
     label: "Imagem de jornal 01",
     caption: "primeira manchete em destaque",
     image:
-      "https://res.cloudinary.com/du0yit3co/image/upload/v1776953458/c2ba4926-b87e-48e8-ba4d-233c67318d9a_zxfrto.png",
+      "https://res.cloudinary.com/du0yit3co/image/upload/v1776955669/efcf6f59-f3a8-4ceb-866c-6c85a3fb4845_jbnusw.png",
     alt: "Cachorro olhando para a câmera",
     imageFit: "object-contain",
     imagePosition: "object-top",
@@ -23,7 +23,7 @@ const STORY_ITEMS = [
     label: "Imagem de jornal 02",
     caption: "recorte que reforça o contexto",
     image:
-      "https://res.cloudinary.com/du0yit3co/image/upload/v1776951182/Captura_de_tela_2026-04-23_103248_e355uy.png",
+      "https://res.cloudinary.com/du0yit3co/image/upload/v1776956370/1dc5e647-9311-4df6-b950-c709bc7f3825_f4xzp3.png",
     alt: "Gato sentado olhando para frente",
     imageFit: "object-contain",
     imagePosition: "object-top",
@@ -37,7 +37,7 @@ const STORY_ITEMS = [
     label: "Imagem de jornal 03",
     caption: "desfecho emocional da história",
     image:
-      "https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=1400&q=80",
+      "https://res.cloudinary.com/du0yit3co/image/upload/v1776956370/4efec5ba-f923-4ee8-a6c2-d5536c843f97_lue3bg.png",
     alt: "Cachorro deitado em ambiente externo",
     imageFit: "object-contain",
     imagePosition: "object-top",
@@ -122,7 +122,7 @@ export function StoryScroll() {
           </p>
         </div>
 
-        <div className="flex-1 space-y-16 pb-20 lg:space-y-24">
+        <div className="flex-1 space-y-20 pb-20">
           {STORY_ITEMS.map((item, index) => {
             const isActive = index === activeIndex;
             const isImageActive = isActive;
@@ -134,42 +134,38 @@ export function StoryScroll() {
                   chapterRefs.current[index] = element;
                 }}
                 data-index={index}
-                className="grid gap-6 lg:min-h-[78vh] lg:grid-cols-[0.88fr_1.12fr] lg:items-center lg:gap-10"
+                className="flex min-h-[100vh] flex-col gap-6 lg:gap-8"
               >
                 <div
-                  className={`rounded-[2rem] border border-white/10 bg-white/5 p-8 backdrop-blur-sm transition-all duration-700 ease-out ${
+                  className={`max-w-2xl transition-all duration-700 ease-out ${
                     isActive
                       ? "translate-y-0 opacity-100"
-                      : "translate-y-6 opacity-60"
+                      : "translate-y-6 opacity-40"
                   }`}
                 >
                   <p className="text-xs font-semibold uppercase tracking-[0.24em] text-brand-300">
                     Capítulo {String(index + 1).padStart(2, "0")}
                   </p>
-                  <h3 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                  <h3 className="mt-2 text-2xl font-bold tracking-tight text-white sm:text-3xl lg:text-4xl">
                     {item.title}
                   </h3>
-                  <p className="mt-4 max-w-xl text-sm leading-7 text-slate-300 sm:text-base">
+                  <p className="mt-3 text-sm leading-6 text-slate-400 sm:text-base">
                     {item.text}
-                  </p>
-                  <div className="mt-8 h-px w-20 bg-white/15" />
-                  <p className="mt-4 text-xs uppercase tracking-[0.22em] text-slate-400">
-                    role para avançar para o próximo quadro
                   </p>
                 </div>
 
                 <div
-                  className={`overflow-hidden rounded-[2.5rem] border border-white/10 ${item.frameBg} shadow-[0_30px_80px_rgba(0,0,0,0.45)] transition-[transform,opacity,filter] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                  className={`flex-1 overflow-hidden rounded-[2.5rem] border border-white/10 ${item.frameBg} shadow-[0_30px_80px_rgba(0,0,0,0.45)] transition-[transform,opacity,filter] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${
                     isImageActive
                       ? "translate-y-0 scale-100 opacity-100 blur-0"
                       : "translate-y-10 scale-[0.95] opacity-0 blur-[2px]"
                   }`}
                 >
-                  <div className="relative">
+                  <div className="relative h-full">
                     <img
                       src={item.image}
                       alt={item.alt}
-                      className={`${item.imageHeight} w-full ${item.imageFit} ${item.imagePosition} transition-[transform,opacity,filter] duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                      className={`h-full w-full ${item.imageFit} ${item.imagePosition} transition-[transform,opacity,filter] duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] ${
                         isImageActive
                           ? `${item.activeScale} opacity-100 saturate-100`
                           : "scale-100 opacity-80 saturate-75"
