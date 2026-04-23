@@ -9,7 +9,7 @@ export default function QuemSomosLayout({ children }: { children: ReactNode }) {
 
       <main className="flex-1">{children}</main>
 
-      <SiteFooter />
+      <SiteFooter className="mt-0 rounded-none border-x-0 border-b-0" />
     </div>
   );
 }

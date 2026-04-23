@@ -2,7 +2,7 @@ import { StoryScroll } from "./StoryScroll";
 
 export default function QuemSomosPage() {
   return (
-    <div className="flex w-full flex-col gap-10 py-10">
+    <div className="flex w-full flex-col gap-10 pt-10">
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-10 px-4 sm:px-6 lg:px-8">
         <section className="relative overflow-hidden rounded-[2rem] border border-white/70 bg-gradient-to-br from-brand-600 via-brand-500 to-emerald-500 px-6 py-12 text-white shadow-[0_24px_80px_rgba(15,23,42,0.16)] sm:px-10 lg:px-14 lg:py-16">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(255,255,255,0.28),_transparent_32%),radial-gradient(circle_at_bottom_left,_rgba(255,255,255,0.16),_transparent_30%)]" />
@@ -12,13 +12,13 @@ export default function QuemSomosPage() {
                 Quem somos
               </span>
               <h1 className="mt-5 max-w-xl text-5xl font-black leading-[0.95] tracking-tight sm:text-6xl lg:text-7xl">
-                Tecnologia com propósito para transformar adoções.
+                Tecnologia com propósito para tornar a adoção mais humana.
               </h1>
               <p className="mt-5 max-w-2xl text-base leading-7 text-white/90 sm:text-lg lg:text-xl">
-                O ConectaPet aproxima ONGs, pets e pessoas que querem adotar com
-                uma experiência clara, humana e organizada. O foco é reduzir o
-                atrito da jornada e ajudar mais animais a encontrarem um lar com
-                responsabilidade.
+                O ConectaPet conecta ONGs, pets e pessoas interessadas em adotar
+                em uma experiência clara, acolhedora e organizada. A ideia é
+                reduzir atritos, dar visibilidade aos animais e apoiar decisões
+                mais responsáveis.
               </p>
             </div>
 
@@ -37,7 +37,7 @@ export default function QuemSomosPage() {
                   Visão
                 </p>
                 <p className="mt-2 text-sm leading-6 text-white/92">
-                  Ser uma referência em adoção responsável e digital no Brasil.
+                  Ser uma referência em adoção responsável no ambiente digital.
                 </p>
               </div>
               <div className="rounded-2xl border border-white/20 bg-white/12 p-5 backdrop-blur-md">
@@ -59,18 +59,18 @@ export default function QuemSomosPage() {
               Nosso ponto de partida
             </p>
             <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900">
-              Uma plataforma pensada para simplificar a adoção.
+              Uma plataforma pensada para simplificar cada passo da adoção.
             </h2>
             <p className="mt-4 text-sm leading-7 text-slate-600">
-              A ideia do ConectaPet é diminuir a distância entre quem resgata e
-              quem adota. Em vez de uma jornada fragmentada, centralizamos
+              O objetivo do ConectaPet é diminuir a distância entre quem resgata
+              e quem adota. Em vez de uma jornada fragmentada, reunimos
               informações, perfis e processos em um fluxo visual mais simples de
               navegar.
             </p>
             <p className="mt-4 text-sm leading-7 text-slate-600">
               Isso ajuda ONGs a organizarem seus pets com mais clareza e oferece
-              para quem deseja adotar uma experiência mais confiável, acolhedora
-              e objetiva.
+              para quem deseja adotar uma experiência mais confiável,
+              acolhedora e objetiva.
             </p>
           </article>
 
@@ -133,10 +133,10 @@ export default function QuemSomosPage() {
                 Próximo passo
               </p>
               <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900">
-                Uma base visual melhor para evoluir a página.
+                Uma base visual mais forte para evoluir a página.
               </h2>
               <p className="mt-4 text-sm leading-7 text-slate-600">
-                Este primeiro refactor já deixa a rota pronta para receber mais
+                O primeiro refinamento já deixa a rota pronta para receber mais
                 conteúdo, fotos, depoimentos ou uma linha do tempo da história
                 do projeto, sem mudar a estrutura principal.
               </p>
@@ -171,15 +171,14 @@ export default function QuemSomosPage() {
               Por quê o ConectaPet foi criado?
             </p>
             <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900">
-              Um projeto acadêmico que evoluiu para algo maior.
+              Um projeto acadêmico que cresceu para algo maior.
             </h2>
             <p className="mt-4 text-sm leading-7 text-slate-600">
-              O ConectaPet inicialmente foi criado com o intuito de um ser um
-              projeto acadêmico, desenvolvido para unir aprendizado técnico com
-              uma causa social real. A ideia surgiu da vontade de aplicar o
-              desenvolvimento de software em um cenário que pudesse gerar
-              impacto positivo, ajudando a aproximar pessoas, ONGs e animais que
-              precisam de um novo lar.
+              O ConectaPet nasceu como um projeto acadêmico, criado para unir
+              aprendizado técnico e uma causa social real. A ideia surgiu da
+              vontade de aplicar o desenvolvimento de software em um cenário que
+              pudesse gerar impacto positivo, aproximando pessoas, ONGs e
+              animais que precisam de um novo lar.
             </p>
             <p className="mt-4 text-sm leading-7 text-slate-600">
               Com o tempo, o projeto passou a representar mais do que apenas uma
