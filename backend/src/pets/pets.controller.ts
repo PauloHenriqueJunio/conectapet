@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
@@ -28,6 +29,29 @@ type UploadedImageFile = {
   buffer: Buffer;
 };
 
+const ALLOWED_IMAGE_MIME_TYPES = ["image/jpeg", "image/png", "image/webp"];
+const PET_UPLOAD_OPTIONS = {
+  limits: {
+    fileSize: 5 * 1024 * 1024,
+    files: 5,
+  },
+  fileFilter: (
+    _req: unknown,
+    file: { mimetype: string },
+    callback: (error: Error | null, acceptFile: boolean) => void,
+  ) => {
+    if (!ALLOWED_IMAGE_MIME_TYPES.includes(file.mimetype)) {
+      callback(
+        new BadRequestException("Apenas imagens JPG, PNG ou WEBP."),
+        false,
+      );
+      return;
+    }
+
+    callback(null, true);
+  },
+};
+
 @Controller("pets")
 export class PetsController {
   constructor(private readonly petsService: PetsService) {}
@@ -39,7 +63,7 @@ export class PetsController {
     FileFieldsInterceptor([
       { name: "photo", maxCount: 1 },
       { name: "photos", maxCount: 5 },
-    ]),
+    ], PET_UPLOAD_OPTIONS),
   )
   create(
     @Body() dto: CreatePetDto,
@@ -62,7 +86,7 @@ export class PetsController {
     FileFieldsInterceptor([
       { name: "photo", maxCount: 1 },
       { name: "photos", maxCount: 5 },
-    ]),
+    ], PET_UPLOAD_OPTIONS),
   )
   update(
     @Param("id") id: string,

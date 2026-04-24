@@ -23,6 +23,58 @@ export class AuthService {
     private readonly loginAttemptService: LoginAttemptService,
   ) {}
 
+  private buildPublicUser(user: {
+    id: string;
+    name: string;
+    email: string;
+    cep: string | null;
+    state: string | null;
+    city: string | null;
+    contact: string | null;
+    address: string | null;
+    role: Role;
+  }) {
+    return {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      cep: user.cep,
+      state: user.state,
+      city: user.city,
+      contact: user.contact,
+      address: user.address,
+      role: user.role,
+    };
+  }
+
+  private buildFullUser(user: {
+    id: string;
+    name: string;
+    email: string;
+    cep: string | null;
+    state: string | null;
+    city: string | null;
+    contact: string | null;
+    address: string | null;
+    cpf: string | null;
+    cnpj: string | null;
+    role: Role;
+  }) {
+    return {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      cep: user.cep,
+      state: user.state,
+      city: user.city,
+      contact: user.contact,
+      address: user.address,
+      cpf: user.cpf,
+      cnpj: user.cnpj,
+      role: user.role,
+    };
+  }
+
   async register(dto: RegisterDto) {
     const normalizedCpf = dto.cpf?.replace(/\D/g, "") ?? "";
     const normalizedCnpj = dto.cnpj?.replace(/\D/g, "") ?? "";
@@ -171,7 +223,7 @@ export class AuthService {
 
     return {
       accessToken,
-      user: {
+      user: this.buildPublicUser({
         id: user.id,
         name: user.name,
         email: user.email,
@@ -180,11 +232,34 @@ export class AuthService {
         city: user.city,
         contact: user.contact,
         address: user.address,
-        cpf: user.cpf,
-        cnpj: user.cnpj,
         role: user.role,
-      },
+      }),
     };
+  }
+
+  async getProfile(userId: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        cep: true,
+        state: true,
+        city: true,
+        contact: true,
+        address: true,
+        cpf: true,
+        cnpj: true,
+        role: true,
+      },
+    });
+
+    if (!user) {
+      throw new UnauthorizedException("Token inválido.");
+    }
+
+    return this.buildFullUser(user);
   }
   async updateProfile(userId: string, dto: UpdateProfileDto) {
     const normalizedCep = dto.cep?.replace(/\D/g, "") ?? "";
@@ -250,7 +325,7 @@ export class AuthService {
       },
     });
 
-    return user;
+    return this.buildFullUser(user);
   }
   async getOngs() {
     return this.prisma.user.findMany({
@@ -258,13 +333,9 @@ export class AuthService {
       select: {
         id: true,
         name: true,
-        email: true,
-        cep: true,
         state: true,
         city: true,
         contact: true,
-        address: true,
-        cnpj: true,
       },
       orderBy: { createdAt: "desc" },
     });

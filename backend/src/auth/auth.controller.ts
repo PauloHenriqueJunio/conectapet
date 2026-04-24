@@ -5,8 +5,10 @@ import {
   Patch,
   Post,
   Req,
+  Res,
   UseGuards,
 } from "@nestjs/common";
+import type { Response } from "express";
 import { Throttle } from "@nestjs/throttler";
 import { JwtAuthGuard } from "./guards/jwt-auth.guard";
 import { AuthService } from "./auth.service";
@@ -17,7 +19,19 @@ import { RequestUser } from "./types/request-user.type";
 
 @Controller("auth")
 export class AuthController {
+  private static readonly AUTH_COOKIE_NAME = "conectapet_session";
+
   constructor(private readonly authService: AuthService) {}
+
+  private getAuthCookieOptions() {
+    return {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax" as const,
+      path: "/",
+      maxAge: 24 * 60 * 60 * 1000,
+    };
+  }
 
   @Post("register")
   @Throttle({ default: { limit: 5, ttl: 60_000 } })
@@ -27,8 +41,29 @@ export class AuthController {
 
   @Post("login")
   @Throttle({ default: { limit: 5, ttl: 60_000 } })
-  login(@Body() dto: LoginDto) {
-    return this.authService.login(dto);
+  async login(
+    @Body() dto: LoginDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const auth = await this.authService.login(dto);
+    res.cookie(
+      AuthController.AUTH_COOKIE_NAME,
+      auth.accessToken,
+      this.getAuthCookieOptions(),
+    );
+
+    return { user: auth.user };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post("logout")
+  logout(@Res({ passthrough: true }) res: Response) {
+    res.clearCookie(
+      AuthController.AUTH_COOKIE_NAME,
+      this.getAuthCookieOptions(),
+    );
+
+    return { success: true };
   }
 
   @Get("ongs")
@@ -37,8 +72,17 @@ export class AuthController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Get("profile")
+  getProfile(@Req() req: { user: RequestUser }) {
+    return this.authService.getProfile(req.user.userId);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Patch("profile")
-  updateProfile(@Req() req: { user: RequestUser }, @Body() dto: UpdateProfileDto) {
+  updateProfile(
+    @Req() req: { user: RequestUser },
+    @Body() dto: UpdateProfileDto,
+  ) {
     return this.authService.updateProfile(req.user.userId, dto);
   }
 }

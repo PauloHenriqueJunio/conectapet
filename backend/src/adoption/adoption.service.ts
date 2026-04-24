@@ -77,9 +77,41 @@ export class AdoptionService {
   ongRequests(ongId: string) {
     return this.prisma.adoptionRequest.findMany({
       where: { pet: { ongId } },
-      include: {
-        pet: true,
-        adopter: true,
+      select: {
+        id: true,
+        petId: true,
+        adopterId: true,
+        status: true,
+        message: true,
+        createdAt: true,
+        pet: {
+          select: {
+            id: true,
+            name: true,
+            species: true,
+            photoUrl: true,
+            isCastrated: true,
+            isDewormed: true,
+            hasVaccineV8: true,
+            hasVaccineGiardia: true,
+            hasVaccineFlu: true,
+            hasVaccineRabies: true,
+            hasVaccineFeline: true,
+            hasVaccineFelv: true,
+            hasHistoryOfIllness: true,
+            illnessDescription: true,
+            hasOtherHealthInfo: true,
+            otherHealthInfoDescription: true,
+          },
+        },
+        adopter: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            contact: true,
+          },
+        },
       },
       orderBy: { createdAt: "desc" },
     });

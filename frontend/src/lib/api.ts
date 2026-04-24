@@ -5,13 +5,16 @@ export async function apiFetch<T>(
   options?: RequestInit,
   token?: string,
 ): Promise<T> {
+  const shouldAttachBearer =
+    typeof token === "string" && token.split(".").length === 3;
   const extraHeaders = (options?.headers ?? {}) as Record<string, string>;
 
   const response = await fetch(`${API_URL}${path}`, {
     ...options,
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...(shouldAttachBearer ? { Authorization: `Bearer ${token}` } : {}),
       ...extraHeaders,
     },
     cache: "no-store",
