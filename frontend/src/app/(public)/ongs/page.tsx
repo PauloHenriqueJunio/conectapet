@@ -44,11 +44,11 @@ export default function OngsPage() {
 
         <div className="relative mx-auto max-w-4xl text-center">
           <h1 className="mb-4 text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl">
-            ConheÃ§a nossas ONGs parceiras
+            Conheça nossas ONGs parceiras
           </h1>
           <p className="mx-auto max-w-2xl text-lg font-medium text-brand-100">
-            OrganizaÃ§Ãµes comprometidas com o resgate, cuidado e adoÃ§Ã£o
-            responsÃ¡vel de pets. Escolha uma parceira e comece sua jornada.
+            Organizações comprometidas com o resgate, cuidado e adoção
+            responsável de pets. Escolha uma parceira e comece sua jornada.
           </p>
         </div>
       </section>
@@ -69,10 +69,11 @@ export default function OngsPage() {
         {!loading && !error && ongs.length === 0 && (
           <div className="py-20 text-center">
             <Building2 size={48} className="mx-auto mb-4 text-slate-300" />
-            <p className="text-lg text-slate-600">Nenhuma ONG cadastrada ainda.</p>
+            <p className="text-lg text-slate-600">
+              Nenhuma ONG cadastrada ainda.
+            </p>
           </div>
         )}
-
         {!loading && !error && ongs.length > 0 && (
           <>
             <div className="mb-8">
@@ -80,8 +81,8 @@ export default function OngsPage() {
                 ONGs Cadastradas
               </h2>
               <p className="text-slate-500">
-                Total de {ongs.length} organizaÃ§Ã£o{ongs.length !== 1 ? "s" : ""}{" "}
-                disponÃ­vel{ongs.length !== 1 ? "s" : ""}
+                Total de {ongs.length} organização{ongs.length !== 1 ? "s" : ""}{" "}
+                disponível{ongs.length !== 1 ? "s" : ""}
               </p>
             </div>
 
@@ -110,12 +111,12 @@ export default function OngsPage() {
                           />
                           <div className="min-w-0 flex-1">
                             <p className="text-xs font-bold uppercase tracking-wide text-slate-400">
-                              LocalizaÃ§Ã£o
+                              Localização
                             </p>
                             <p className="text-sm font-semibold text-slate-800">
                               {ong.state && ong.city
                                 ? `${ong.city}, ${ong.state}`
-                                : "NÃ£o informado"}
+                                : "Não informado"}
                             </p>
                           </div>
                         </div>
@@ -130,7 +131,7 @@ export default function OngsPage() {
                               Contato
                             </p>
                             <p className="text-sm font-semibold text-slate-800">
-                              {ong.contact ?? "NÃ£o informado"}
+                              {ong.contact ?? "Não informado"}
                             </p>
                           </div>
                         </div>
