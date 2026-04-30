@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Settings } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
@@ -28,6 +29,7 @@ interface SiteHeaderProps {
 }
 
 export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
+  const router = useRouter();
   const { logout, isAuthenticated, user } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -277,36 +279,39 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
       >
         <div className="min-h-0">
           <ul className="space-y-2 border-t border-slate-200 pt-3 text-sm font-medium text-slate-700">
-            {/* LINKS PÚBLICOS */}
-            <li>
-              <Link
-                href="/"
-                className="block rounded-lg px-3 py-2 hover:bg-brand-50"
-                onClick={closeMobileMenu}
-              >
-                Home
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/ongs"
-                className="block rounded-lg px-3 py-2 hover:bg-brand-50"
-                onClick={closeMobileMenu}
-              >
-                Verificar ONGs
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/quem-somos"
-                className="block rounded-lg px-3 py-2 hover:bg-brand-50"
-                onClick={closeMobileMenu}
-              >
-                Quem somos?
-              </Link>
-            </li>
+            {/* LINKS CONDICIONAIS POR VARIANT - MOBILE */}
+            {variant === "public" && (
+              <>
+                <li>
+                  <Link
+                    href="/"
+                    className="block rounded-lg px-3 py-2 hover:bg-brand-50"
+                    onClick={closeMobileMenu}
+                  >
+                    Home
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/ongs"
+                    className="block rounded-lg px-3 py-2 hover:bg-brand-50"
+                    onClick={closeMobileMenu}
+                  >
+                    Verificar ONGs
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/quem-somos"
+                    className="block rounded-lg px-3 py-2 hover:bg-brand-50"
+                    onClick={closeMobileMenu}
+                  >
+                    Quem somos?
+                  </Link>
+                </li>
+              </>
+            )}
 
-            {/* PESSOA FÍSICA LOGADA */}
             {isAuthenticated && variant === "pessoa-fisica" && (
               <>
                 <li>
@@ -327,10 +332,18 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
                     Colocar na adoção
                   </Link>
                 </li>
+                <li>
+                  <Link
+                    href="/pessoa-fisica/minhas-solicitacoes"
+                    className="block rounded-lg px-3 py-2 hover:bg-brand-50 text-brand-700"
+                    onClick={closeMobileMenu}
+                  >
+                    Minhas solicitações
+                  </Link>
+                </li>
               </>
             )}
 
-            {/* ONG LOGADA */}
             {isAuthenticated && variant === "ong" && (
               <>
                 <li>
@@ -339,7 +352,7 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
                     className="block rounded-lg px-3 py-2 hover:bg-brand-50 text-brand-700"
                     onClick={closeMobileMenu}
                   >
-                    Painel da ONG
+                    Home
                   </Link>
                 </li>
                 <li>
@@ -351,15 +364,59 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
                     Cadastrar Pet
                   </Link>
                 </li>
+                <li>
+                  <Link
+                    href="/ong/editar"
+                    className="block rounded-lg px-3 py-2 hover:bg-brand-50 text-brand-700"
+                    onClick={closeMobileMenu}
+                  >
+                    Editar Pets
+                  </Link>
+                </li>
               </>
             )}
 
             <li className="pt-2 mt-4 border-t border-slate-100">
               {isAuthenticated ? (
                 <div className="flex flex-col gap-2">
-                  <span className="block px-3 text-xs font-bold uppercase tracking-wider text-slate-400">
-                    Logado como {user?.name?.split(" ")[0]}
-                  </span>
+                  <div className="flex items-center justify-between px-3">
+                    <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                      {`LOGADO COMO ${user?.name?.split(" ")[0]?.toUpperCase() ?? "USUÁRIO"}`}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setIsUserDropdownOpen((prev) => !prev)}
+                      className="rounded-lg p-1 text-slate-600 transition hover:text-slate-900"
+                      aria-label="Abrir menu do perfil"
+                      aria-expanded={isUserDropdownOpen}
+                    >
+                      <Settings
+                        size={16}
+                        className={`transition-transform duration-300 ${isUserDropdownOpen ? "rotate-180" : "rotate-0"}`}
+                      />
+                    </button>
+                  </div>
+                  {isUserDropdownOpen && (
+                    <div className="flex flex-col gap-1 px-2 py-2 bg-slate-50 rounded-lg border border-slate-200">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsUserDropdownOpen(false);
+                          closeMobileMenu();
+                          router.push(getEditProfileLink());
+                        }}
+                        className="block w-full text-left rounded-lg px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
+                      >
+                        Editar Perfil
+                      </button>
+                      <button
+                        type="button"
+                        className="block w-full text-left rounded-lg px-3 py-2 text-sm font-medium text-slate-500 transition hover:bg-slate-100 cursor-default"
+                      >
+                        Excluir conta
+                      </button>
+                    </div>
+                  )}
                   <button
                     onClick={() => {
                       closeMobileMenu();
