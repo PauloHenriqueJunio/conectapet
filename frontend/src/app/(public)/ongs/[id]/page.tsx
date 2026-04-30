@@ -8,10 +8,11 @@ import {
   Phone,
   MapPin,
   Building2,
-  ArrowLeft,
   Heart,
   Share2,
-  Mail,
+  PawPrint,
+  Users,
+  Gift,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -46,6 +47,7 @@ export default function OngDetailsPage({ params }: OngDetailsPageProps) {
   const [pets, setPets] = useState<Pet[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isFavorited, setIsFavorited] = useState(false);
   const { id } = use(params);
 
   useEffect(() => {
@@ -87,13 +89,16 @@ export default function OngDetailsPage({ params }: OngDetailsPageProps) {
         <SiteHeader page="ongs" variant="public" />
         <main className="flex flex-1 flex-col items-center justify-center px-4">
           <Building2 size={48} className="mb-4 text-slate-300" />
-          <h1 className="text-2xl font-bold text-slate-900">ONG não encontrada</h1>
-          <p className="mt-2 text-slate-600">{error || "A ONG solicitada não existe."}</p>
+          <h1 className="text-2xl font-bold text-slate-900">
+            ONG não encontrada
+          </h1>
+          <p className="mt-2 text-slate-600">
+            {error || "A ONG solicitada não existe."}
+          </p>
           <Link
             href="/ongs"
             className="mt-6 inline-flex items-center gap-2 rounded-lg bg-brand-600 px-4 py-2 text-white hover:bg-brand-700"
           >
-            <ArrowLeft size={18} />
             Voltar para ONGs
           </Link>
         </main>
@@ -107,159 +112,195 @@ export default function OngDetailsPage({ params }: OngDetailsPageProps) {
       <SiteHeader page="ongs" variant="public" />
 
       <main className="flex-1">
-        {/* HERO SECTION - INFO BÁSICA DA ONG */}
-        <section className="border-b border-slate-200 bg-white">
-          <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
-            <Link
-              href="/ongs"
-              className="mb-6 inline-flex items-center gap-2 text-brand-600 hover:text-brand-700"
-            >
-              <ArrowLeft size={18} />
-              Voltar
-            </Link>
+        {/* HERO COM FUNDO DE IMAGEM */}
+        <section className="relative bg-slate-400 py-24 overflow-hidden">
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage:
+                "https://images.unsplash.com/photo-1639494824163-f6935be23149?q=80&w=1228&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}
+          ></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-900/20 via-slate-900/30 to-white/40"></div>
 
-            <div className="flex flex-col gap-8 sm:flex-row">
-              {/* Avatar/Logo da ONG */}
-              <div className="flex h-32 w-32 flex-shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-400 to-brand-600">
-                <Building2 size={56} className="text-white/80" />
-              </div>
-
-              {/* Info da ONG */}
-              <div className="flex flex-1 flex-col justify-between">
-                <div>
-                  <h1 className="text-4xl font-extrabold text-slate-900">
-                    {ong.name}
-                  </h1>
-                  <p className="mt-2 text-slate-600">
-                    Organização parceira do ConectaPet dedicada ao resgate e adoção responsável
-                  </p>
-                </div>
-
-                {/* Actions */}
-                <div className="mt-6 flex gap-3 flex-wrap">
-                  <button className="inline-flex items-center gap-2 rounded-lg border border-slate-300 px-4 py-2 font-medium text-slate-700 hover:bg-slate-50">
-                    <Heart size={18} />
-                    Favoritar
-                  </button>
-                  <button className="inline-flex items-center gap-2 rounded-lg border border-slate-300 px-4 py-2 font-medium text-slate-700 hover:bg-slate-50">
-                    <Share2 size={18} />
-                    Compartilhar
-                  </button>
+          {/* CARD MODAL FLUTUANTE */}
+          <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-lg transform rounded-3xl bg-white p-8 shadow-xl">
+              {/* Icon */}
+              <div className="mb-6 flex items-center justify-center">
+                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-brand-500">
+                  <Building2 size={32} className="text-white" />
                 </div>
               </div>
-            </div>
-          </div>
-        </section>
 
-        {/* SEÇÃO DE CONTATO */}
-        <section className="border-b border-slate-200 bg-slate-50 py-12">
-          <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-            <h2 className="mb-8 text-3xl font-bold text-slate-900">Entre em contato</h2>
-
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-              {/* Email */}
-              {ong.email && (
-                <div className="rounded-2xl bg-white p-6 ring-1 ring-slate-100">
-                  <Mail size={24} className="mb-3 text-brand-600" />
-                  <h3 className="font-semibold text-slate-900">Email</h3>
-                  <p className="mt-2 text-sm text-slate-600">{ong.email}</p>
-                </div>
-              )}
-
-              {/* Telefone */}
-              {ong.contact && (
-                <div className="rounded-2xl bg-white p-6 ring-1 ring-slate-100">
-                  <Phone size={24} className="mb-3 text-brand-600" />
-                  <h3 className="font-semibold text-slate-900">Telefone</h3>
-                  <p className="mt-2 text-sm text-slate-600">{ong.contact}</p>
-                </div>
-              )}
-
-              {/* Localização */}
-              {ong.city && ong.state && (
-                <div className="rounded-2xl bg-white p-6 ring-1 ring-slate-100">
-                  <MapPin size={24} className="mb-3 text-brand-600" />
-                  <h3 className="font-semibold text-slate-900">Localização</h3>
-                  <p className="mt-2 text-sm text-slate-600">
-                    {ong.city}, {ong.state}
-                  </p>
-                </div>
-              )}
-
-              {/* CEP */}
-              {ong.cep && (
-                <div className="rounded-2xl bg-white p-6 ring-1 ring-slate-100">
-                  <Building2 size={24} className="mb-3 text-brand-600" />
-                  <h3 className="font-semibold text-slate-900">CEP</h3>
-                  <p className="mt-2 text-sm text-slate-600">{ong.cep}</p>
-                </div>
-              )}
-            </div>
-          </div>
-        </section>
-
-        {/* SEÇÃO SOBRE A ONG */}
-        <section className="border-b border-slate-200 py-12">
-          <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-            <h2 className="mb-6 text-3xl font-bold text-slate-900">Sobre</h2>
-
-            <div className="prose prose-sm max-w-none rounded-2xl bg-slate-50 p-8">
-              <p className="text-slate-700">
-                {ong.name} é uma organização dedicada ao bem-estar animal. 
-                Trabalhamos no resgate, cuidado médico, e colocação responsável de pets que precisam de um novo lar.
+              {/* Conteúdo */}
+              <h1 className="mb-3 text-center text-2xl font-extrabold text-slate-900">
+                {ong.name}
+              </h1>
+              <p className="mb-8 text-center text-sm text-slate-600 leading-relaxed">
+                Dedicados ao resgate, reabilitação e adoção responsável de
+                animais em situação de vulnerabilidade. Transformando vidas, uma
+                pata da cada vez, na região metropolitana de Belo Horizonte.
               </p>
-              {/* TODO: Adicionar descrição dinâmica da ONG quando implementado no backend */}
+
+              {/* Botões */}
+              <div className="flex gap-3 justify-center">
+                <button
+                  onClick={() => setIsFavorited(!isFavorited)}
+                  className="inline-flex items-center gap-2 rounded-lg border-2 border-slate-300 px-4 py-2 font-medium text-slate-700 hover:border-brand-500 hover:text-brand-600 transition"
+                >
+                  <Heart
+                    size={18}
+                    className={
+                      isFavorited ? "fill-brand-500 text-brand-500" : ""
+                    }
+                  />
+                  Favoritar
+                </button>
+                <button className="inline-flex items-center gap-2 rounded-lg border-2 border-slate-300 px-4 py-2 font-medium text-slate-700 hover:border-brand-500 hover:text-brand-600 transition">
+                  <Share2 size={18} />
+                  Compartilhar
+                </button>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* SEÇÃO DE PETS */}
-        <section className="py-12">
+        {/* CONTEÚDO PRINCIPAL - LAYOUT 2 COLUNAS */}
+        <section className="bg-white py-12">
           <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-            <h2 className="mb-8 text-3xl font-bold text-slate-900">
-              Pets disponíveis para adoção
-            </h2>
+            <div className="grid gap-12 grid-cols-3">
+              {/* COLUNA ESQUERDA - INFO */}
+              <div className="col-span-2 space-y-12">
+                {/* ENTRE EM CONTATO */}
+                <div>
+                  <div className="mb-6 flex items-center gap-2">
+                    <div className="h-2 w-2 rounded-full bg-brand-500"></div>
+                    <h2 className="text-2xl font-bold text-slate-900">
+                      Entre em contato
+                    </h2>
+                  </div>
 
-            {pets.length === 0 ? (
-              <div className="flex flex-col items-center justify-center rounded-2xl bg-slate-50 py-16">
-                <Heart size={48} className="mb-4 text-slate-300" />
-                <p className="text-lg text-slate-600">
-                  Nenhum pet disponível no momento
-                </p>
-              </div>
-            ) : (
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {pets.map((pet) => (
-                  <Link
-                    key={pet.id}
-                    href={`/pet/${pet.id}`}
-                    className="group overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-slate-100 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:ring-brand-200 no-underline"
-                  >
-                    {/* Pet Card - TODO: Implementar componente reutilizável */}
-                    <div className="aspect-square overflow-hidden bg-slate-100">
-                      {pet.photoUrl ? (
-                        <img
-                          src={pet.photoUrl}
-                          alt={pet.name}
-                          className="h-full w-full object-cover transition-transform group-hover:scale-105"
-                        />
-                      ) : (
-                        <div className="flex items-center justify-center h-full">
-                          <Heart size={48} className="text-slate-300" />
+                  <div className="rounded-2xl bg-gradient-to-br from-brand-50 to-brand-100/50 p-8">
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      {ong.contact && (
+                        <div className="rounded-2xl border border-slate-200 p-6">
+                          <Phone size={24} className="mb-3 text-brand-600" />
+                          <p className="text-xs font-bold uppercase text-slate-400 mb-2">
+                            Telefone
+                          </p>
+                          <p className="text-lg font-semibold text-slate-900">
+                            {ong.contact}
+                          </p>
+                        </div>
+                      )}
+
+                      {ong.city && ong.state && (
+                        <div className="rounded-2xl border border-slate-200 p-6">
+                          <MapPin size={24} className="mb-3 text-brand-600" />
+                          <p className="text-xs font-bold uppercase text-slate-400 mb-2">
+                            Localização
+                          </p>
+                          <p className="text-lg font-semibold text-slate-900">
+                            {ong.city}, {ong.state}
+                          </p>
                         </div>
                       )}
                     </div>
+                  </div>
 
-                    <div className="p-4">
-                      <h3 className="font-bold text-slate-900">{pet.name}</h3>
-                      <p className="text-sm text-slate-600">
-                        {pet.species} • {pet.age} ano{pet.age !== 1 ? "s" : ""}
-                      </p>
+                  {/* SOBRE A ONG */}
+                  <div>
+                    <div className="mb-6 flex items-center gap-2">
+                      <div className="h-2 w-2 rounded-full bg-brand-500"></div>
+                      <h2 className="text-2xl font-bold text-slate-900">
+                        Sobre a ONG
+                      </h2>
                     </div>
-                  </Link>
-                ))}
+
+                    <div className="rounded-2xl bg-gradient-to-br from-blue-50 to-blue-100/50 p-8">
+                      <div className="space-y-4 text-slate-700 leading-relaxed">
+                        <p>
+                          Fundada em 2015, a ONG {ong.name} nasceu de um como
+                          coletivo de transformar a realidade de cães e gatos
+                          abandonados nas ruas de Belo Horizonte. Acreditamos
+                          que cada animal merece uma segunda chance: um abrigo e
+                          cuidados veterinários adequados.
+                        </p>
+                        <p>
+                          Nossa equipe é formada por voluntários apaixonados,
+                          veterinários parceiros e educadores caninos que
+                          trabalham incansavelmente para reabilitar nossos
+                          resgatados, tanto física quanto emocionalmente.
+                        </p>
+                        <p>
+                          Não possuímos abrigo próprio de grande porte.
+                          Trabalhamos principalmente com um sistema de lares
+                          temporários, o que permite uma adaptação mais fluida
+                          dos animais ao convívio doméstico e familiar antes de
+                          encontrarem suas famílias de acolhimento para sempre.
+                        </p>
+                      </div>
+
+                      {/* Equipe de voluntários */}
+                      <div className="mt-6 flex items-center gap-3">
+                        <div className="flex -space-x-3">
+                          {[1, 2, 3].map((i) => (
+                            <div
+                              key={i}
+                              className="h-10 w-10 rounded-full bg-gradient-to-br from-brand-400 to-brand-600 ring-2 ring-white flex items-center justify-center text-white text-xs font-bold"
+                            >
+                              {i}
+                            </div>
+                          ))}
+                        </div>
+                        <p className="text-sm font-semibold text-slate-700">
+                          Equipe de voluntários ativos
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* COLUNA DIREITA - CTA */}
+                <div className="space-y-6">
+                  {/* QUER ADOTAR? */}
+                  <div className="rounded-3xl border-2 border-slate-200 p-6 text-center">
+                    <PawPrint
+                      size={40}
+                      className="mx-auto mb-4 text-brand-600"
+                    />
+                    <h3 className="mb-2 text-lg font-bold text-slate-900">
+                      Quer adotar?
+                    </h3>
+                    <p className="mb-6 text-sm text-slate-600">
+                      Temos dezenas de cães e gatos esperando por um lar
+                      amoroso.
+                    </p>
+                    <button className="w-full rounded-full bg-brand-600 px-6 py-3 font-semibold text-white hover:bg-brand-700 transition">
+                      Ver Pets Disponíveis
+                    </button>
+                  </div>
+
+                  {/* SEJA UM PADRINHO */}
+                  <div className="rounded-3xl border-2 border-slate-200 p-6 text-center">
+                    <Gift size={40} className="mx-auto mb-4 text-brand-600" />
+                    <h3 className="mb-2 text-lg font-bold text-slate-900">
+                      Seja um Padrinho
+                    </h3>
+                    <p className="mb-6 text-sm text-slate-600">
+                      Ajude a custear os cuidados dos animais que ainda não
+                      foram adotados.
+                    </p>
+                    <button className="w-full rounded-full border-2 border-brand-600 px-6 py-3 font-semibold text-brand-600 hover:bg-brand-50 transition">
+                      Fazer Doação
+                    </button>
+                  </div>
+                </div>
               </div>
-            )}
+            </div>
           </div>
         </section>
       </main>
