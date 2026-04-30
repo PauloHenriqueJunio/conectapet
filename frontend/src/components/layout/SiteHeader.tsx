@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Settings } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
@@ -29,12 +28,12 @@ interface SiteHeaderProps {
 }
 
 export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
-  const router = useRouter();
   const { logout, isAuthenticated, user } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const userDropdownRef = useRef<HTMLDivElement | null>(null);
+  const mobileDropdownRef = useRef<HTMLDivElement | null>(null);
 
   const [activeNav, setActiveNav] = useState<HeaderNavKey>(page);
 
@@ -47,10 +46,15 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
+      const targetNode = event.target as Node;
+      const clickedDesktopDropdown =
         userDropdownRef.current &&
-        !userDropdownRef.current.contains(event.target as Node)
-      ) {
+        userDropdownRef.current.contains(targetNode);
+      const clickedMobileDropdown =
+        mobileDropdownRef.current &&
+        mobileDropdownRef.current.contains(targetNode);
+
+      if (!clickedDesktopDropdown && !clickedMobileDropdown) {
         setIsUserDropdownOpen(false);
       }
     };
@@ -378,7 +382,7 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
 
             <li className="pt-2 mt-4 border-t border-slate-100">
               {isAuthenticated ? (
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-2" ref={mobileDropdownRef}>
                   <div className="flex items-center justify-between px-3">
                     <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
                       {`LOGADO COMO ${user?.name?.split(" ")[0]?.toUpperCase() ?? "USUÁRIO"}`}
@@ -398,17 +402,29 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
                   </div>
                   {isUserDropdownOpen && (
                     <div className="flex flex-col gap-1 px-2 py-2 bg-slate-50 rounded-lg border border-slate-200">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setIsUserDropdownOpen(false);
-                          closeMobileMenu();
-                          router.push(getEditProfileLink());
-                        }}
-                        className="block w-full text-left rounded-lg px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
-                      >
-                        Editar Perfil
-                      </button>
+                      {variant === "ong" ? (
+                        <a
+                          href="/ong/editar-perfil"
+                          onClick={() => {
+                            setIsUserDropdownOpen(false);
+                            closeMobileMenu();
+                          }}
+                          className="block rounded-lg px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
+                        >
+                          Editar Perfil
+                        </a>
+                      ) : (
+                        <a
+                          href="/pessoa-fisica/editar-perfil"
+                          onClick={() => {
+                            setIsUserDropdownOpen(false);
+                            closeMobileMenu();
+                          }}
+                          className="block rounded-lg px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
+                        >
+                          Editar Perfil
+                        </a>
+                      )}
                       <button
                         type="button"
                         className="block w-full text-left rounded-lg px-3 py-2 text-sm font-medium text-slate-500 transition hover:bg-slate-100 cursor-default"
