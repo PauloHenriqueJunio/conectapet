@@ -38,6 +38,10 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
   const [activeNav, setActiveNav] = useState<HeaderNavKey>(page);
 
   useEffect(() => {
+    setActiveNav(page);
+  }, [page]);
+
+  useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 18);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -48,8 +52,7 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
     const handleClickOutside = (event: MouseEvent) => {
       const targetNode = event.target as Node;
       const clickedDesktopDropdown =
-        userDropdownRef.current &&
-        userDropdownRef.current.contains(targetNode);
+        userDropdownRef.current && userDropdownRef.current.contains(targetNode);
       const clickedMobileDropdown =
         mobileDropdownRef.current &&
         mobileDropdownRef.current.contains(targetNode);
