@@ -113,12 +113,12 @@ export default function OngDetailsPage({ params }: OngDetailsPageProps) {
 
       <main className="flex-1">
         {/* HERO COM FUNDO DE IMAGEM */}
-        <section className="relative bg-slate-400 py-24 overflow-hidden">
+        <section className="relative bg-slate-400 py-16 md:py-24 overflow-hidden">
           <div
             className="absolute inset-0"
             style={{
               backgroundImage:
-                "https://images.unsplash.com/photo-1639494824163-f6935be23149?q=80&w=1228&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                "url('https://images.unsplash.com/photo-1639494824163-f6935be23149?q=80&w=1228&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')",
               backgroundSize: "cover",
               backgroundPosition: "center",
             }}
@@ -127,7 +127,7 @@ export default function OngDetailsPage({ params }: OngDetailsPageProps) {
 
           {/* CARD MODAL FLUTUANTE */}
           <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-            <div className="mx-auto max-w-lg transform rounded-3xl bg-white p-8 shadow-xl">
+            <div className="mx-auto max-w-lg transform rounded-3xl bg-white p-6 md:p-8 shadow-xl">
               {/* Icon */}
               <div className="mb-6 flex items-center justify-center">
                 <div className="flex h-14 w-14 items-center justify-center rounded-full bg-brand-500">
@@ -136,7 +136,7 @@ export default function OngDetailsPage({ params }: OngDetailsPageProps) {
               </div>
 
               {/* Conteúdo */}
-              <h1 className="mb-3 text-center text-2xl font-extrabold text-slate-900">
+              <h1 className="mb-3 text-center text-xl md:text-2xl font-extrabold text-slate-900">
                 {ong.name}
               </h1>
               <p className="mb-8 text-center text-sm text-slate-600 leading-relaxed">
@@ -169,21 +169,20 @@ export default function OngDetailsPage({ params }: OngDetailsPageProps) {
         </section>
 
         {/* CONTEÚDO PRINCIPAL - LAYOUT 2 COLUNAS */}
-        <section className="bg-white py-12">
+        <section className="bg-white py-8 md:py-12">
           <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-            <div className="grid gap-12 grid-cols-3">
+            <div className="grid gap-8 md:gap-12 grid-cols-1 lg:grid-cols-3">
               {/* COLUNA ESQUERDA - INFO */}
-              <div className="col-span-2 space-y-12">
+              <div className="lg:col-span-2 space-y-8 md:space-y-12">
                 {/* ENTRE EM CONTATO */}
                 <div>
                   <div className="mb-6 flex items-center gap-2">
-                    <div className="h-2 w-2 rounded-full bg-brand-500"></div>
-                    <h2 className="text-2xl font-bold text-slate-900">
+                    <h2 className="text-xl md:text-2xl font-bold text-slate-900">
                       Entre em contato
                     </h2>
                   </div>
 
-                  <div className="rounded-2xl bg-gradient-to-br from-brand-50 to-brand-100/50 p-8">
+                  <div className="rounded-2xl bg-gradient-to-br from-brand-50 to-brand-100/50 p-6 md:p-8">
                     <div className="grid gap-4 sm:grid-cols-2">
                       {ong.contact && (
                         <div className="rounded-2xl border border-slate-200 p-6">
@@ -213,14 +212,13 @@ export default function OngDetailsPage({ params }: OngDetailsPageProps) {
 
                   {/* SOBRE A ONG */}
                   <div>
-                    <div className="mb-6 flex items-center gap-2">
-                      <div className="h-2 w-2 rounded-full bg-brand-500"></div>
-                      <h2 className="text-2xl font-bold text-slate-900">
+                    <div className="mt-6 mb-6 flex items-center gap-2">
+                      <h2 className="text-xl md:text-2xl font-bold text-slate-900">
                         Sobre a ONG
                       </h2>
                     </div>
 
-                    <div className="rounded-2xl bg-gradient-to-br from-blue-50 to-blue-100/50 p-8">
+                    <div className="rounded-2xl bg-gradient-to-br from-blue-50 to-blue-100/50 p-6 md:p-8">
                       <div className="space-y-4 text-slate-700 leading-relaxed">
                         <p>
                           Fundada em 2015, a ONG {ong.name} nasceu de um como
@@ -263,41 +261,41 @@ export default function OngDetailsPage({ params }: OngDetailsPageProps) {
                     </div>
                   </div>
                 </div>
+              </div>
 
-                {/* COLUNA DIREITA - CTA */}
-                <div className="space-y-6">
-                  {/* QUER ADOTAR? */}
-                  <div className="rounded-3xl border-2 border-slate-200 p-6 text-center">
-                    <PawPrint
-                      size={40}
-                      className="mx-auto mb-4 text-brand-600"
-                    />
-                    <h3 className="mb-2 text-lg font-bold text-slate-900">
-                      Quer adotar?
-                    </h3>
-                    <p className="mb-6 text-sm text-slate-600">
-                      Temos dezenas de cães e gatos esperando por um lar
-                      amoroso.
-                    </p>
-                    <button className="w-full rounded-full bg-brand-600 px-6 py-3 font-semibold text-white hover:bg-brand-700 transition">
-                      Ver Pets Disponíveis
-                    </button>
+              {/* COLUNA DIREITA - CTA */}
+              <div className="space-y-6 self-start">
+                {/* QUER ADOTAR? */}
+                <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white p-6 text-center shadow-sm transition hover:shadow-md">
+                  <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
+                    <PawPrint size={28} />
                   </div>
+                  <h3 className="mb-2 text-lg font-bold text-slate-900">
+                    Quer adotar?
+                  </h3>
+                  <p className="mb-6 text-sm leading-relaxed text-slate-600">
+                    Temos dezenas de cães e gatos esperando por um lar amoroso.
+                  </p>
+                  <button className="w-full rounded-full bg-brand-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-brand-700">
+                    Ver Pets Disponíveis
+                  </button>
+                </div>
 
-                  {/* SEJA UM PADRINHO */}
-                  <div className="rounded-3xl border-2 border-slate-200 p-6 text-center">
-                    <Gift size={40} className="mx-auto mb-4 text-brand-600" />
-                    <h3 className="mb-2 text-lg font-bold text-slate-900">
-                      Seja um Padrinho
-                    </h3>
-                    <p className="mb-6 text-sm text-slate-600">
-                      Ajude a custear os cuidados dos animais que ainda não
-                      foram adotados.
-                    </p>
-                    <button className="w-full rounded-full border-2 border-brand-600 px-6 py-3 font-semibold text-brand-600 hover:bg-brand-50 transition">
-                      Fazer Doação
-                    </button>
+                {/* SEJA UM PADRINHO */}
+                <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white p-6 text-center shadow-sm transition hover:shadow-md">
+                  <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
+                    <Gift size={28} />
                   </div>
+                  <h3 className="mb-2 text-lg font-bold text-slate-900">
+                    Seja um Padrinho
+                  </h3>
+                  <p className="mb-6 text-sm leading-relaxed text-slate-600">
+                    Ajude a custear os cuidados dos animais que ainda não foram
+                    adotados.
+                  </p>
+                  <button className="w-full rounded-full border border-brand-600 px-6 py-3 text-sm font-semibold text-brand-600 transition hover:bg-brand-50">
+                    Fazer Doação
+                  </button>
                 </div>
               </div>
             </div>
