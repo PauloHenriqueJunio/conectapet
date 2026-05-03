@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { apiFetch } from "@/lib/api";
@@ -48,6 +48,7 @@ export default function OngDetailsPage({ params }: OngDetailsPageProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isFavorited, setIsFavorited] = useState(false);
+  const petsSectionRef = useRef<HTMLElement | null>(null);
   const { id } = use(params);
 
   useEffect(() => {
@@ -69,6 +70,13 @@ export default function OngDetailsPage({ params }: OngDetailsPageProps) {
 
     fetchOngData();
   }, [id]);
+
+  const handleScrollToPets = () => {
+    petsSectionRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
 
   if (loading) {
     return (
@@ -153,7 +161,7 @@ export default function OngDetailsPage({ params }: OngDetailsPageProps) {
                   <Heart
                     size={18}
                     className={
-                      isFavorited ? "fill-brand-500 text-brand-500" : ""
+                      isFavorited ? "fill-red-500 text-red-500" : ""
                     }
                   />
                   Favoritar
@@ -275,7 +283,11 @@ export default function OngDetailsPage({ params }: OngDetailsPageProps) {
                   <p className="mb-6 text-sm leading-relaxed text-slate-600">
                     Temos dezenas de cães e gatos esperando por um lar amoroso.
                   </p>
-                  <button className="w-full rounded-full bg-brand-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-brand-700">
+                  <button
+                    type="button"
+                    onClick={handleScrollToPets}
+                    className="w-full rounded-full bg-brand-600 px-6 py-3 text-sm font-semibold text-white transition hover:bg-brand-700"
+                  >
                     Ver Pets Disponíveis
                   </button>
                 </div>
@@ -301,7 +313,10 @@ export default function OngDetailsPage({ params }: OngDetailsPageProps) {
           </div>
         </section>
 
-        <section className="bg-white pb-12 md:pb-16">
+        <section
+          ref={petsSectionRef}
+          className="bg-white pb-12 md:pb-16 scroll-mt-24"
+        >
           <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
             <div className="mb-6 flex items-center gap-3">
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-700">
@@ -321,9 +336,10 @@ export default function OngDetailsPage({ params }: OngDetailsPageProps) {
             {pets.length > 0 ? (
               <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                 {pets.map((pet) => (
-                  <article
+                  <Link
                     key={pet.id}
-                    className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+                    href={`/pet/${pet.id}`}
+                    className="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
                   >
                     <div
                       className="h-52 bg-slate-100 bg-cover bg-center"
@@ -352,11 +368,11 @@ export default function OngDetailsPage({ params }: OngDetailsPageProps) {
                         {pet.age} ano{pet.age !== 1 ? "s" : ""} de idade
                       </p>
 
-                      <button className="mt-4 w-full rounded-full border border-brand-600 px-4 py-2.5 text-sm font-semibold text-brand-600 transition hover:bg-brand-50">
+                      <span className="mt-4 inline-flex w-full items-center justify-center rounded-full border border-brand-600 px-4 py-2.5 text-sm font-semibold text-brand-600 transition group-hover:bg-brand-50">
                         Ver perfil do pet
-                      </button>
+                      </span>
                     </div>
-                  </article>
+                  </Link>
                 ))}
               </div>
             ) : (
