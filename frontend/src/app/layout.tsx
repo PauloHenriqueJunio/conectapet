@@ -10,6 +10,10 @@ const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 export const metadata: Metadata = {
   title: "ConectaPet",
   description: "Plataforma para conectar ONGs e adotantes de pets.",
+  icons: {
+    icon: "/logo-nav.svg",
+    shortcut: "/logo-nav.svg",
+  },
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
