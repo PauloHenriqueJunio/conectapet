@@ -11,8 +11,12 @@ export const metadata: Metadata = {
   title: "ConectaPet",
   description: "Plataforma para conectar ONGs e adotantes de pets.",
   icons: {
-    icon: "/favicon.png",
-    shortcut: "/favicon.png",
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/favicon-v2.png", type: "image/png" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: "/favicon-v2.png",
   },
 };
 
