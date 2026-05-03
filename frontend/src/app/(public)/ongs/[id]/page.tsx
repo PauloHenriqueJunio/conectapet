@@ -155,7 +155,7 @@ export default function OngDetailsPage({ params }: OngDetailsPageProps) {
 
       <main className="flex-1">
         {/* HERO COM FUNDO DE IMAGEM */}
-        <section className="relative bg-slate-400 py-16 md:py-24 overflow-hidden">
+        <section className="relative overflow-hidden bg-slate-400 py-20 md:py-28">
           <div
             className="absolute inset-0"
             style={{
@@ -165,42 +165,49 @@ export default function OngDetailsPage({ params }: OngDetailsPageProps) {
               backgroundPosition: "center",
             }}
           ></div>
-          <div className="absolute inset-0 bg-gradient-to-b from-slate-900/20 via-slate-900/30 to-white/40"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-900/60 via-slate-900/55 to-white/50"></div>
+          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-white to-transparent" />
 
           {/* CARD MODAL FLUTUANTE */}
           <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-            <div className="mx-auto max-w-lg transform rounded-3xl bg-white p-6 md:p-8 shadow-xl">
+            <div className="mx-auto max-w-2xl rounded-[2rem] border border-white bg-white p-8 shadow-[0_24px_80px_rgba(15,23,42,0.35)] md:p-12">
+              <div className="mb-4 flex justify-center">
+                <span className="rounded-full border border-brand-200 bg-brand-50 px-4 py-1 text-xs font-bold uppercase tracking-[0.22em] text-brand-700">
+                  ONG parceira
+                </span>
+              </div>
+
               {/* Icon */}
               <div className="mb-6 flex items-center justify-center">
-                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-brand-500">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-brand-500 shadow-lg shadow-brand-200/80 ring-8 ring-brand-50">
                   <Building2 size={32} className="text-white" />
                 </div>
               </div>
 
               {/* Conteúdo */}
-              <h1 className="mb-3 text-center text-xl md:text-2xl font-extrabold text-slate-900">
+              <h1 className="mb-4 text-center text-4xl font-black tracking-tight text-slate-900 md:text-5xl">
                 {ong.name}
               </h1>
-              <p className="mb-8 text-center text-sm text-slate-600 leading-relaxed">
+              <p className="mx-auto mb-8 max-w-2xl text-center text-base leading-relaxed text-slate-800 md:text-lg font-semibold">
                 Dedicados ao resgate, reabilitação e adoção responsável de
                 animais em situação de vulnerabilidade. Transformando vidas, uma
                 pata da cada vez, na região metropolitana de Belo Horizonte.
               </p>
 
               {/* Botões */}
-              <div className="flex gap-3 justify-center">
+              <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
                 <button
                   onClick={() => setIsFavorited(!isFavorited)}
-                  className="inline-flex items-center gap-2 rounded-lg border-2 border-slate-300 px-4 py-2 font-medium text-slate-700 hover:border-brand-500 hover:text-brand-600 transition"
+                  className="inline-flex items-center justify-center gap-2 rounded-full border-2 border-slate-400 px-6 py-3 font-semibold text-slate-800 transition hover:border-brand-500 hover:text-brand-600 hover:bg-brand-50"
                 >
                   <Heart
-                    size={18}
+                    size={20}
                     className={isFavorited ? "fill-red-500 text-red-500" : ""}
                   />
                   Favoritar
                 </button>
-                <button className="inline-flex items-center gap-2 rounded-lg border-2 border-slate-300 px-4 py-2 font-medium text-slate-700 hover:border-brand-500 hover:text-brand-600 transition">
-                  <Share2 size={18} />
+                <button className="inline-flex items-center justify-center gap-2 rounded-full border-2 border-slate-400 px-6 py-3 font-semibold text-slate-800 transition hover:border-brand-500 hover:text-brand-600 hover:bg-brand-50">
+                  <Share2 size={20} />
                   Compartilhar
                 </button>
               </div>
@@ -221,12 +228,16 @@ export default function OngDetailsPage({ params }: OngDetailsPageProps) {
                       Entre em contato
                     </h2>
                   </div>
+                  <p className="mb-6 max-w-2xl text-sm leading-relaxed text-slate-500">
+                    Fale diretamente com a ONG usando o canal mais rápido para a
+                    sua necessidade.
+                  </p>
 
                   <div className="grid gap-4">
                     {ong.contact && (
-                      <div className="rounded-3xl bg-gradient-to-br from-emerald-50 via-emerald-50/50 to-transparent border border-emerald-200/60 p-6 hover:shadow-md transition">
+                      <div className="rounded-3xl border border-emerald-200/70 bg-gradient-to-br from-emerald-50 via-white to-emerald-50/40 p-6 transition hover:shadow-lg">
                         <div className="flex items-start gap-4">
-                          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-100 flex-shrink-0">
+                          <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-2xl bg-emerald-100 shadow-sm">
                             <Phone size={28} className="text-emerald-600" />
                           </div>
                           <div className="flex-1 min-w-0">
@@ -259,9 +270,9 @@ export default function OngDetailsPage({ params }: OngDetailsPageProps) {
                     )}
 
                     {ong.city && ong.state && (
-                      <div className="rounded-3xl bg-gradient-to-br from-blue-50 via-blue-50/50 to-transparent border border-blue-200/60 p-6 hover:shadow-md transition">
+                      <div className="rounded-3xl border border-blue-200/70 bg-gradient-to-br from-blue-50 via-white to-blue-50/40 p-6 transition hover:shadow-lg">
                         <div className="flex items-start gap-4">
-                          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-100 flex-shrink-0">
+                          <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-2xl bg-blue-100 shadow-sm">
                             <MapPin size={28} className="text-blue-600" />
                           </div>
                           <div className="flex-1 min-w-0">
@@ -285,9 +296,9 @@ export default function OngDetailsPage({ params }: OngDetailsPageProps) {
                     )}
 
                     {ong.email && (
-                      <div className="rounded-3xl bg-gradient-to-br from-purple-50 via-purple-50/50 to-transparent border border-purple-200/60 p-6 hover:shadow-md transition">
+                      <div className="rounded-3xl border border-purple-200/70 bg-gradient-to-br from-purple-50 via-white to-purple-50/40 p-6 transition hover:shadow-lg">
                         <div className="flex items-start gap-4">
-                          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-purple-100 flex-shrink-0">
+                          <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-2xl bg-purple-100 shadow-sm">
                             <Mail size={28} className="text-purple-600" />
                           </div>
                           <div className="flex-1 min-w-0">
@@ -374,10 +385,10 @@ export default function OngDetailsPage({ params }: OngDetailsPageProps) {
               </div>
 
               {/* COLUNA DIREITA - CTA */}
-              <div className="space-y-6 self-start">
+              <div className="space-y-6 self-start lg:sticky lg:top-28">
                 {/* QUER ADOTAR? */}
-                <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white p-6 text-center shadow-sm transition hover:shadow-md">
-                  <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
+                <div className="overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-b from-white to-slate-50 p-6 text-center shadow-sm transition hover:-translate-y-0.5 hover:shadow-xl">
+                  <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 ring-8 ring-emerald-50/60">
                     <PawPrint size={28} />
                   </div>
                   <h3 className="mb-2 text-lg font-bold text-slate-900">
@@ -396,8 +407,8 @@ export default function OngDetailsPage({ params }: OngDetailsPageProps) {
                 </div>
 
                 {/* SEJA UM PADRINHO */}
-                <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white p-6 text-center shadow-sm transition hover:shadow-md">
-                  <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
+                <div className="overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-b from-white to-slate-50 p-6 text-center shadow-sm transition hover:-translate-y-0.5 hover:shadow-xl">
+                  <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 ring-8 ring-emerald-50/60">
                     <Gift size={28} />
                   </div>
                   <h3 className="mb-2 text-lg font-bold text-slate-900">
@@ -418,22 +429,27 @@ export default function OngDetailsPage({ params }: OngDetailsPageProps) {
 
         <section
           ref={petsSectionRef}
-          className="bg-white pb-12 md:pb-16 scroll-mt-24"
+          className="scroll-mt-28 bg-white pb-12 md:pb-16"
         >
           <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-            <div className="mb-6 flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-700">
-                <PawPrint size={24} />
+            <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-center gap-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-700 shadow-sm">
+                  <PawPrint size={24} />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                    Pets disponíveis para adoção
+                  </p>
+                  <h2 className="text-xl font-bold text-slate-900 md:text-2xl">
+                    {pets.length} pet{pets.length !== 1 ? "s" : ""} da ONG{" "}
+                    {ong.name}
+                  </h2>
+                </div>
               </div>
-              <div>
-                <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
-                  Pets disponíveis para adoção
-                </p>
-                <h2 className="text-xl font-bold text-slate-900 md:text-2xl">
-                  {pets.length} pet{pets.length !== 1 ? "s" : ""} da ONG{" "}
-                  {ong.name}
-                </h2>
-              </div>
+              <p className="max-w-xl text-sm leading-relaxed text-slate-500 sm:text-right">
+                Toque no pet para ver o perfil completo e iniciar a adoção.
+              </p>
             </div>
 
             {pets.length > 0 ? (
@@ -442,7 +458,7 @@ export default function OngDetailsPage({ params }: OngDetailsPageProps) {
                   <Link
                     key={pet.id}
                     href={`/pet/${pet.id}`}
-                    className="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+                    className="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
                   >
                     <div
                       className="h-52 bg-slate-100 bg-cover bg-center"
