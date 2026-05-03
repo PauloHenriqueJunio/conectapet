@@ -58,9 +58,8 @@ export default function OngDetailsPage({ params }: OngDetailsPageProps) {
 
         setOng(ongData);
 
-        // TODO: Buscar pets da ONG
-        // const petsData = await apiFetch<Pet[]>(`/pets?ongId=${id}`);
-        // setPets(petsData.filter(pet => !pet.isAdopted));
+        const petsData = await apiFetch<Pet[]>(`/pets/ong/${id}/available`);
+        setPets(petsData);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Erro ao carregar ONG");
       } finally {
@@ -299,6 +298,78 @@ export default function OngDetailsPage({ params }: OngDetailsPageProps) {
                 </div>
               </div>
             </div>
+          </div>
+        </section>
+
+        <section className="bg-white pb-12 md:pb-16">
+          <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+            <div className="mb-6 flex items-center gap-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-700">
+                <PawPrint size={24} />
+              </div>
+              <div>
+                <p className="text-sm font-semibold uppercase tracking-wide text-emerald-700">
+                  Pets disponíveis para adoção
+                </p>
+                <h2 className="text-xl font-bold text-slate-900 md:text-2xl">
+                  {pets.length} pet{pets.length !== 1 ? "s" : ""} da ONG{" "}
+                  {ong.name}
+                </h2>
+              </div>
+            </div>
+
+            {pets.length > 0 ? (
+              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                {pets.map((pet) => (
+                  <article
+                    key={pet.id}
+                    className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+                  >
+                    <div
+                      className="h-52 bg-slate-100 bg-cover bg-center"
+                      style={{
+                        backgroundImage: pet.photoUrl
+                          ? `url('${pet.photoUrl}')`
+                          : undefined,
+                      }}
+                    />
+                    <div className="p-5">
+                      <div className="mb-3 flex items-start justify-between gap-3">
+                        <div>
+                          <h3 className="text-lg font-bold text-slate-900">
+                            {pet.name}
+                          </h3>
+                          <p className="text-sm text-slate-500">
+                            {pet.species}
+                          </p>
+                        </div>
+                        <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
+                          Disponível
+                        </span>
+                      </div>
+
+                      <p className="text-sm text-slate-600">
+                        {pet.age} ano{pet.age !== 1 ? "s" : ""} de idade
+                      </p>
+
+                      <button className="mt-4 w-full rounded-full border border-brand-600 px-4 py-2.5 text-sm font-semibold text-brand-600 transition hover:bg-brand-50">
+                        Ver perfil do pet
+                      </button>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            ) : (
+              <div className="rounded-3xl border border-dashed border-slate-200 bg-slate-50 px-6 py-12 text-center">
+                <PawPrint size={40} className="mx-auto mb-4 text-slate-300" />
+                <h3 className="text-lg font-semibold text-slate-900">
+                  Nenhum pet disponível no momento
+                </h3>
+                <p className="mt-2 text-sm text-slate-600">
+                  Essa ONG ainda não publicou pets para adoção.
+                </p>
+              </div>
+            )}
           </div>
         </section>
       </main>

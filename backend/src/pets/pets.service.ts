@@ -48,6 +48,33 @@ export class PetsService {
     });
   }
 
+  countAvailableByOng(ongId: string) {
+    return this.prisma.pet.count({
+      where: {
+        ongId,
+        isAdopted: false,
+      },
+    });
+  }
+
+  findAvailableByOng(ongId: string) {
+    return this.prisma.pet.findMany({
+      where: {
+        ongId,
+        isAdopted: false,
+      },
+      orderBy: { createdAt: "desc" },
+      select: {
+        id: true,
+        name: true,
+        species: true,
+        age: true,
+        photoUrl: true,
+        isAdopted: true,
+      },
+    });
+  }
+
   async findOne(id: string) {
     const pet = await this.prisma.pet.findUnique({
       where: { id },
