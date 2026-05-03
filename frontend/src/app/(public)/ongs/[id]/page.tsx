@@ -13,6 +13,7 @@ import {
   PawPrint,
   Users,
   Gift,
+  Mail,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -160,9 +161,7 @@ export default function OngDetailsPage({ params }: OngDetailsPageProps) {
                 >
                   <Heart
                     size={18}
-                    className={
-                      isFavorited ? "fill-red-500 text-red-500" : ""
-                    }
+                    className={isFavorited ? "fill-red-500 text-red-500" : ""}
                   />
                   Favoritar
                 </button>
@@ -189,32 +188,102 @@ export default function OngDetailsPage({ params }: OngDetailsPageProps) {
                     </h2>
                   </div>
 
-                  <div className="rounded-2xl bg-gradient-to-br from-brand-50 to-brand-100/50 p-6 md:p-8">
-                    <div className="grid gap-4 sm:grid-cols-2">
-                      {ong.contact && (
-                        <div className="rounded-2xl border border-slate-200 p-6">
-                          <Phone size={24} className="mb-3 text-brand-600" />
-                          <p className="text-xs font-bold uppercase text-slate-400 mb-2">
-                            Telefone
-                          </p>
-                          <p className="text-lg font-semibold text-slate-900">
-                            {ong.contact}
-                          </p>
+                  <div className="grid gap-4">
+                    {ong.contact && (
+                      <div className="rounded-3xl bg-gradient-to-br from-emerald-50 via-emerald-50/50 to-transparent border border-emerald-200/60 p-6 hover:shadow-md transition">
+                        <div className="flex items-start gap-4">
+                          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-100 flex-shrink-0">
+                            <Phone size={28} className="text-emerald-600" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
+                              Telefone
+                            </p>
+                            <p className="text-xl font-bold text-slate-900 mb-4 break-all">
+                              {ong.contact}
+                            </p>
+                            <div className="flex gap-2 flex-wrap">
+                              <a
+                                href={`tel:${ong.contact.replace(/\D/g, "")}`}
+                                className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 text-sm font-semibold transition"
+                              >
+                                Chamar
+                              </a>
+                              <button
+                                onClick={() =>
+                                  ong.contact &&
+                                  navigator.clipboard.writeText(ong.contact)
+                                }
+                                className="inline-flex items-center gap-2 rounded-xl border border-emerald-300 bg-white hover:bg-emerald-50 text-emerald-700 px-4 py-2 text-sm font-semibold transition"
+                              >
+                                Copiar
+                              </button>
+                            </div>
+                          </div>
                         </div>
-                      )}
+                      </div>
+                    )}
 
-                      {ong.city && ong.state && (
-                        <div className="rounded-2xl border border-slate-200 p-6">
-                          <MapPin size={24} className="mb-3 text-brand-600" />
-                          <p className="text-xs font-bold uppercase text-slate-400 mb-2">
-                            Localização
-                          </p>
-                          <p className="text-lg font-semibold text-slate-900">
-                            {ong.city}, {ong.state}
-                          </p>
+                    {ong.city && ong.state && (
+                      <div className="rounded-3xl bg-gradient-to-br from-blue-50 via-blue-50/50 to-transparent border border-blue-200/60 p-6 hover:shadow-md transition">
+                        <div className="flex items-start gap-4">
+                          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-100 flex-shrink-0">
+                            <MapPin size={28} className="text-blue-600" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
+                              Localização
+                            </p>
+                            <p className="text-lg font-bold text-slate-900 mb-4">
+                              {ong.city}, {ong.state}
+                            </p>
+                            <a
+                              href={`https://maps.google.com/?q=${ong.city},${ong.state}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-sm font-semibold transition"
+                            >
+                              Ver no Maps
+                            </a>
+                          </div>
                         </div>
-                      )}
-                    </div>
+                      </div>
+                    )}
+
+                    {ong.email && (
+                      <div className="rounded-3xl bg-gradient-to-br from-purple-50 via-purple-50/50 to-transparent border border-purple-200/60 p-6 hover:shadow-md transition">
+                        <div className="flex items-start gap-4">
+                          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-purple-100 flex-shrink-0">
+                            <Mail size={28} className="text-purple-600" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
+                              Email
+                            </p>
+                            <p className="text-lg font-bold text-slate-900 mb-4 break-all">
+                              {ong.email}
+                            </p>
+                            <div className="flex gap-2 flex-wrap">
+                              <a
+                                href={`mailto:${ong.email}`}
+                                className="inline-flex items-center gap-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 text-sm font-semibold transition"
+                              >
+                                Enviar Email
+                              </a>
+                              <button
+                                onClick={() =>
+                                  ong.email &&
+                                  navigator.clipboard.writeText(ong.email)
+                                }
+                                className="inline-flex items-center gap-2 rounded-xl border border-purple-300 bg-white hover:bg-purple-50 text-purple-700 px-4 py-2 text-sm font-semibold transition"
+                              >
+                                Copiar
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   {/* SOBRE A ONG */}
