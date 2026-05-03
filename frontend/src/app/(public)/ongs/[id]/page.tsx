@@ -49,6 +49,9 @@ export default function OngDetailsPage({ params }: OngDetailsPageProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isFavorited, setIsFavorited] = useState(false);
+  const [copiedPhone, setCopiedPhone] = useState(false);
+  const [toastVisible, setToastVisible] = useState(false);
+  const [toastExiting, setToastExiting] = useState(false);
   const petsSectionRef = useRef<HTMLElement | null>(null);
   const { id } = use(params);
 
@@ -77,6 +80,27 @@ export default function OngDetailsPage({ params }: OngDetailsPageProps) {
       behavior: "smooth",
       block: "start",
     });
+  };
+
+  const handleCopyPhone = async (phone: string) => {
+    try {
+      await navigator.clipboard.writeText(phone);
+      setCopiedPhone(true);
+      setToastVisible(true);
+      setToastExiting(false);
+      window.setTimeout(() => {
+        setToastExiting(true);
+        window.setTimeout(() => {
+          setCopiedPhone(false);
+          setToastVisible(false);
+          setToastExiting(false);
+        }, 300);
+      }, 2000);
+    } catch {
+      setCopiedPhone(false);
+      setToastVisible(false);
+      setToastExiting(false);
+    }
   };
 
   if (loading) {
@@ -118,6 +142,16 @@ export default function OngDetailsPage({ params }: OngDetailsPageProps) {
   return (
     <div className="flex min-h-screen flex-col">
       <SiteHeader page="ongs" variant="public" />
+
+      {toastVisible && (
+        <div
+          className={`fixed left-1/2 top-28 z-[60] w-[calc(100%-2rem)] max-w-md -translate-x-1/2 rounded-3xl border border-emerald-200 bg-white px-6 py-4 text-center shadow-2xl shadow-emerald-100/60 transition-opacity duration-300 ease-out ${toastExiting ? "opacity-0" : "opacity-100"}`}
+        >
+          <p className="text-base font-bold text-emerald-700">
+            Número copiado para a área de transferência.
+          </p>
+        </div>
+      )}
 
       <main className="flex-1">
         {/* HERO COM FUNDO DE IMAGEM */}
@@ -210,13 +244,13 @@ export default function OngDetailsPage({ params }: OngDetailsPageProps) {
                                 Chamar
                               </a>
                               <button
+                                type="button"
                                 onClick={() =>
-                                  ong.contact &&
-                                  navigator.clipboard.writeText(ong.contact)
+                                  ong.contact && handleCopyPhone(ong.contact)
                                 }
                                 className="inline-flex items-center gap-2 rounded-xl border border-emerald-300 bg-white hover:bg-emerald-50 text-emerald-700 px-4 py-2 text-sm font-semibold transition"
                               >
-                                Copiar
+                                {copiedPhone ? "Copiado!" : "Copiar"}
                               </button>
                             </div>
                           </div>
