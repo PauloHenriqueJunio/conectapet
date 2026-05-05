@@ -147,7 +147,7 @@ export default function HomePage() {
 
                     <div className="flex flex-1 flex-col p-5">
                       <div className="flex justify-between items-start mb-2">
-                        <h2 className="text-2xl font-extrabold text-slate-900 group-hover:text-brand-600 transition-colors">
+                        <h2 className="text-2xl font-extrabold text-slate-900 group-hover:text-brand-600 transition-colors truncate max-w-[70%]" title={pet.name}>
                           {pet.name}
                         </h2>
                         <span className="bg-slate-100 text-slate-600 px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider">
@@ -155,9 +155,24 @@ export default function HomePage() {
                         </span>
                       </div>
 
-                      <div className="flex items-center gap-1.5 text-sm font-medium text-slate-500 mb-4">
-                        <MapPin size={16} className="text-brand-400" />
-                        <span>Maceió, AL</span>
+                      <div className="flex flex-col gap-1 text-sm font-medium text-slate-500 mb-4">
+                        <div className="flex items-center gap-1.5">
+                          <MapPin size={16} className="text-brand-400" />
+                          {pet.ong?.id ? (
+                            <Link href={`/ongs/${pet.ong.id}`} className="font-semibold text-slate-800 truncate max-w-[220px]" title={pet.ong?.name}>
+                              {pet.ong?.name}
+                            </Link>
+                          ) : (
+                            <span className="font-semibold text-slate-800 truncate max-w-[220px]" title={pet.ong?.name || (pet as any).owner?.name}>
+                              {pet.ong?.name || (pet as any).owner?.name || "Abrigo Parceiro"}
+                            </span>
+                          )}
+                        </div>
+                        {((pet as any).ong?.city || (pet as any).ong?.state) && (
+                          <div className="text-slate-400 text-xs">
+                            {(pet as any).ong?.city ? `${(pet as any).ong.city}${(pet as any).ong.state ? `, ${(pet as any).ong.state}` : ""}` : (pet as any).ong?.state}
+                          </div>
+                        )}
                       </div>
 
                       <div className="mt-auto grid grid-cols-2 gap-2 border-t border-slate-100 pt-4">

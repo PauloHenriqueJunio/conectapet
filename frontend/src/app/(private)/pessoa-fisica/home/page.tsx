@@ -184,9 +184,24 @@ export default function PessoaFisicaHome() {
                   </div>
 
                   {/* Localização (Simulada se não tiver na API) */}
-                  <div className="flex items-center gap-1.5 text-slate-500 text-sm mt-auto pt-4">
-                    <MapPin size={16} className="text-brand-500" />
-                    <span>Abrigo Parceiro</span>
+                  <div className="flex flex-col gap-1 text-slate-500 text-sm mt-auto pt-4">
+                    <div className="flex items-center gap-1.5">
+                      <MapPin size={16} className="text-brand-500" />
+                      {pet.ong?.id ? (
+                        <Link href={`/ongs/${pet.ong.id}`} className="font-semibold text-slate-800 truncate max-w-[220px]" title={pet.ong?.name}>
+                          {pet.ong?.name}
+                        </Link>
+                      ) : (
+                        <span className="font-semibold text-slate-800 truncate max-w-[220px]" title={pet.ong?.name || (pet as any).owner?.name}>
+                          {pet.ong?.name || (pet as any).owner?.name || "Abrigo Parceiro"}
+                        </span>
+                      )}
+                    </div>
+                    {((pet as any).ong?.city || (pet as any).ong?.state) && (
+                      <div className="text-slate-400 text-xs">
+                        {(pet as any).ong?.city ? `${(pet as any).ong.city}${(pet as any).ong.state ? `, ${(pet as any).ong.state}` : ""}` : (pet as any).ong?.state}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

@@ -49,8 +49,18 @@ export interface Pet {
   hasOtherHealthInfo: boolean;
   otherHealthInfoDescription?: string | null;
   ong?: {
-    name: string;
-    contact?: string;
+    id?: string;
+    name?: string;
+    contact?: string | null;
+    city?: string | null;
+    state?: string | null;
+  };
+  owner?: {
+    id?: string;
+    name?: string;
+    contact?: string | null;
+    city?: string | null;
+    state?: string | null;
   };
 }
 

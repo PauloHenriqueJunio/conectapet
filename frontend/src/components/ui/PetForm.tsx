@@ -175,10 +175,18 @@ export function PetForm({ initialData, onSubmitSuccess }: PetFormProps) {
 
       const method = initialData ? "PATCH" : "POST";
 
+      const headers: Record<string, string> = {};
+      // Only attach Bearer when token looks like a JWT (3 parts). Otherwise rely on cookie session.
+      if (token && token.split(".").length === 3) {
+        headers.Authorization = `Bearer ${token}`;
+      }
+
       const response = await fetch(url, {
         method,
-        headers: { Authorization: `Bearer ${token}` },
+        // Do NOT set Content-Type here so the browser sets multipart/form-data with boundary.
+        headers,
         body: formData,
+        credentials: "include",
       });
 
       if (!response.ok) {
