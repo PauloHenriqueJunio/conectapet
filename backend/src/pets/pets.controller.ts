@@ -60,10 +60,13 @@ export class PetsController {
   @Roles(Role.ONG, Role.PESSOA_FISICA)
   @Post()
   @UseInterceptors(
-    FileFieldsInterceptor([
-      { name: "photo", maxCount: 1 },
-      { name: "photos", maxCount: 5 },
-    ], PET_UPLOAD_OPTIONS),
+    FileFieldsInterceptor(
+      [
+        { name: "photo", maxCount: 1 },
+        { name: "photos", maxCount: 5 },
+      ],
+      PET_UPLOAD_OPTIONS,
+    ),
   )
   create(
     @Body() dto: CreatePetDto,
@@ -79,14 +82,27 @@ export class PetsController {
     return this.petsService.findAvailable(species);
   }
 
+  @Get("ong/:ongId/available-count")
+  countAvailableByOng(@Param("ongId") ongId: string) {
+    return this.petsService.countAvailableByOng(ongId);
+  }
+
+  @Get("ong/:ongId/available")
+  findAvailableByOng(@Param("ongId") ongId: string) {
+    return this.petsService.findAvailableByOng(ongId);
+  }
+
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ONG, Role.PESSOA_FISICA)
   @Patch(":id")
   @UseInterceptors(
-    FileFieldsInterceptor([
-      { name: "photo", maxCount: 1 },
-      { name: "photos", maxCount: 5 },
-    ], PET_UPLOAD_OPTIONS),
+    FileFieldsInterceptor(
+      [
+        { name: "photo", maxCount: 1 },
+        { name: "photos", maxCount: 5 },
+      ],
+      PET_UPLOAD_OPTIONS,
+    ),
   )
   update(
     @Param("id") id: string,

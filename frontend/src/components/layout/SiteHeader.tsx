@@ -32,6 +32,7 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
+  const [logoFailed, setLogoFailed] = useState(false);
   const userDropdownRef = useRef<HTMLDivElement | null>(null);
   const mobileDropdownRef = useRef<HTMLDivElement | null>(null);
 
@@ -100,9 +101,20 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
         <div className="flex items-center">
           <Link
             href={getLogoLink()}
-            className="text-xl font-extrabold tracking-tight text-brand-800"
+            className="flex items-center gap-3"
           >
-            Conecta<span className="text-slate-900">Pet</span>
+            {!logoFailed ? (
+              <img
+                src="/logo-white.svg"
+                alt="ConectaPet"
+                className="h-10 w-auto max-w-[180px]"
+                onError={() => setLogoFailed(true)}
+              />
+            ) : (
+              <span className="text-xl font-extrabold tracking-tight text-brand-800">
+                Conecta<span className="text-slate-900">Pet</span>
+              </span>
+            )}
           </Link>
         </div>
 
