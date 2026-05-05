@@ -28,7 +28,7 @@ import {
 } from "lucide-react";
 import { STATUS_COLORS } from "@/constants/theme";
 
-const sanitizeWhatsappNumber = (value?: string) =>
+const sanitizeWhatsappNumber = (value?: string | null) =>
   (value ?? "").replace(/\D/g, "");
 
 export default function PetProfilePage() {
