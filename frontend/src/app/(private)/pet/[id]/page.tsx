@@ -320,7 +320,12 @@ export default function PetProfilePage() {
 
             <div className="flex items-center gap-2 text-slate-500 mb-8 font-medium">
               <MapPin size={18} className="text-brand-500" />
-              <span>Abrigo Parceiro (Maceió, AL)</span>
+              <span>
+                {pet.ong?.name || "Abrigo Parceiro"}
+                {pet.ong?.city && pet.ong?.state
+                  ? ` (${pet.ong.city}, ${pet.ong.state})`
+                  : ""}
+              </span>
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">

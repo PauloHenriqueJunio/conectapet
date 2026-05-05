@@ -159,18 +159,27 @@ export default function HomePage() {
                         <div className="flex items-center gap-1.5">
                           <MapPin size={16} className="text-brand-400" />
                           {pet.ong?.id ? (
-                            <Link href={`/ongs/${pet.ong.id}`} className="font-semibold text-slate-800 truncate max-w-[220px]" title={pet.ong?.name}>
+                            <Link
+                              href={`/ongs/${pet.ong.id}`}
+                              className="font-semibold text-slate-800 truncate max-w-[220px]"
+                              title={pet.ong?.name}
+                            >
                               {pet.ong?.name}
                             </Link>
                           ) : (
-                            <span className="font-semibold text-slate-800 truncate max-w-[220px]" title={pet.ong?.name || (pet as any).owner?.name}>
-                              {pet.ong?.name || (pet as any).owner?.name || "Abrigo Parceiro"}
+                            <span
+                              className="font-semibold text-slate-800 truncate max-w-[220px]"
+                              title={pet.ong?.name}
+                            >
+                              {pet.ong?.name || "Abrigo Parceiro"}
                             </span>
                           )}
                         </div>
-                        {((pet as any).ong?.city || (pet as any).ong?.state) && (
+                        {(pet.ong?.city || pet.ong?.state) && (
                           <div className="text-slate-400 text-xs">
-                            {(pet as any).ong?.city ? `${(pet as any).ong.city}${(pet as any).ong.state ? `, ${(pet as any).ong.state}` : ""}` : (pet as any).ong?.state}
+                            {pet.ong?.city
+                              ? `${pet.ong.city}${pet.ong.state ? `, ${pet.ong.state}` : ""}`
+                              : pet.ong?.state}
                           </div>
                         )}
                       </div>
