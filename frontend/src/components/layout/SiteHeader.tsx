@@ -37,6 +37,8 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
 
   const [activeNav, setActiveNav] = useState<HeaderNavKey>(page);
 
+  const effectiveVariant: HeaderVariant = isAuthenticated ? variant : "public";
+
   useEffect(() => {
     setActiveNav(page);
   }, [page]);
@@ -82,8 +84,8 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
 
   // Define para onde o clique no Logo vai levar, dependendo de quem está logado
   const getLogoLink = () => {
-    if (variant === "ong") return "/ong/dashboard";
-    if (variant === "pessoa-fisica") return "/pessoa-fisica/home";
+    if (effectiveVariant === "ong") return "/ong/dashboard";
+    if (effectiveVariant === "pessoa-fisica") return "/pessoa-fisica/home";
     return "/";
   };
 
@@ -127,7 +129,7 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
         <div className="hidden items-center gap-6 md:flex">
           <ul className="flex flex-wrap items-center gap-5 text-sm">
             {/* MUNDO 1: PÚBLICO (VISITANTES) */}
-            {variant === "public" && (
+            {effectiveVariant === "public" && (
               <>
                 <li>
                   <Link href="/home" className={navClass("home")}>
@@ -148,7 +150,7 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
             )}
 
             {/* MUNDO 2: PESSOA FÍSICA LOGADA */}
-            {variant === "pessoa-fisica" && (
+            {effectiveVariant === "pessoa-fisica" && (
               <>
                 <li>
                   <Link
@@ -178,7 +180,7 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
             )}
 
             {/* MUNDO 3: ONG LOGADA */}
-            {variant === "ong" && (
+            {effectiveVariant === "ong" && (
               <>
                 <li>
                   <Link
@@ -287,11 +289,11 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
         <div className="min-h-0">
           <ul className="space-y-2 border-t border-slate-200 pt-3 text-sm font-medium text-slate-700">
             {/* LINKS CONDICIONAIS POR VARIANT - MOBILE */}
-            {variant === "public" && (
+            {effectiveVariant === "public" && (
               <>
                 <li>
                   <Link
-                    href="/"
+                    href="/home"
                     className="block rounded-lg px-3 py-2 hover:bg-brand-50"
                     onClick={closeMobileMenu}
                   >
@@ -319,7 +321,7 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
               </>
             )}
 
-            {isAuthenticated && variant === "pessoa-fisica" && (
+            {effectiveVariant === "pessoa-fisica" && (
               <>
                 <li>
                   <Link
@@ -351,7 +353,7 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
               </>
             )}
 
-            {isAuthenticated && variant === "ong" && (
+            {effectiveVariant === "ong" && (
               <>
                 <li>
                   <Link
