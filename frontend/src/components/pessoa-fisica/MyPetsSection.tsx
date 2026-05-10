@@ -223,15 +223,15 @@ export function MyPetsSection() {
           {filteredPets.map((pet) => (
             <article
               key={pet.id}
-              className="group isolate overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-sm transition-all duration-300 will-change-transform transform-gpu hover:-translate-y-1 hover:shadow-xl"
+              className="group overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-sm transition-shadow duration-300 hover:shadow-xl"
             >
               <Link href={`/pet/${pet.id}`} className="block outline-none">
-                <div className="relative aspect-[4/3] overflow-hidden bg-slate-100 [transform:translateZ(0)]">
+                <div className="relative aspect-[4/3] overflow-hidden bg-slate-100">
                   {pet.photoUrl ? (
                     <img
                       src={pet.photoUrl}
                       alt={pet.name}
-                      className="h-full w-full object-cover transition duration-500 will-change-transform transform-gpu group-hover:scale-105"
+                      className="h-full w-full object-cover"
                     />
                   ) : (
                     <div className="flex h-full items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 text-slate-300">
