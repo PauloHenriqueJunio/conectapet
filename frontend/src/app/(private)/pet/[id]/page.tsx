@@ -529,7 +529,8 @@ export default function PetProfilePage() {
               <button
                 type="button"
                 onClick={() => setIsAdoptionModalOpen(true)}
-                className="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white py-4 rounded-2xl font-bold text-lg transition-all shadow-lg shadow-[#25D366]/30 flex items-center justify-center gap-3 hover:-translate-y-1"
+                className="w-full bg-[var(--brand)] hover:bg-[var(--brand-hover)] text-[var(--text-inverse)] py-4 rounded-2xl font-bold text-lg transition-all shadow-lg flex items-center justify-center gap-3 hover:-translate-y-1"
+                style={{ boxShadow: "0 10px 30px var(--shadow)" }}
               >
                 Quero Adotar
               </button>

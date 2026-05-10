@@ -3,11 +3,16 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { useTheme } from "@/contexts/ThemeContext";
 import { DesktopNavLinks } from "./site-header/DesktopNavLinks";
 import { DesktopUserActions } from "./site-header/DesktopUserActions";
 import { MobileNavLinks } from "./site-header/MobileNavLinks";
 import { MobileUserActions } from "./site-header/MobileUserActions";
-import type { HeaderNavKey, HeaderPage, HeaderVariant } from "./site-header/types";
+import type {
+  HeaderNavKey,
+  HeaderPage,
+  HeaderVariant,
+} from "./site-header/types";
 
 interface SiteHeaderProps {
   page: HeaderPage;
@@ -16,6 +21,7 @@ interface SiteHeaderProps {
 
 export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
   const { logout, isAuthenticated, user } = useAuth();
+  const { theme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
@@ -44,7 +50,8 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
       const clickedDesktopDropdown =
         userDropdownRef.current && userDropdownRef.current.contains(targetNode);
       const clickedMobileDropdown =
-        mobileDropdownRef.current && mobileDropdownRef.current.contains(targetNode);
+        mobileDropdownRef.current &&
+        mobileDropdownRef.current.contains(targetNode);
 
       if (!clickedDesktopDropdown && !clickedMobileDropdown) {
         setIsUserDropdownOpen(false);
@@ -70,23 +77,28 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
 
   return (
     <header
-      className={`sticky top-0 z-50 w-full border-b border-white/50 bg-gradient-to-r from-white/95 via-white/90 to-brand-50/85 px-5 shadow-sm backdrop-blur-xl transition-all duration-300 ${
+      className={`sticky top-0 z-50 w-full border-b px-5 shadow-sm backdrop-blur-xl transition-all duration-300 ${
         isScrolled ? "py-3" : "py-5"
       }`}
+      style={{
+        borderColor: "var(--border-default)",
+        backgroundColor: "var(--bg-primary)",
+      }}
     >
       <nav className="flex items-center justify-between gap-4">
         <div className="flex items-center">
           <Link href={getLogoLink()} className="flex items-center gap-3">
             {!logoFailed ? (
               <img
-                src="/logo-white.svg"
+                src={theme === "dark" ? "/logo-dark.svg" : "/logo-white.svg"}
                 alt="ConectaPet"
                 className="h-10 w-auto max-w-[180px]"
                 onError={() => setLogoFailed(true)}
               />
             ) : (
-              <span className="text-xl font-extrabold tracking-tight text-brand-800">
-                Conecta<span className="text-slate-900">Pet</span>
+              <span className="text-xl font-extrabold tracking-tight text-brand-800 dark:text-brand-600">
+                Conecta
+                <span className="text-slate-900 dark:text-slate-100">Pet</span>
               </span>
             )}
           </Link>
@@ -111,7 +123,10 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
         </button>
 
         <div className="hidden items-center gap-6 md:flex">
-          <DesktopNavLinks activeNav={activeNav} effectiveVariant={effectiveVariant} />
+          <DesktopNavLinks
+            activeNav={activeNav}
+            effectiveVariant={effectiveVariant}
+          />
           <DesktopUserActions
             displayName={user?.name}
             editProfileHref={getEditProfileLink()}
@@ -152,4 +167,3 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
     </header>
   );
 }
-

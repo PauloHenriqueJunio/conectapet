@@ -4,7 +4,7 @@ import { ReactNode } from "react";
 import { AuthProvider } from "@/context/AuthContext";
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
-import { ThemeProvider } from "next-themes";
+import { ThemeProvider } from "@/contexts/ThemeContext";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -32,12 +32,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         className="min-h-screen bg-[var(--page-bg)] text-[var(--page-fg)] transition-colors duration-300"
         suppressHydrationWarning
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
+        <ThemeProvider>
           <AuthProvider>{children}</AuthProvider>
         </ThemeProvider>
       </body>

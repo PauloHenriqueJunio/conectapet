@@ -113,7 +113,9 @@ export function AdoptionContactModal({
       let parsedMessage = "";
 
       try {
-        const parsed = JSON.parse(rawMessage) as { message?: string | string[] };
+        const parsed = JSON.parse(rawMessage) as {
+          message?: string | string[];
+        };
         if (Array.isArray(parsed.message)) {
           parsedMessage = parsed.message.join(" ");
         } else if (typeof parsed.message === "string") {
@@ -180,12 +182,24 @@ export function AdoptionContactModal({
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2 mb-5">
-          <div className="rounded-2xl border border-emerald-200 bg-emerald-50/60 p-4 flex flex-col">
-            <div className="flex items-center gap-2 mb-2 text-emerald-700 font-bold">
+          <div
+            className="rounded-2xl p-4 flex flex-col"
+            style={{
+              border: "1px solid var(--status-success-border)",
+              backgroundColor: "var(--status-success-bg)",
+            }}
+          >
+            <div
+              className="flex items-center gap-2 mb-2 font-bold"
+              style={{ color: "var(--status-success-text)" }}
+            >
               <MessageCircle size={18} />
               Falar no WhatsApp
             </div>
-            <p className="text-sm text-emerald-800/80 mb-4 flex-1">
+            <p
+              className="text-sm mb-4 flex-1"
+              style={{ color: "var(--status-success-text)" }}
+            >
               Abre uma conversa com mensagem pronta, como funciona hoje.
             </p>
 
@@ -194,7 +208,7 @@ export function AdoptionContactModal({
                 href={whatsappLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full inline-flex justify-center items-center gap-2 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold py-2.5 transition"
+                className="w-full inline-flex justify-center items-center gap-2 rounded-xl bg-[var(--brand)] hover:bg-[var(--brand-hover)] text-[var(--text-inverse)] font-bold py-2.5 transition"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -209,7 +223,14 @@ export function AdoptionContactModal({
                 Abrir WhatsApp
               </a>
             ) : (
-              <div className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs text-amber-800">
+              <div
+                className="rounded-xl p-3 text-xs"
+                style={{
+                  border: "1px solid var(--status-warning-border)",
+                  backgroundColor: "var(--status-warning-bg)",
+                  color: "var(--status-warning-text)",
+                }}
+              >
                 O responsável ainda não cadastrou um contato de WhatsApp.
               </div>
             )}
@@ -240,11 +261,20 @@ export function AdoptionContactModal({
 
         {adoptionFeedback && (
           <div
-            className={`mb-4 rounded-xl border p-3 text-sm ${
+            className="mb-4 rounded-xl border p-3 text-sm"
+            style={
               adoptionFeedback.type === "success"
-                ? "bg-emerald-50 border-emerald-200 text-emerald-800"
-                : "bg-red-50 border-red-200 text-red-700"
-            }`}
+                ? {
+                    backgroundColor: "var(--status-success-bg)",
+                    borderColor: "var(--status-success-border)",
+                    color: "var(--status-success-text)",
+                  }
+                : {
+                    backgroundColor: "var(--status-danger-bg)",
+                    borderColor: "var(--status-danger-border)",
+                    color: "var(--status-danger-text)",
+                  }
+            }
           >
             {adoptionFeedback.message}
           </div>

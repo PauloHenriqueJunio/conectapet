@@ -1,3 +1,5 @@
+@import "../styles/tokens.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -105,6 +107,218 @@ body {
 .dark .shadow-xl,
 .dark .shadow-2xl {
   box-shadow: 0 18px 48px rgba(0, 0, 0, 0.35) !important;
+}
+
+/* Map common Tailwind utility classes to design tokens for both themes */
+.bg-white,
+.bg-white\/85,
+.bg-white\/90,
+.bg-white\/95 {
+  background-color: var(--bg-primary) !important;
+}
+
+.bg-slate-50,
+.bg-slate-50\/50,
+.bg-slate-50\/70 {
+  background-color: var(--bg-secondary) !important;
+}
+
+.bg-slate-100,
+.bg-slate-200 {
+  background-color: var(--bg-card) !important;
+}
+
+.bg-brand-50,
+.bg-brand-50\/50,
+.bg-brand-50\/70 {
+  background-color: var(--brand-light) !important;
+}
+
+.text-slate-900,
+.text-slate-800,
+.text-slate-700 {
+  color: var(--text-primary) !important;
+}
+
+.text-slate-600 {
+  color: var(--text-secondary) !important;
+}
+
+.text-slate-500,
+.text-slate-400 {
+  color: var(--text-muted) !important;
+}
+
+.placeholder\:text-slate-400::placeholder,
+.placeholder\:text-slate-500::placeholder,
+.placeholder\:text-slate-600::placeholder {
+  color: var(--text-muted) !important;
+}
+
+.border-slate-100,
+.border-slate-200,
+.border-slate-300,
+.border-slate-200\/70 {
+  border-color: var(--border-default) !important;
+}
+
+.ring-slate-100,
+.ring-slate-200 {
+  --tw-ring-color: var(--border-default) !important;
+}
+
+.shadow-sm,
+.shadow,
+.shadow-lg,
+.shadow-xl,
+.shadow-2xl {
+  box-shadow: 0 6px 18px var(--shadow) !important;
+}
+
+/* Map common semantic Tailwind colors to tokens so existing components inherit theme colors */
+.bg-brand-50,
+.bg-brand-50\/50,
+.bg-brand-50\/70 {
+  background-color: var(--brand-light) !important;
+}
+
+.bg-brand-600 {
+  background-color: var(--brand) !important;
+}
+
+.hover\:bg-brand-600:hover {
+  background-color: var(--brand) !important;
+}
+
+.hover\:bg-brand-700:hover {
+  background-color: var(--brand-hover) !important;
+}
+
+.text-brand-600,
+.text-brand-700 {
+  color: var(--brand-text) !important;
+}
+
+.border-brand-100,
+.border-brand-200,
+.border-brand-300 {
+  border-color: var(--border-default) !important;
+}
+
+.focus\:border-brand-500:focus {
+  border-color: var(--brand) !important;
+}
+
+.focus\:ring-brand-300\/20:focus,
+.focus\:ring-brand-500:focus {
+  --tw-ring-color: var(--brand) !important;
+}
+
+.bg-emerald-50,
+.bg-emerald-50\/40,
+.bg-emerald-50\/60,
+.bg-emerald-100 {
+  background-color: var(--status-success-bg) !important;
+}
+
+.bg-emerald-600,
+.bg-emerald-700 {
+  background-color: var(--status-success-text) !important;
+}
+
+.hover\:bg-emerald-50:hover,
+.hover\:bg-emerald-700:hover {
+  background-color: var(--status-success-text) !important;
+}
+
+.text-emerald-600,
+.text-emerald-700 {
+  color: var(--status-success-text) !important;
+}
+
+.border-emerald-100,
+.border-emerald-200,
+.border-emerald-300 {
+  border-color: var(--status-success-border) !important;
+}
+
+.bg-amber-50,
+.bg-amber-100 {
+  background-color: var(--status-warning-bg) !important;
+}
+
+.text-amber-700,
+.text-amber-800 {
+  color: var(--status-warning-text) !important;
+}
+
+.border-amber-100,
+.border-amber-200,
+.border-amber-300 {
+  border-color: var(--status-warning-border) !important;
+}
+
+.bg-red-50,
+.bg-red-50\/30 {
+  background-color: var(--status-danger-bg) !important;
+}
+
+.bg-red-600,
+.bg-red-700 {
+  background-color: var(--status-danger-text) !important;
+}
+
+.hover\:bg-red-50:hover,
+.hover\:bg-red-100:hover,
+.hover\:bg-red-700:hover {
+  background-color: var(--status-danger-text) !important;
+}
+
+.text-red-400,
+.text-red-500,
+.text-red-600,
+.text-red-700,
+.text-red-800,
+.text-red-900 {
+  color: var(--status-danger-text) !important;
+}
+
+.border-red-100,
+.border-red-200,
+.border-red-300 {
+  border-color: var(--status-danger-border) !important;
+}
+
+.bg-blue-600,
+.bg-blue-700 {
+  background-color: var(--status-info-text) !important;
+}
+
+.text-blue-600,
+.text-blue-700 {
+  color: var(--status-info-text) !important;
+}
+
+.border-blue-100,
+.border-blue-200,
+.border-blue-300 {
+  border-color: var(--status-info-border) !important;
+}
+
+.bg-purple-600,
+.bg-purple-700 {
+  background-color: var(--brand) !important;
+}
+
+.text-purple-600,
+.text-purple-700 {
+  color: var(--brand-text) !important;
+}
+
+.border-purple-100,
+.border-purple-200,
+.border-purple-300 {
+  border-color: var(--border-default) !important;
 }
 
 @layer base {
