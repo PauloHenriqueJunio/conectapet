@@ -28,21 +28,26 @@ export function MobileUserActions({
 }: MobileUserActionsProps) {
   if (!isAuthenticated) {
     return (
-      <div className="grid grid-cols-2 gap-3">
-        <Link
-          href="/login"
-          className="rounded-lg border-2 border-brand-100 bg-brand-50 px-3 py-3 text-center font-bold text-brand-700 transition-colors hover:bg-brand-100"
-          onClick={closeMobileMenu}
-        >
-          Entrar
-        </Link>
-        <Link
-          href="/register"
-          className="rounded-lg bg-brand-600 px-3 py-3 text-center font-bold text-white shadow-sm transition-colors hover:bg-brand-700"
-          onClick={closeMobileMenu}
-        >
-          Criar conta
-        </Link>
+      <div className="flex flex-col gap-3">
+        <div className="flex items-center justify-end">
+          <ThemeToggle />
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          <Link
+            href="/login"
+            className="rounded-lg border-2 border-brand-100 bg-brand-50 px-3 py-3 text-center font-bold text-brand-700 transition-colors hover:bg-brand-100"
+            onClick={closeMobileMenu}
+          >
+            Entrar
+          </Link>
+          <Link
+            href="/register"
+            className="rounded-lg bg-brand-600 px-3 py-3 text-center font-bold text-white shadow-sm transition-colors hover:bg-brand-700"
+            onClick={closeMobileMenu}
+          >
+            Criar conta
+          </Link>
+        </div>
       </div>
     );
   }

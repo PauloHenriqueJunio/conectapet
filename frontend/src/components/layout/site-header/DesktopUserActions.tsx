@@ -30,6 +30,7 @@ export function DesktopUserActions({
         className="flex items-center gap-3 pl-4"
         style={{ borderLeft: "1px solid var(--border-default)" }}
       >
+        <ThemeToggle />
         <Link
           href="/login"
           className="rounded-lg border px-4 py-2 text-sm font-bold transition"

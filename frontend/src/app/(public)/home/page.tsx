@@ -71,8 +71,8 @@ export default function HomePage() {
               onClick={() => setSpeciesFilter("")}
               className={`px-5 py-2 rounded-full text-sm font-bold transition-colors ${
                 speciesFilter === ""
-                  ? "bg-slate-800 text-white shadow-md"
-                  : "text-slate-500 hover:text-slate-800 hover:bg-slate-100"
+                  ? "bg-brand-600 text-white shadow-md"
+                  : "text-slate-500 hover:text-brand-600 hover:bg-brand-50"
               }`}
             >
               Todos
@@ -81,7 +81,7 @@ export default function HomePage() {
               onClick={() => setSpeciesFilter("Cão")}
               className={`px-5 py-2 rounded-full text-sm font-bold transition-colors ${
                 speciesFilter === "Cão"
-                  ? "bg-brand-500 text-white shadow-md"
+                  ? "bg-brand-600 text-white shadow-md"
                   : "text-slate-500 hover:text-brand-600 hover:bg-brand-50"
               }`}
             >
@@ -91,7 +91,7 @@ export default function HomePage() {
               onClick={() => setSpeciesFilter("Gato")}
               className={`px-5 py-2 rounded-full text-sm font-bold transition-colors ${
                 speciesFilter === "Gato"
-                  ? "bg-brand-500 text-white shadow-md"
+                  ? "bg-brand-600 text-white shadow-md"
                   : "text-slate-500 hover:text-brand-600 hover:bg-brand-50"
               }`}
             >
@@ -147,7 +147,10 @@ export default function HomePage() {
 
                     <div className="flex flex-1 flex-col p-5">
                       <div className="flex justify-between items-start mb-2">
-                        <h2 className="text-2xl font-extrabold text-slate-900 group-hover:text-brand-600 transition-colors truncate max-w-[70%]" title={pet.name}>
+                        <h2
+                          className="text-2xl font-extrabold text-slate-900 group-hover:text-brand-600 transition-colors truncate max-w-[70%]"
+                          title={pet.name}
+                        >
                           {pet.name}
                         </h2>
                         <span className="bg-slate-100 text-slate-600 px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider">

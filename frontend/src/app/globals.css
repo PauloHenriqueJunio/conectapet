@@ -194,6 +194,27 @@ body {
   background-color: var(--brand-hover) !important;
 }
 
+.filter-pill-active {
+  background-color: var(--brand) !important;
+  color: var(--text-inverse) !important;
+  box-shadow: 0 8px 20px var(--shadow) !important;
+}
+
+.dark .filter-pill-active {
+  background-color: var(--brand) !important;
+  color: var(--text-inverse) !important;
+  box-shadow: 0 8px 20px var(--shadow) !important;
+}
+
+.filter-pill-active .filter-pill-icon {
+  color: var(--text-inverse) !important;
+}
+
+.filter-pill-active .filter-pill-count {
+  background-color: rgba(255, 255, 255, 0.18) !important;
+  color: var(--text-inverse) !important;
+}
+
 .text-brand-600,
 .text-brand-700 {
   color: var(--brand-text) !important;
