@@ -21,7 +21,7 @@ interface SiteHeaderProps {
 
 export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
   const { logout, isAuthenticated, user } = useAuth();
-  const { theme } = useTheme();
+  const { theme, mounted } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
@@ -88,7 +88,7 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
       <nav className="flex items-center justify-between gap-4">
         <div className="flex items-center">
           <Link href={getLogoLink()} className="flex items-center gap-3">
-            {!logoFailed ? (
+            {!logoFailed && mounted ? (
               <img
                 src={theme === "dark" ? "/logo-dark.svg" : "/logo-white.svg"}
                 alt="ConectaPet"
@@ -96,7 +96,10 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
                 onError={() => setLogoFailed(true)}
               />
             ) : (
-              <span className="text-xl font-extrabold tracking-tight text-brand-800 dark:text-brand-600">
+              <span
+                className="text-xl font-extrabold tracking-tight text-brand-800 dark:text-brand-600"
+                style={{ visibility: mounted ? "visible" : "hidden" }}
+              >
                 Conecta
                 <span className="text-slate-900 dark:text-slate-100">Pet</span>
               </span>

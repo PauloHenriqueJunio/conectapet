@@ -4,26 +4,38 @@ import { createContext, useContext, useEffect, useState } from "react";
 
 type Theme = "light" | "dark";
 interface ThemeContextProps {
-  theme: Theme;
+  theme: Theme | null;
+  mounted: boolean;
   toggleTheme: () => void;
 }
 
 const ThemeContext = createContext<ThemeContextProps>({} as ThemeContextProps);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>(() => {
-    try {
-      const saved = localStorage.getItem("theme") as Theme | null;
-      if (saved) return saved;
-      return window.matchMedia("(prefers-color-scheme: dark)").matches
-        ? "dark"
-        : "light";
-    } catch (e) {
-      return "light";
-    }
-  });
+  const [theme, setTheme] = useState<Theme | null>(null);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    let resolvedTheme: Theme = "light";
+
+    try {
+      const saved = localStorage.getItem("theme") as Theme | null;
+      if (saved === "light" || saved === "dark") {
+        resolvedTheme = saved;
+      } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+        resolvedTheme = "dark";
+      }
+    } catch (e) {
+      // keep light as the fallback
+    }
+
+    setTheme(resolvedTheme);
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!theme) return;
+
     document.documentElement.setAttribute("data-theme", theme);
     // keep Tailwind's dark variant compatibility
     if (theme === "dark") {
@@ -42,7 +54,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     setTheme((prev) => (prev === "light" ? "dark" : "light"));
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={{ theme, mounted, toggleTheme }}>
       {children}
     </ThemeContext.Provider>
   );
