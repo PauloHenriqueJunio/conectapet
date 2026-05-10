@@ -108,10 +108,6 @@ export function MyPetsSection() {
       <div className="mb-8 overflow-hidden rounded-[2rem] border border-brand-100 bg-gradient-to-br from-brand-50 via-white to-slate-50 p-6 shadow-sm sm:p-8">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-2xl">
-            <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-semibold text-brand-700 shadow-sm ring-1 ring-brand-100">
-              <PawPrint size={16} />
-              Área da pessoa física
-            </div>
             <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
               Meus pets cadastrados
             </h1>
@@ -154,7 +150,11 @@ export function MyPetsSection() {
         <div className="inline-flex flex-wrap gap-2 rounded-2xl bg-slate-100 p-1">
           {[
             { id: "todos", label: "Todos", count: counts.todos },
-            { id: "disponiveis", label: "Disponíveis", count: counts.disponiveis },
+            {
+              id: "disponiveis",
+              label: "Disponíveis",
+              count: counts.disponiveis,
+            },
             { id: "adotados", label: "Adotados", count: counts.adotados },
           ].map((filter) => {
             const isActive = activeFilter === filter.id;
@@ -223,15 +223,15 @@ export function MyPetsSection() {
           {filteredPets.map((pet) => (
             <article
               key={pet.id}
-              className="group overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
+              className="group isolate overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-sm transition-all duration-300 will-change-transform transform-gpu hover:-translate-y-1 hover:shadow-xl"
             >
-              <Link href={`/pet/${pet.id}`} className="block">
-                <div className="relative aspect-[4/3] overflow-hidden bg-slate-100">
+              <Link href={`/pet/${pet.id}`} className="block outline-none">
+                <div className="relative aspect-[4/3] overflow-hidden bg-slate-100 [transform:translateZ(0)]">
                   {pet.photoUrl ? (
                     <img
                       src={pet.photoUrl}
                       alt={pet.name}
-                      className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                      className="h-full w-full object-cover transition duration-500 will-change-transform transform-gpu group-hover:scale-105"
                     />
                   ) : (
                     <div className="flex h-full items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 text-slate-300">
