@@ -100,10 +100,7 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
       <nav className="flex items-center justify-between gap-4">
         {/* LOGO */}
         <div className="flex items-center">
-          <Link
-            href={getLogoLink()}
-            className="flex items-center gap-3"
-          >
+          <Link href={getLogoLink()} className="flex items-center gap-3">
             {!logoFailed ? (
               <img
                 src="/logo-white.svg"
@@ -200,7 +197,7 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
                     href="/ong/dashboard"
                     className={navClass("dashboard-home")}
                   >
-                    Home
+                    Solicitações de adoção
                   </Link>
                 </li>
                 <li>
@@ -374,7 +371,7 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
                     className="block rounded-lg px-3 py-2 hover:bg-brand-50 text-brand-700"
                     onClick={closeMobileMenu}
                   >
-                    Home
+                    Solicitações de adoção
                   </Link>
                 </li>
                 <li>
