@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Settings } from "lucide-react";
 import type { Dispatch, RefObject, SetStateAction } from "react";
+import { ThemeToggle } from "./ThemeToggle";
 
 interface DesktopUserActionsProps {
   displayName?: string;
@@ -43,8 +44,10 @@ export function DesktopUserActions({
   }
 
   return (
-    <div className="flex items-center gap-4 pl-4 border-l border-slate-200">
-      <span className="text-sm font-semibold text-slate-700">
+    <div className="flex items-center gap-3 pl-4 border-l border-slate-200">
+      <ThemeToggle />
+
+      <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">
         Olá, {displayName?.split(" ")[0]}
       </span>
 
@@ -52,7 +55,7 @@ export function DesktopUserActions({
         <button
           type="button"
           onClick={() => setIsUserDropdownOpen((prev) => !prev)}
-          className="rounded-lg p-2 text-slate-600 transition hover:text-slate-900"
+          className="rounded-lg p-2 text-slate-600 transition hover:text-slate-900 dark:text-slate-300 dark:hover:text-white"
           aria-label="Abrir menu do perfil"
           aria-expanded={isUserDropdownOpen}
         >
@@ -63,7 +66,7 @@ export function DesktopUserActions({
         </button>
 
         <div
-          className={`absolute right-0 top-12 z-50 w-44 origin-top-right rounded-xl border border-slate-200 bg-white p-1 shadow-lg transition-all duration-200 ${
+          className={`absolute right-0 top-12 z-50 w-44 origin-top-right rounded-xl border border-slate-200 bg-white p-1 shadow-lg transition-all duration-200 dark:border-slate-800 dark:bg-slate-900 ${
             isUserDropdownOpen
               ? "pointer-events-auto translate-y-0 scale-100 opacity-100"
               : "pointer-events-none -translate-y-1 scale-95 opacity-0"
@@ -72,13 +75,13 @@ export function DesktopUserActions({
           <Link
             href={editProfileHref}
             onClick={() => setIsUserDropdownOpen(false)}
-            className="block rounded-lg px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+            className="block rounded-lg px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-800"
           >
             Editar Perfil
           </Link>
           <button
             type="button"
-            className="block w-full cursor-default rounded-lg px-3 py-2 text-left text-sm font-medium text-slate-500"
+            className="block w-full cursor-default rounded-lg px-3 py-2 text-left text-sm font-medium text-slate-500 dark:text-slate-400"
           >
             Excluir conta
           </button>

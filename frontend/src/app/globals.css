@@ -6,14 +6,39 @@
   --bg: #f8faf8;
   --surface: #ffffff;
   --ink: #1d2a22;
+  --border-color: #dce5de;
+  --page-bg: #f8faf8;
+  --page-fg: #1d2a22;
+}
+
+.dark {
+  --bg: #0f1117;
+  --surface: #1a1f2e;
+  --ink: #f0f2f7;
+  --border-color: #2e3447;
+  --page-bg: #0f1117;
+  --page-fg: #f0f2f7;
 }
 
 body {
-  background:
-    radial-gradient(circle at 10% 10%, #dff6e8 0%, transparent 38%),
-    radial-gradient(circle at 90% 20%, #e9f7ef 0%, transparent 45%),
-    linear-gradient(180deg, #f8faf8 0%, #f0f6f2 100%);
+  background-color: var(--page-bg);
   color: var(--ink);
+}
+
+.dark body {
+  background:
+    radial-gradient(circle at 10% 10%, #1a1f2e 0%, transparent 34%),
+    radial-gradient(circle at 90% 20%, #222836 0%, transparent 38%),
+    linear-gradient(180deg, #0f1117 0%, #141927 100%);
+  color: var(--ink);
+}
+
+* {
+  border-color: var(--border-color);
+}
+
+.dark * {
+  border-color: var(--border-color);
 }
 
 @layer base {

@@ -29,6 +29,26 @@ export const NEUTRAL_COLORS = {
   900: "#111827",
 } as const;
 
+export const DARK_COLORS = {
+  bg: {
+    primary: "#0f1117",
+    secondary: "#1a1f2e",
+    tertiary: "#222836",
+    elevated: "#2a3040",
+  },
+  border: {
+    subtle: "#2e3447",
+    default: "#3d4460",
+    strong: "#4f5a7a",
+  },
+  text: {
+    primary: "#f0f2f7",
+    secondary: "#9ba3bb",
+    muted: "#5e6680",
+    inverse: "#0f1117",
+  },
+} as const;
+
 export const STATUS_COLORS = {
   success: {
     50: "#f0fdf4",
