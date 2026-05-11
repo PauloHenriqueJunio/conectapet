@@ -198,7 +198,7 @@ export default function EditarPerfilPFPage() {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-200 outline-none transition"
+                  className="w-full bg-[var(--bg-input)] text-[var(--text-primary)] pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-200 outline-none transition placeholder:text-slate-500 dark:placeholder:text-slate-400"
                 />
               </div>
             </div>
@@ -223,7 +223,7 @@ export default function EditarPerfilPFPage() {
                   value={formData.contact}
                   onChange={handleChange}
                   placeholder="(00) 9999-9999"
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-200 outline-none transition"
+                  className="w-full bg-[var(--bg-input)] text-[var(--text-primary)] pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-200 outline-none transition placeholder:text-slate-500 dark:placeholder:text-slate-400"
                 />
               </div>
             </div>
@@ -253,7 +253,7 @@ export default function EditarPerfilPFPage() {
                   value={formData.cep}
                   onChange={handleChange}
                   placeholder="00000-000"
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-200 outline-none transition"
+                  className="w-full bg-[var(--bg-input)] text-[var(--text-primary)] pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-200 outline-none transition placeholder:text-slate-500 dark:placeholder:text-slate-400"
                 />
               </div>
             </div>
@@ -278,7 +278,7 @@ export default function EditarPerfilPFPage() {
                   value={formData.address}
                   onChange={handleChange}
                   placeholder="Rua e bairro"
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-200 outline-none transition"
+                  className="w-full bg-[var(--bg-input)] text-[var(--text-primary)] pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-200 outline-none transition placeholder:text-slate-500 dark:placeholder:text-slate-400"
                 />
               </div>
 
@@ -295,7 +295,7 @@ export default function EditarPerfilPFPage() {
                     value={formData.number}
                     onChange={handleChange}
                     placeholder="Número"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-200 outline-none transition"
+                    className="w-full bg-[var(--bg-input)] text-[var(--text-primary)] pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-200 outline-none transition placeholder:text-slate-500 dark:placeholder:text-slate-400"
                   />
                 </div>
 
@@ -311,7 +311,7 @@ export default function EditarPerfilPFPage() {
                     value={formData.complement}
                     onChange={handleChange}
                     placeholder="Complemento"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-200 outline-none transition"
+                    className="w-full bg-[var(--bg-input)] text-[var(--text-primary)] pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-200 outline-none transition placeholder:text-slate-500 dark:placeholder:text-slate-400"
                   />
                 </div>
               </div>
