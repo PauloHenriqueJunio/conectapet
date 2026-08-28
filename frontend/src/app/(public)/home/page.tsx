@@ -7,6 +7,7 @@ import { apiFetch } from "@/lib/api";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { Pet } from "@/types/api";
+import { isPetVaccinated } from "@/lib/pet";
 import {
   MapPin,
   Camera,
@@ -386,6 +387,26 @@ export default function HomePage() {
                           </span>
                           <span className="text-sm font-bold text-slate-700">
                             {pet.size || "Médio"}
+                          </span>
+                        </div>
+                        <div className="text-center bg-slate-50 rounded-xl py-2">
+                          <span className="block text-[10px] uppercase font-bold text-slate-400">
+                            Castrado
+                          </span>
+                          <span
+                            className={`text-sm font-black ${pet.isCastrated ? "text-brand-400" : "text-slate-700"}`}
+                          >
+                            {pet.isCastrated ? "Sim" : "Não"}
+                          </span>
+                        </div>
+                        <div className="text-center bg-slate-50 rounded-xl py-2">
+                          <span className="block text-[10px] uppercase font-bold text-slate-400">
+                            Vacinado
+                          </span>
+                          <span
+                            className={`text-sm font-black ${isPetVaccinated(pet) ? "text-brand-400" : "text-slate-700"}`}
+                          >
+                            {isPetVaccinated(pet) ? "Sim" : "Não"}
                           </span>
                         </div>
                       </div>
