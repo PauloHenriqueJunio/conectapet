@@ -78,8 +78,22 @@ export class PetsController {
   }
 
   @Get()
-  findAllAvailable(@Query("species") species?: string) {
-    return this.petsService.findAvailable(species);
+  findAllAvailable(
+    @Query("species") species?: string,
+    @Query("size") size?: string,
+    @Query("sex") sex?: string,
+    @Query("city") city?: string,
+    @Query("isCastrated") isCastrated?: string,
+    @Query("isVaccinated") isVaccinated?: string,
+  ) {
+    return this.petsService.findAvailable({
+      species,
+      size,
+      sex,
+      city,
+      isCastrated: isCastrated === undefined ? undefined : isCastrated === "true",
+      isVaccinated: isVaccinated === undefined ? undefined : isVaccinated === "true",
+    });
   }
 
   @Get("ong/:ongId/available-count")
