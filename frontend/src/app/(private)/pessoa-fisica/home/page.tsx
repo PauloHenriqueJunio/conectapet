@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { apiFetch } from "@/lib/api";
 import { Pet } from "@/types/api";
+import { isPetVaccinated } from "@/lib/pet";
 import {
   Search,
   MapPin,
@@ -105,18 +106,7 @@ export default function PessoaFisicaHome() {
       if (castratedFilter && !pet.isCastrated) return false;
 
       // 8. Filtro por Vacinado (qualquer vacina aplicada)
-      if (
-        vaccinatedFilter &&
-        !(
-          pet.hasVaccineV8 ||
-          pet.hasVaccineGiardia ||
-          pet.hasVaccineFlu ||
-          pet.hasVaccineRabies ||
-          pet.hasVaccineFeline ||
-          pet.hasVaccineFelv
-        )
-      )
-        return false;
+      if (vaccinatedFilter && !isPetVaccinated(pet)) return false;
 
       return true;
     });
@@ -412,6 +402,45 @@ export default function PessoaFisicaHome() {
                           : pet.ong?.state}
                       </div>
                     )}
+                  </div>
+
+                  <div className="mt-4 grid grid-cols-2 gap-2 border-t border-slate-100 pt-4">
+                    <div className="text-center bg-slate-50 rounded-xl py-2">
+                      <span className="block text-[10px] uppercase font-bold text-slate-400">
+                        Porte
+                      </span>
+                      <span className="text-sm font-bold text-slate-700">
+                        {pet.size || "Médio"}
+                      </span>
+                    </div>
+                    <div className="text-center bg-slate-50 rounded-xl py-2">
+                      <span className="block text-[10px] uppercase font-bold text-slate-400">
+                        Sexo
+                      </span>
+                      <span className="text-sm font-bold text-slate-700">
+                        {pet.sex || "Indefinido"}
+                      </span>
+                    </div>
+                    <div className="text-center bg-slate-50 rounded-xl py-2">
+                      <span className="block text-[10px] uppercase font-bold text-slate-400">
+                        Castrado
+                      </span>
+                      <span
+                        className={`text-sm font-bold ${pet.isCastrated ? "text-brand-600" : "text-slate-700"}`}
+                      >
+                        {pet.isCastrated ? "Sim" : "Não"}
+                      </span>
+                    </div>
+                    <div className="text-center bg-slate-50 rounded-xl py-2">
+                      <span className="block text-[10px] uppercase font-bold text-slate-400">
+                        Vacinado
+                      </span>
+                      <span
+                        className={`text-sm font-bold ${isPetVaccinated(pet) ? "text-brand-600" : "text-slate-700"}`}
+                      >
+                        {isPetVaccinated(pet) ? "Sim" : "Não"}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
