@@ -7,6 +7,8 @@ import { useAuth } from "@/context/AuthContext";
 import { apiFetch } from "@/lib/api";
 import { Pet } from "@/types/api";
 import { isPetVaccinated } from "@/lib/pet";
+import { prefetchPet } from "@/lib/petCache";
+import { usePetPhotoTransition } from "@/context/PetPhotoTransitionContext";
 import {
   Search,
   MapPin,
@@ -22,6 +24,7 @@ type SpeciesFilter = "TODOS" | "Cão" | "Gato";
 
 export default function PessoaFisicaHome() {
   const router = useRouter();
+  const { startPhotoExpand } = usePetPhotoTransition();
   const { token, user, isLoading: authLoading } = useAuth();
   const [pets, setPets] = useState<Pet[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -336,9 +339,26 @@ export default function PessoaFisicaHome() {
               key={pet.id}
               role="link"
               tabIndex={0}
-              onClick={() => router.push(`/pet/${pet.id}`)}
+              onMouseEnter={() => {
+                prefetchPet(pet.id);
+                router.prefetch(`/pet/${pet.id}`);
+              }}
+              onClick={(event) => {
+                const imgEl = event.currentTarget.querySelector("img");
+                const rect = imgEl?.getBoundingClientRect();
+                if (rect && pet.photoUrl) {
+                  startPhotoExpand(pet.id, pet.photoUrl, rect);
+                }
+                router.push(`/pet/${pet.id}`);
+              }}
               onKeyDown={(event) => {
-                if (event.key === "Enter") router.push(`/pet/${pet.id}`);
+                if (event.key !== "Enter") return;
+                const imgEl = event.currentTarget.querySelector("img");
+                const rect = imgEl?.getBoundingClientRect();
+                if (rect && pet.photoUrl) {
+                  startPhotoExpand(pet.id, pet.photoUrl, rect);
+                }
+                router.push(`/pet/${pet.id}`);
               }}
               className="group cursor-pointer"
             >

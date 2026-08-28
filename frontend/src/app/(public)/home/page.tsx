@@ -8,6 +8,8 @@ import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { Pet } from "@/types/api";
 import { isPetVaccinated } from "@/lib/pet";
+import { prefetchPet } from "@/lib/petCache";
+import { usePetPhotoTransition } from "@/context/PetPhotoTransitionContext";
 import {
   MapPin,
   Camera,
@@ -20,6 +22,7 @@ import { STATUS_COLORS } from "@/constants/theme";
 
 export default function HomePage() {
   const router = useRouter();
+  const { startPhotoExpand } = usePetPhotoTransition();
   const [pets, setPets] = useState<Pet[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -304,9 +307,26 @@ export default function HomePage() {
                   key={pet.id}
                   role="link"
                   tabIndex={0}
-                  onClick={() => router.push(`/pet/${pet.id}`)}
+                  onMouseEnter={() => {
+                    prefetchPet(pet.id);
+                    router.prefetch(`/pet/${pet.id}`);
+                  }}
+                  onClick={(event) => {
+                    const imgEl = event.currentTarget.querySelector("img");
+                    const rect = imgEl?.getBoundingClientRect();
+                    if (rect && pet.photoUrl) {
+                      startPhotoExpand(pet.id, pet.photoUrl, rect);
+                    }
+                    router.push(`/pet/${pet.id}`);
+                  }}
                   onKeyDown={(event) => {
-                    if (event.key === "Enter") router.push(`/pet/${pet.id}`);
+                    if (event.key !== "Enter") return;
+                    const imgEl = event.currentTarget.querySelector("img");
+                    const rect = imgEl?.getBoundingClientRect();
+                    if (rect && pet.photoUrl) {
+                      startPhotoExpand(pet.id, pet.photoUrl, rect);
+                    }
+                    router.push(`/pet/${pet.id}`);
                   }}
                   className="group cursor-pointer"
                 >

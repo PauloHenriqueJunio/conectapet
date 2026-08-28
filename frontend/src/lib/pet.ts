@@ -10,3 +10,9 @@ export function isPetVaccinated(pet: Pet): boolean {
     pet.hasVaccineFelv
   );
 }
+
+/** Nome unico usado no `layoutId` do Framer Motion para fazer a foto do
+ *  card "morphar" ate a foto da pagina do pet. */
+export function petPhotoLayoutId(petId: string): string {
+  return `pet-photo-${petId}`;
+}

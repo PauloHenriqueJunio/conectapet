@@ -6,7 +6,11 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { apiFetch } from "@/lib/api";
 import { AdoptionContactModal } from "@/components/ui/AdoptionContactModal";
+import { petPhotoLayoutId } from "@/lib/pet";
+import { getCachedPet } from "@/lib/petCache";
+import { usePetPhotoTransition } from "@/context/PetPhotoTransitionContext";
 import { Pet } from "@/types/api";
+import { motion } from "framer-motion";
 import {
   ArrowLeft,
   ChevronLeft,
@@ -37,9 +41,10 @@ export default function PetProfilePage() {
   const id = params?.id as string;
   const { user } = useAuth();
   const isAuthenticated = !!user;
+  const { clearPhotoExpand } = usePetPhotoTransition();
 
-  const [pet, setPet] = useState<Pet | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [pet, setPet] = useState<Pet | null>(() => getCachedPet(id));
+  const [isLoading, setIsLoading] = useState(() => !getCachedPet(id));
   const [isCopied, setIsCopied] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isAdoptionModalOpen, setIsAdoptionModalOpen] = useState(false);
@@ -55,13 +60,20 @@ export default function PetProfilePage() {
         setPet(data);
       } catch {
         setError("Não foi possível carregar as informações deste pet.");
+        clearPhotoExpand();
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchPetDetails();
-  }, [id]);
+  }, [id, clearPhotoExpand]);
+
+  // O overlay de transicao (foto expandida cobrindo a tela) fica ativo ate
+  // a foto real da pagina estar pronta para assumir o lugar dela.
+  useEffect(() => {
+    if (pet) clearPhotoExpand();
+  }, [pet, clearPhotoExpand]);
 
   const handleShare = async () => {
     try {
@@ -264,7 +276,12 @@ export default function PetProfilePage() {
           </button>
         </div>
 
-        <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden flex flex-col lg:flex-row">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+          className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden flex flex-col lg:flex-row"
+        >
           <div className="w-full lg:w-1/2 relative bg-slate-100 flex items-center justify-center min-h-[400px] lg:min-h-full group">
             {featuredPhoto ? (
               <button
@@ -273,9 +290,10 @@ export default function PetProfilePage() {
                 className="absolute inset-0 block h-full w-full cursor-zoom-in"
                 aria-label={`Abrir galeria de fotos de ${pet.name}`}
               >
-                <img
+                <motion.img
                   src={featuredPhoto}
                   alt={pet.name}
+                  layoutId={petPhotoLayoutId(pet.id)}
                   className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
                 />
 
@@ -558,7 +576,7 @@ export default function PetProfilePage() {
               </div>
             )}
           </div>
-        </div>
+        </motion.div>
 
         {isGalleryOpen && petPhotos.length > 0 && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 px-2 py-2 backdrop-blur-sm sm:px-4 sm:py-6">
