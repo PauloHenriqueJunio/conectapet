@@ -418,13 +418,13 @@ export default function PetProfilePage() {
                           {vaccine.label}
                         </span>
 
-                        <Info size={14} className="text-slate-300 ml-1" />
+                        <Info size={14} className="text-[#cbd5e1] ml-1" />
 
                         <div className="absolute left-0 bottom-full mb-2 hidden w-56 -translate-x-2 flex-col rounded-xl bg-slate-900 px-3 py-2.5 text-xs text-white opacity-0 transition-opacity group-hover:flex group-hover:opacity-100 z-10 shadow-xl pointer-events-none">
                           <span className="font-bold text-brand-400 mb-1">
                             {vaccine.label}
                           </span>
-                          <span className="text-slate-300 leading-relaxed">
+                          <span className="text-[#cbd5e1] leading-relaxed">
                             {vaccine.desc}
                           </span>
 

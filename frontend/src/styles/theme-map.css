@@ -1,0 +1,359 @@
+/* ==========================================================================
+   ConectaPet — mapeamento utilitario -> token
+
+   Traduz as classes de cor do Tailwind usadas pelos componentes (bg-white,
+   text-slate-900, border-slate-200, ...) para os tokens de tema, de modo que
+   toda a aplicacao acompanhe claro/escuro sem precisar reescrever ~600 usos
+   com variantes `dark:`.
+
+   IMPORTANTE: este arquivo e importado em app/layout.tsx DEPOIS de
+   globals.css. Isso garante que ele venha depois de todo o output do Tailwind
+   (inclusive das variantes hover:/focus:/dark:, que o Tailwind emite no fim),
+   entao o mapeamento vence por ordem de cascata sem precisar de !important.
+
+   Consequencia desejada: uma variante `dark:` escrita direto no componente
+   tem especificidade maior e continua sobrescrevendo o mapeamento -- e assim
+   que os casos particulares (superficies que ja sao escuras nos dois temas)
+   sao tratados.
+   ========================================================================== */
+
+/* --- Superficies -------------------------------------------------------- */
+
+.bg-white,
+.bg-white\/95,
+.bg-white\/90,
+.bg-white\/85,
+.bg-white\/70,
+.bg-white\/60,
+.hover\:bg-white:hover,
+.focus\:bg-white:focus,
+.hover\:bg-white\/60:hover {
+  background-color: var(--bg-card);
+}
+
+.bg-slate-50,
+.bg-slate-50\/80,
+.bg-slate-50\/70,
+.bg-slate-50\/50,
+.hover\:bg-slate-50:hover,
+.hover\:bg-slate-50\/50:hover {
+  background-color: var(--bg-secondary);
+}
+
+.bg-slate-100,
+.hover\:bg-slate-100:hover,
+.group:hover .group-hover\:bg-slate-100 {
+  background-color: var(--bg-muted);
+}
+
+.bg-slate-200,
+.hover\:bg-slate-200:hover,
+.disabled\:bg-slate-300:disabled {
+  background-color: var(--bg-muted-strong);
+}
+
+/* --- Texto -------------------------------------------------------------- */
+
+.text-slate-950,
+.text-slate-900,
+.text-slate-800,
+.text-slate-700,
+.hover\:text-slate-900:hover,
+.hover\:text-slate-800:hover,
+.hover\:text-slate-700:hover,
+.group:hover .group-hover\:text-slate-900 {
+  color: var(--text-primary);
+}
+
+.text-slate-600,
+.hover\:text-slate-600:hover {
+  color: var(--text-secondary);
+}
+
+.text-slate-500,
+.text-slate-400 {
+  color: var(--text-muted);
+}
+
+/* Cuidado: --text-faint troca de valor entre os temas (claro: cinza claro,
+   escuro: cinza escuro), assumindo que o fundo por tras do texto tambem
+   acompanha o tema. Em superficies que ficam SEMPRE escuras (ex.: um card
+   bg-slate-950 fixo), nao use text-slate-300 -- use uma cor literal, como
+   text-[#cbd5e1], para nao ficar ilegivel quando o app estiver no tema
+   escuro. */
+.text-slate-300 {
+  color: var(--text-faint);
+}
+
+.placeholder\:text-slate-600::placeholder,
+.placeholder\:text-slate-500::placeholder,
+.placeholder\:text-slate-400::placeholder {
+  color: var(--text-muted);
+}
+
+/* --- Bordas e rings neutros --------------------------------------------- */
+
+.border-slate-100,
+.border-slate-200,
+.border-slate-200\/80,
+.border-slate-200\/70,
+.border-slate-300,
+.border-slate-400 {
+  border-color: var(--border-default);
+}
+
+.divide-slate-100 > :not([hidden]) ~ :not([hidden]) {
+  border-color: var(--border-default);
+}
+
+.ring-slate-100,
+.ring-slate-200 {
+  --tw-ring-color: var(--border-default);
+}
+
+/* --- Marca -------------------------------------------------------------- */
+
+.bg-brand-50,
+.bg-brand-50\/70,
+.bg-brand-50\/50,
+.bg-brand-50\/30,
+.hover\:bg-brand-50:hover,
+.group:hover .group-hover\:bg-brand-50 {
+  background-color: var(--brand-light);
+}
+
+.bg-brand-100,
+.hover\:bg-brand-100:hover {
+  background-color: var(--brand-light-hover);
+}
+
+.bg-brand-500,
+.bg-brand-600,
+.bg-brand-600\/90 {
+  background-color: var(--brand-solid);
+}
+
+.hover\:bg-brand-600:hover,
+.hover\:bg-brand-700:hover {
+  background-color: var(--brand-solid-hover);
+}
+
+.text-brand-500,
+.text-brand-600,
+.text-brand-600\/70,
+.text-brand-700,
+.text-brand-700\/70,
+.text-brand-800,
+.text-brand-900\/80,
+.hover\:text-brand-600:hover,
+.hover\:text-brand-700:hover,
+.hover\:text-brand-800:hover,
+.group:hover .group-hover\:text-brand-600 {
+  color: var(--brand-text);
+}
+
+.border-brand-100,
+.border-brand-200,
+.border-brand-300 {
+  border-color: var(--brand-border);
+}
+
+.border-brand-500,
+.border-brand-600,
+.hover\:border-brand-300:hover,
+.hover\:border-brand-500:hover,
+.focus\:border-brand-400:focus,
+.focus\:border-brand-500:focus {
+  border-color: var(--brand);
+}
+
+.ring-brand-50,
+.ring-brand-200,
+.ring-brand-300,
+.hover\:ring-brand-200:hover,
+.focus\:ring-brand-200:focus,
+.focus\:ring-brand-500:focus,
+.focus\:ring-brand-500\/20:focus {
+  --tw-ring-color: var(--brand);
+}
+
+/* --- Status: sucesso (emerald / green) ---------------------------------- */
+
+.bg-emerald-50,
+.bg-emerald-50\/60,
+.bg-emerald-50\/40,
+.bg-emerald-100,
+.bg-green-50,
+.hover\:bg-emerald-50:hover {
+  background-color: var(--status-success-bg);
+}
+
+.bg-emerald-600,
+.bg-emerald-700,
+.hover\:bg-emerald-700:hover {
+  background-color: var(--status-success-text);
+}
+
+.text-emerald-600,
+.text-emerald-700,
+.text-emerald-700\/70,
+.text-green-600 {
+  color: var(--status-success-text);
+}
+
+.border-emerald-100,
+.border-emerald-200,
+.border-emerald-200\/70,
+.border-emerald-300,
+.border-green-100 {
+  border-color: var(--status-success-border);
+}
+
+.ring-emerald-50\/60 {
+  --tw-ring-color: var(--status-success-bg);
+}
+
+/* --- Status: perigo (red) ----------------------------------------------- */
+
+.bg-red-50,
+.bg-red-50\/30,
+.bg-red-100,
+.hover\:bg-red-50:hover,
+.hover\:bg-red-100:hover {
+  background-color: var(--status-danger-bg);
+}
+
+.bg-red-600,
+.bg-red-700,
+.hover\:bg-red-700:hover {
+  background-color: var(--status-danger-text);
+}
+
+.text-red-400,
+.text-red-500,
+.text-red-500\/60,
+.text-red-600,
+.text-red-700,
+.text-red-800,
+.text-red-900,
+.hover\:text-red-600:hover,
+.hover\:text-red-900:hover {
+  color: var(--status-danger-text);
+}
+
+.border-red-100,
+.border-red-200,
+.border-red-300 {
+  border-color: var(--status-danger-border);
+}
+
+.focus\:ring-red-500:focus {
+  --tw-ring-color: var(--status-danger-text);
+}
+
+/* --- Status: alerta (amber) --------------------------------------------- */
+
+.bg-amber-50,
+.bg-amber-100 {
+  background-color: var(--status-warning-bg);
+}
+
+.text-amber-700,
+.text-amber-800 {
+  color: var(--status-warning-text);
+}
+
+.border-amber-100,
+.border-amber-200,
+.border-amber-300 {
+  border-color: var(--status-warning-border);
+}
+
+/* --- Status: informacao (blue) ------------------------------------------ */
+
+.bg-blue-50,
+.bg-blue-50\/40,
+.bg-blue-100,
+.bg-blue-100\/50 {
+  background-color: var(--status-info-bg);
+}
+
+.bg-blue-600,
+.bg-blue-700,
+.hover\:bg-blue-700:hover {
+  background-color: var(--status-info-text);
+}
+
+.text-blue-600,
+.text-blue-700,
+.text-blue-900 {
+  color: var(--status-info-text);
+}
+
+.border-blue-100,
+.border-blue-200,
+.border-blue-200\/70,
+.border-blue-300 {
+  border-color: var(--status-info-border);
+}
+
+/* --- Status: destaque (purple) ------------------------------------------ */
+
+.bg-purple-50,
+.bg-purple-50\/40,
+.bg-purple-100,
+.hover\:bg-purple-50:hover {
+  background-color: var(--status-purple-bg);
+}
+
+.bg-purple-600,
+.bg-purple-700,
+.hover\:bg-purple-700:hover {
+  background-color: var(--status-purple-text);
+}
+
+.text-purple-600,
+.text-purple-700 {
+  color: var(--status-purple-text);
+}
+
+.border-purple-100,
+.border-purple-200,
+.border-purple-200\/70,
+.border-purple-300 {
+  border-color: var(--status-purple-border);
+}
+
+/* --- Sombras ------------------------------------------------------------
+   Redefine apenas a variavel que o Tailwind usa dentro de box-shadow, o que
+   preserva a composicao com as utilidades ring-*.
+   ------------------------------------------------------------------------ */
+
+.shadow-sm,
+.shadow {
+  --tw-shadow: var(--shadow-sm);
+  --tw-shadow-colored: var(--shadow-sm);
+}
+
+.shadow-md,
+.shadow-lg,
+.hover\:shadow-lg:hover {
+  --tw-shadow: var(--shadow-md);
+  --tw-shadow-colored: var(--shadow-md);
+}
+
+.shadow-xl,
+.hover\:shadow-xl:hover {
+  --tw-shadow: var(--shadow-lg);
+  --tw-shadow-colored: var(--shadow-lg);
+}
+
+.shadow-2xl {
+  --tw-shadow: var(--shadow-xl);
+  --tw-shadow-colored: var(--shadow-xl);
+}
+
+.shadow-inner {
+  --tw-shadow: var(--shadow-inner);
+  --tw-shadow-colored: var(--shadow-inner);
+}

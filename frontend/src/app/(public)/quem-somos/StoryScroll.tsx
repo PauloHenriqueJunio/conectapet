@@ -128,7 +128,7 @@ export function StoryScroll() {
           <h2 className="mt-3 text-4xl font-black tracking-tight sm:text-5xl">
             Manchetes reais que mostram o desafio e o caminho da adoção.
           </h2>
-          <p className="mt-4 max-w-2xl text-base leading-7 text-slate-300">
+          <p className="mt-4 max-w-2xl text-base leading-7 text-[#cbd5e1]">
             Cada bloco acompanha uma manchete real sobre abandono e adoção para
             conectar a dimensão do problema ao propósito do ConectaPet.
           </p>
@@ -219,7 +219,7 @@ export function StoryScroll() {
                             : "translate-y-2 opacity-90"
                         }`}
                       >
-                        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-300">
+                        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#cbd5e1]">
                           {item.label}
                         </p>
                         <p className="mt-2 text-lg font-bold leading-6 text-white sm:text-xl">

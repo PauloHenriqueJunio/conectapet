@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
-import { useTheme } from "@/contexts/ThemeContext";
+import { useTheme } from "@/context/ThemeContext";
 import { DesktopNavLinks } from "./site-header/DesktopNavLinks";
 import { DesktopUserActions } from "./site-header/DesktopUserActions";
 import { MobileNavLinks } from "./site-header/MobileNavLinks";
@@ -21,7 +21,7 @@ interface SiteHeaderProps {
 
 export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
   const { logout, isAuthenticated, user } = useAuth();
-  const { theme, mounted } = useTheme();
+  const { theme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
@@ -88,20 +88,18 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
       <nav className="flex items-center justify-between gap-4">
         <div className="flex items-center">
           <Link href={getLogoLink()} className="flex items-center gap-3">
-            {!logoFailed && mounted ? (
+            {!logoFailed ? (
               <img
                 src={theme === "dark" ? "/logo-dark.svg" : "/logo-white.svg"}
                 alt="ConectaPet"
+                suppressHydrationWarning
                 className="h-10 w-auto max-w-[180px]"
                 onError={() => setLogoFailed(true)}
               />
             ) : (
-              <span
-                className="text-xl font-extrabold tracking-tight text-brand-800 dark:text-brand-600"
-                style={{ visibility: mounted ? "visible" : "hidden" }}
-              >
+              <span className="text-xl font-extrabold tracking-tight text-brand-800 dark:text-brand-300">
                 Conecta
-                <span className="text-slate-900 dark:text-slate-100">Pet</span>
+                <span className="text-slate-900">Pet</span>
               </span>
             )}
           </Link>
@@ -114,13 +112,13 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
         >
           <span className="relative block h-4 w-5">
             <span
-              className={`absolute left-0 top-0 h-0.5 w-5 bg-slate-700 transition-all duration-300 ${isMenuOpen ? "translate-y-[7px] rotate-45" : ""}`}
+              className={`absolute left-0 top-0 h-0.5 w-5 bg-slate-700 dark:bg-slate-200 transition-all duration-300 ${isMenuOpen ? "translate-y-[7px] rotate-45" : ""}`}
             />
             <span
-              className={`absolute left-0 top-[7px] h-0.5 w-5 bg-slate-700 transition-all duration-300 ${isMenuOpen ? "opacity-0" : "opacity-100"}`}
+              className={`absolute left-0 top-[7px] h-0.5 w-5 bg-slate-700 dark:bg-slate-200 transition-all duration-300 ${isMenuOpen ? "opacity-0" : "opacity-100"}`}
             />
             <span
-              className={`absolute left-0 top-[14px] h-0.5 w-5 bg-slate-700 transition-all duration-300 ${isMenuOpen ? "-translate-y-[7px] -rotate-45" : ""}`}
+              className={`absolute left-0 top-[14px] h-0.5 w-5 bg-slate-700 dark:bg-slate-200 transition-all duration-300 ${isMenuOpen ? "-translate-y-[7px] -rotate-45" : ""}`}
             />
           </span>
         </button>

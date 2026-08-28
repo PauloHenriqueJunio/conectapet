@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { apiFetch } from "@/lib/api";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
@@ -10,6 +11,7 @@ import { MapPin, Camera, Heart, MousePointerClick } from "lucide-react";
 import { STATUS_COLORS } from "@/constants/theme";
 
 export default function HomePage() {
+  const router = useRouter();
   const [pets, setPets] = useState<Pet[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -125,7 +127,16 @@ export default function HomePage() {
               </div>
             ) : (
               pets.map((pet) => (
-                <Link href={`/pet/${pet.id}`} key={pet.id} className="group">
+                <div
+                  key={pet.id}
+                  role="link"
+                  tabIndex={0}
+                  onClick={() => router.push(`/pet/${pet.id}`)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") router.push(`/pet/${pet.id}`);
+                  }}
+                  className="group cursor-pointer"
+                >
                   <article className="flex h-full flex-col overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-slate-100 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:ring-brand-200">
                     <div className="relative h-64 w-full bg-slate-100 flex items-center justify-center overflow-hidden">
                       {pet.photoUrl ? (
@@ -164,6 +175,7 @@ export default function HomePage() {
                           {pet.ong?.id ? (
                             <Link
                               href={`/ongs/${pet.ong.id}`}
+                              onClick={(event) => event.stopPropagation()}
                               className="font-semibold text-slate-800 truncate max-w-[220px]"
                               title={pet.ong?.name}
                             >
@@ -207,7 +219,7 @@ export default function HomePage() {
                       </div>
                     </div>
                   </article>
-                </Link>
+                </div>
               ))
             )}
           </section>

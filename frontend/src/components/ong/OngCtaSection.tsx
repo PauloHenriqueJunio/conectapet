@@ -11,7 +11,7 @@ export function OngCtaSection({ onScrollToPets }: OngCtaSectionProps) {
   return (
     <div className="space-y-6 self-start lg:sticky lg:top-28">
       {/* Quer Adotar? */}
-      <div className="overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-b from-white to-slate-50 p-6 text-center shadow-sm transition hover:-translate-y-0.5 hover:shadow-xl">
+      <div className="overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-b from-white to-slate-50 p-6 text-center shadow-sm transition hover:-translate-y-0.5 hover:shadow-xl dark:from-[var(--bg-card)] dark:to-[var(--bg-secondary)]">
         <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 ring-8 ring-emerald-50/60">
           <PawPrint size={28} />
         </div>
@@ -31,7 +31,7 @@ export function OngCtaSection({ onScrollToPets }: OngCtaSectionProps) {
       </div>
 
       {/* Seja um Padrinho */}
-      <div className="overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-b from-white to-slate-50 p-6 text-center shadow-sm transition hover:-translate-y-0.5 hover:shadow-xl">
+      <div className="overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-b from-white to-slate-50 p-6 text-center shadow-sm transition hover:-translate-y-0.5 hover:shadow-xl dark:from-[var(--bg-card)] dark:to-[var(--bg-secondary)]">
         <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 ring-8 ring-emerald-50/60">
           <Gift size={28} />
         </div>

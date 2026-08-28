@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { apiFetch } from "@/lib/api";
 import { Pet } from "@/types/api";
@@ -11,6 +12,7 @@ import { STATUS_COLORS } from "@/constants/theme";
 type SpeciesFilter = "TODOS" | "Cão" | "Gato";
 
 export default function PessoaFisicaHome() {
+  const router = useRouter();
   const { token, user, isLoading: authLoading } = useAuth();
   const [pets, setPets] = useState<Pet[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -151,7 +153,16 @@ export default function PessoaFisicaHome() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
           {filteredPets.map((pet) => (
-            <Link href={`/pet/${pet.id}`} key={pet.id} className="group">
+            <div
+              key={pet.id}
+              role="link"
+              tabIndex={0}
+              onClick={() => router.push(`/pet/${pet.id}`)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") router.push(`/pet/${pet.id}`);
+              }}
+              className="group cursor-pointer"
+            >
               <div className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl border border-slate-100 transition-all duration-300 hover:-translate-y-2 flex flex-col h-full">
                 <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-100">
                   {pet.photoUrl ? (
@@ -190,6 +201,7 @@ export default function PessoaFisicaHome() {
                       {pet.ong?.id ? (
                         <Link
                           href={`/ongs/${pet.ong.id}`}
+                          onClick={(event) => event.stopPropagation()}
                           className="font-semibold text-slate-800 truncate max-w-[220px]"
                           title={pet.ong?.name}
                         >
@@ -214,7 +226,7 @@ export default function PessoaFisicaHome() {
                   </div>
                 </div>
               </div>
-            </Link>
+            </div>
           ))}
         </div>
       )}

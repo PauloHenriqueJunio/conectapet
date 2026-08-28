@@ -4,424 +4,116 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --bg: #f8faf8;
-  --surface: #ffffff;
-  --surface-hover: #f3f5f7;
-  --ink: #1d2a22;
-  --ink-secondary: #4b5563;
-  --ink-muted: #6b7280;
-  --border-color: #dce5de;
-  --brand-surface: #effbf3;
-  --page-bg: #f8faf8;
-  --page-fg: #1d2a22;
-}
-
-.dark {
-  --bg: #0f1117;
-  --surface: #1a1f2e;
-  --surface-hover: #222836;
-  --ink: #f0f2f7;
-  --ink-secondary: #9ba3bb;
-  --ink-muted: #5e6680;
-  --border-color: #2e3447;
-  --brand-surface: #1a1f2e;
-  --page-bg: #0f1117;
-  --page-fg: #f0f2f7;
-}
-
-body {
-  background-color: var(--page-bg);
-  color: var(--ink);
-}
-
-.dark body {
-  background:
-    radial-gradient(circle at 10% 10%, #1a1f2e 0%, transparent 34%),
-    radial-gradient(circle at 90% 20%, #222836 0%, transparent 38%),
-    linear-gradient(180deg, #0f1117 0%, #141927 100%);
-  color: var(--ink);
-}
-
-* {
-  border-color: var(--border-color);
-}
-
-.dark * {
-  border-color: var(--border-color);
-}
-
-.dark .bg-white,
-.dark .bg-white\/85,
-.dark .bg-white\/90,
-.dark .bg-white\/95,
-.dark .bg-slate-50,
-.dark .bg-slate-50\/50,
-.dark .bg-slate-50\/70,
-.dark .bg-slate-100 {
-  background-color: var(--surface) !important;
-}
-
-.dark .bg-slate-100\/70,
-.dark .bg-slate-200,
-.dark .bg-slate-200\/70 {
-  background-color: var(--surface-hover) !important;
-}
-
-.dark .bg-brand-50,
-.dark .bg-brand-50\/50,
-.dark .bg-brand-50\/70 {
-  background-color: var(--brand-surface) !important;
-}
-
-.dark .text-slate-900,
-.dark .text-slate-800,
-.dark .text-slate-700 {
-  color: var(--ink) !important;
-}
-
-.dark .text-slate-600 {
-  color: var(--ink-secondary) !important;
-}
-
-.dark .text-slate-500,
-.dark .text-slate-400 {
-  color: var(--ink-muted) !important;
-}
-
-.dark .border-slate-100,
-.dark .border-slate-200,
-.dark .border-slate-300,
-.dark .border-slate-200\/70 {
-  border-color: var(--border-color) !important;
-}
-
-.dark .ring-slate-100,
-.dark .ring-slate-200 {
-  --tw-ring-color: var(--border-color) !important;
-}
-
-.dark .shadow-sm,
-.dark .shadow,
-.dark .shadow-lg,
-.dark .shadow-xl,
-.dark .shadow-2xl {
-  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.35) !important;
-}
-
-/* Map common Tailwind utility classes to design tokens for both themes */
-.bg-white,
-.bg-white\/85,
-.bg-white\/90,
-.bg-white\/95 {
-  background-color: var(--bg-primary) !important;
-}
-
-.bg-slate-50,
-.bg-slate-50\/50,
-.bg-slate-50\/70 {
-  background-color: var(--bg-secondary) !important;
-}
-
-.bg-slate-100,
-.bg-slate-200 {
-  background-color: var(--bg-card) !important;
-}
-
-.bg-brand-50,
-.bg-brand-50\/50,
-.bg-brand-50\/70 {
-  background-color: var(--brand-light) !important;
-}
-
-.text-slate-900,
-.text-slate-800,
-.text-slate-700 {
-  color: var(--text-primary) !important;
-}
-
-.text-slate-600 {
-  color: var(--text-secondary) !important;
-}
-
-.text-slate-500,
-.text-slate-400 {
-  color: var(--text-muted) !important;
-}
-
-.placeholder\:text-slate-400::placeholder,
-.placeholder\:text-slate-500::placeholder,
-.placeholder\:text-slate-600::placeholder {
-  color: var(--text-muted) !important;
-}
-
-.dark .placeholder\:text-slate-400::placeholder,
-.dark .placeholder\:text-slate-500::placeholder,
-.dark .placeholder\:text-slate-600::placeholder {
-  color: #9ba3bb !important;
-}
-
-.border-slate-100,
-.border-slate-200,
-.border-slate-300,
-.border-slate-200\/70 {
-  border-color: var(--border-default) !important;
-}
-
-.ring-slate-100,
-.ring-slate-200 {
-  --tw-ring-color: var(--border-default) !important;
-}
-
-.shadow-sm,
-.shadow,
-.shadow-lg,
-.shadow-xl,
-.shadow-2xl {
-  box-shadow: 0 6px 18px var(--shadow) !important;
-}
-
-/* Map common semantic Tailwind colors to tokens so existing components inherit theme colors */
-.bg-brand-50,
-.bg-brand-50\/50,
-.bg-brand-50\/70 {
-  background-color: var(--brand-light) !important;
-}
-
-.bg-brand-600 {
-  background-color: var(--brand) !important;
-}
-
-.hover\:bg-brand-600:hover {
-  background-color: var(--brand) !important;
-}
-
-.hover\:bg-brand-700:hover {
-  background-color: var(--brand-hover) !important;
-}
-
-.filter-pill-active {
-  background-color: var(--brand) !important;
-  color: var(--text-inverse) !important;
-  box-shadow: 0 8px 20px var(--shadow) !important;
-}
-
-.dark .filter-pill-active {
-  background-color: var(--brand) !important;
-  color: var(--text-inverse) !important;
-  box-shadow: 0 8px 20px var(--shadow) !important;
-}
-
-.filter-pill-active .filter-pill-icon {
-  color: var(--text-inverse) !important;
-}
-
-.filter-pill-active .filter-pill-count {
-  background-color: rgba(255, 255, 255, 0.18) !important;
-  color: var(--text-inverse) !important;
-}
-
-.text-brand-600,
-.text-brand-700 {
-  color: var(--brand-text) !important;
-}
-
-.border-brand-100,
-.border-brand-200,
-.border-brand-300 {
-  border-color: var(--border-default) !important;
-}
-
-.focus\:border-brand-500:focus {
-  border-color: var(--brand) !important;
-}
-
-.focus\:ring-brand-300\/20:focus,
-.focus\:ring-brand-500:focus {
-  --tw-ring-color: var(--brand) !important;
-}
-
-.bg-emerald-50,
-.bg-emerald-50\/40,
-.bg-emerald-50\/60,
-.bg-emerald-100 {
-  background-color: var(--status-success-bg) !important;
-}
-
-.bg-emerald-600,
-.bg-emerald-700 {
-  background-color: var(--status-success-text) !important;
-}
-
-.hover\:bg-emerald-50:hover,
-.hover\:bg-emerald-700:hover {
-  background-color: var(--status-success-text) !important;
-}
-
-.text-emerald-600,
-.text-emerald-700 {
-  color: var(--status-success-text) !important;
-}
-
-.border-emerald-100,
-.border-emerald-200,
-.border-emerald-300 {
-  border-color: var(--status-success-border) !important;
-}
-
-.bg-amber-50,
-.bg-amber-100 {
-  background-color: var(--status-warning-bg) !important;
-}
-
-.text-amber-700,
-.text-amber-800 {
-  color: var(--status-warning-text) !important;
-}
-
-.border-amber-100,
-.border-amber-200,
-.border-amber-300 {
-  border-color: var(--status-warning-border) !important;
-}
-
-.bg-red-50,
-.bg-red-50\/30 {
-  background-color: var(--status-danger-bg) !important;
-}
-
-.bg-red-600,
-.bg-red-700 {
-  background-color: var(--status-danger-text) !important;
-}
-
-.hover\:bg-red-50:hover,
-.hover\:bg-red-100:hover,
-.hover\:bg-red-700:hover {
-  background-color: var(--status-danger-text) !important;
-}
-
-.text-red-400,
-.text-red-500,
-.text-red-600,
-.text-red-700,
-.text-red-800,
-.text-red-900 {
-  color: var(--status-danger-text) !important;
-}
-
-.border-red-100,
-.border-red-200,
-.border-red-300 {
-  border-color: var(--status-danger-border) !important;
-}
-
-.bg-blue-600,
-.bg-blue-700 {
-  background-color: var(--status-info-text) !important;
-}
-
-.text-blue-600,
-.text-blue-700 {
-  color: var(--status-info-text) !important;
-}
-
-.border-blue-100,
-.border-blue-200,
-.border-blue-300 {
-  border-color: var(--status-info-border) !important;
-}
-
-.bg-purple-600,
-.bg-purple-700 {
-  background-color: var(--brand) !important;
-}
-
-.text-purple-600,
-.text-purple-700 {
-  color: var(--brand-text) !important;
-}
-
-.border-purple-100,
-.border-purple-200,
-.border-purple-300 {
-  border-color: var(--border-default) !important;
-}
+/* ==========================================================================
+   1. Base
+   ========================================================================== */
 
 @layer base {
-  .theme {
-    --font-heading: var(--font-sans);
-    --font-sans: var(--font-sans);
-  }
-  :root {
-    --background: oklch(1 0 0);
-    --foreground: oklch(0.145 0 0);
-    --card: oklch(1 0 0);
-    --card-foreground: oklch(0.145 0 0);
-    --popover: oklch(1 0 0);
-    --popover-foreground: oklch(0.145 0 0);
-    --primary: oklch(0.205 0 0);
-    --primary-foreground: oklch(0.985 0 0);
-    --secondary: oklch(0.97 0 0);
-    --secondary-foreground: oklch(0.205 0 0);
-    --muted: oklch(0.97 0 0);
-    --muted-foreground: oklch(0.556 0 0);
-    --accent: oklch(0.97 0 0);
-    --accent-foreground: oklch(0.205 0 0);
-    --destructive: oklch(0.577 0.245 27.325);
-    --border: oklch(0.922 0 0);
-    --input: oklch(0.922 0 0);
-    --ring: oklch(0.708 0 0);
-    --chart-1: oklch(0.87 0 0);
-    --chart-2: oklch(0.556 0 0);
-    --chart-3: oklch(0.439 0 0);
-    --chart-4: oklch(0.371 0 0);
-    --chart-5: oklch(0.269 0 0);
-    --radius: 0.625rem;
-    --sidebar: oklch(0.985 0 0);
-    --sidebar-foreground: oklch(0.145 0 0);
-    --sidebar-primary: oklch(0.205 0 0);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.97 0 0);
-    --sidebar-accent-foreground: oklch(0.205 0 0);
-    --sidebar-border: oklch(0.922 0 0);
-    --sidebar-ring: oklch(0.708 0 0);
-  }
-  .dark {
-    --background: oklch(0.145 0 0);
-    --foreground: oklch(0.985 0 0);
-    --card: oklch(0.205 0 0);
-    --card-foreground: oklch(0.985 0 0);
-    --popover: oklch(0.205 0 0);
-    --popover-foreground: oklch(0.985 0 0);
-    --primary: oklch(0.922 0 0);
-    --primary-foreground: oklch(0.205 0 0);
-    --secondary: oklch(0.269 0 0);
-    --secondary-foreground: oklch(0.985 0 0);
-    --muted: oklch(0.269 0 0);
-    --muted-foreground: oklch(0.708 0 0);
-    --accent: oklch(0.269 0 0);
-    --accent-foreground: oklch(0.985 0 0);
-    --destructive: oklch(0.704 0.191 22.216);
-    --border: oklch(1 0 0 / 10%);
-    --input: oklch(1 0 0 / 15%);
-    --ring: oklch(0.556 0 0);
-    --chart-1: oklch(0.87 0 0);
-    --chart-2: oklch(0.556 0 0);
-    --chart-3: oklch(0.439 0 0);
-    --chart-4: oklch(0.371 0 0);
-    --chart-5: oklch(0.269 0 0);
-    --sidebar: oklch(0.205 0 0);
-    --sidebar-foreground: oklch(0.985 0 0);
-    --sidebar-primary: oklch(0.488 0.243 264.376);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.269 0 0);
-    --sidebar-accent-foreground: oklch(0.985 0 0);
-    --sidebar-border: oklch(1 0 0 / 10%);
-    --sidebar-ring: oklch(0.556 0 0);
-  }
-
   html {
     @apply font-sans;
   }
+
+  *,
+  ::before,
+  ::after {
+    border-color: var(--border-default);
+  }
+
+  body {
+    background-color: var(--bg-page);
+    color: var(--text-primary);
+  }
+
+  .dark body {
+    background:
+      radial-gradient(circle at 10% 10%, #1a1f2e 0%, transparent 34%),
+      radial-gradient(circle at 90% 20%, #222836 0%, transparent 38%),
+      linear-gradient(180deg, #0f1117 0%, #141927 100%);
+  }
+
+  ::selection {
+    background-color: var(--brand);
+    color: var(--text-inverse);
+  }
+
+  /* Scrollbar: sem isso o scrollbar nativo do navegador fica claro mesmo
+     com o resto da pagina no tema escuro. */
+  html {
+    scrollbar-color: var(--border-strong) transparent;
+  }
+
+  ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--border-strong);
+    border-radius: 999px;
+    border: 3px solid var(--bg-page);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--text-muted);
+  }
+
+  /* Autofill do Chrome: o navegador pinta o fundo antes que qualquer CSS
+     normal consiga sobrescrever, entao a unica forma confiavel e forcar
+     via box-shadow interno (o "truque" padrao para esse caso). */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--text-primary);
+    -webkit-box-shadow: 0 0 0px 1000px var(--bg-input) inset;
+    box-shadow: 0 0 0px 1000px var(--bg-input) inset;
+    transition: background-color 9999s ease-in-out 0s;
+  }
+}
+
+/* ==========================================================================
+   2. Transicao de tema
+
+   Aplicada apenas durante a troca claro/escuro: o ThemeProvider adiciona a
+   classe .theme-transition no <html> e remove logo depois. Antes havia um
+   `transition` permanente em `*`, o que deixava hover e foco lentos em toda
+   a aplicacao. O !important aqui e intencional: durante a troca a transicao
+   precisa vencer as transicoes proprias de cada componente.
+   ========================================================================== */
+
+@media (prefers-reduced-motion: no-preference) {
+  .theme-transition,
+  .theme-transition *,
+  .theme-transition *::before,
+  .theme-transition *::after {
+    transition:
+      background-color 250ms ease,
+      border-color 250ms ease,
+      color 200ms ease,
+      fill 200ms ease,
+      stroke 200ms ease !important;
+    transition-delay: 0ms !important;
+  }
+}
+
+/* ==========================================================================
+   3. Componentes com estilo proprio
+   ========================================================================== */
+
+.filter-pill-active {
+  background-color: var(--brand);
+  color: var(--text-inverse);
+  box-shadow: var(--shadow-md);
+}
+
+.filter-pill-active .filter-pill-icon {
+  color: var(--text-inverse);
+}
+
+.filter-pill-active .filter-pill-count {
+  background-color: rgba(255, 255, 255, 0.18);
+  color: var(--text-inverse);
 }

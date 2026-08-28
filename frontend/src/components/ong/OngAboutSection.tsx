@@ -20,7 +20,7 @@ export function OngAboutSection({ ong }: OngAboutSectionProps) {
         </h2>
       </div>
 
-      <div className="rounded-2xl bg-gradient-to-br from-blue-50 to-blue-100/50 p-6 md:p-8">
+      <div className="rounded-2xl bg-gradient-to-br from-blue-50 to-blue-100/50 p-6 md:p-8 dark:from-[var(--status-info-bg)] dark:to-[var(--status-info-bg)]">
         <div className="space-y-4 text-slate-700 leading-relaxed">
           <p>{aboutFirstParagraph}</p>
           <p>{ONG_CONSTANTS.ABOUT.PARAGRAPHS.TWO}</p>
@@ -33,7 +33,7 @@ export function OngAboutSection({ ong }: OngAboutSectionProps) {
             {[1, 2, 3].map((i) => (
               <div
                 key={i}
-                className="h-10 w-10 rounded-full bg-gradient-to-br from-brand-400 to-brand-600 ring-2 ring-white flex items-center justify-center text-white text-xs font-bold"
+                className="h-10 w-10 rounded-full bg-gradient-to-br from-brand-400 to-brand-600 ring-2 ring-white dark:ring-[var(--bg-card)] flex items-center justify-center text-white text-xs font-bold"
               >
                 {i}
               </div>
