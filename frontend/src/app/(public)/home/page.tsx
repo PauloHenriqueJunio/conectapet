@@ -10,6 +10,7 @@ import { Pet } from "@/types/api";
 import { isPetVaccinated } from "@/lib/pet";
 import { prefetchPet } from "@/lib/petCache";
 import { usePetPhotoTransition } from "@/context/PetPhotoTransitionContext";
+import { CardBody, CardContainer, CardItem } from "@/components/ui/3d-card";
 import {
   MapPin,
   Camera,
@@ -328,28 +329,31 @@ export default function HomePage() {
                     }
                     router.push(`/pet/${pet.id}`);
                   }}
-                  className="group cursor-pointer"
+                  className="group cursor-pointer h-full"
                 >
-                  <article className="flex h-full flex-col overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-slate-100 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:ring-brand-200">
-                    <div className="relative h-64 w-full bg-slate-100 flex items-center justify-center overflow-hidden">
-                      {pet.photoUrl ? (
-                        <img
-                          src={pet.photoUrl}
-                          alt={pet.name}
-                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                        />
-                      ) : (
-                        <Camera size={48} className="text-slate-300" />
-                      )}
+                  <CardContainer containerClassName="p-0 w-full h-full" className="w-full h-full">
+                    <CardBody className="flex h-full w-full flex-col overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-slate-100 transition-shadow duration-300 hover:shadow-xl hover:ring-brand-200">
+                      <CardItem translateZ={50} className="w-full">
+                        <div className="relative h-64 w-full bg-slate-100 flex items-center justify-center overflow-hidden">
+                          {pet.photoUrl ? (
+                            <img
+                              src={pet.photoUrl}
+                              alt={pet.name}
+                              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            />
+                          ) : (
+                            <Camera size={48} className="text-slate-300" />
+                          )}
 
-                      {pet.isAdopted && (
-                        <div className="absolute top-3 right-3 bg-brand-600/90 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs font-bold shadow-md flex items-center gap-1.5">
-                          <Heart size={14} fill="currentColor" /> Adotado
+                          {pet.isAdopted && (
+                            <div className="absolute top-3 right-3 bg-brand-600/90 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs font-bold shadow-md flex items-center gap-1.5">
+                              <Heart size={14} fill="currentColor" /> Adotado
+                            </div>
+                          )}
                         </div>
-                      )}
-                    </div>
+                      </CardItem>
 
-                    <div className="flex flex-1 flex-col p-5">
+                      <CardItem translateZ={30} className="flex w-full flex-1 flex-col p-5">
                       <div className="flex justify-between items-start mb-2">
                         <h2
                           className="text-2xl font-extrabold text-slate-900 group-hover:text-brand-600 transition-colors truncate max-w-[70%]"
@@ -430,8 +434,9 @@ export default function HomePage() {
                           </span>
                         </div>
                       </div>
-                    </div>
-                  </article>
+                      </CardItem>
+                    </CardBody>
+                  </CardContainer>
                 </div>
               ))
             )}

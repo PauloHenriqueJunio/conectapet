@@ -9,6 +9,7 @@ import { Pet } from "@/types/api";
 import { isPetVaccinated } from "@/lib/pet";
 import { prefetchPet } from "@/lib/petCache";
 import { usePetPhotoTransition } from "@/context/PetPhotoTransitionContext";
+import { CardBody, CardContainer, CardItem } from "@/components/ui/3d-card";
 import {
   Search,
   MapPin,
@@ -360,32 +361,35 @@ export default function PessoaFisicaHome() {
                 }
                 router.push(`/pet/${pet.id}`);
               }}
-              className="group cursor-pointer"
+              className="group cursor-pointer h-full"
             >
-              <div className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl border border-slate-100 transition-all duration-300 hover:-translate-y-2 flex flex-col h-full">
-                <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-100">
-                  {pet.photoUrl ? (
-                    <img
-                      src={pet.photoUrl}
-                      alt={pet.name}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
-                  ) : (
-                    <div className="flex flex-col items-center text-slate-400 pt-16">
-                      <Camera size={40} className="mb-2 opacity-50" />
-                      <span className="text-xs font-semibold uppercase tracking-wider">
-                        Pet sem foto
-                      </span>
+              <CardContainer containerClassName="p-0 w-full h-full" className="w-full h-full">
+                <CardBody className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl border border-slate-100 transition-shadow duration-300 flex flex-col h-full w-full">
+                  <CardItem translateZ={50} className="w-full">
+                    <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-100">
+                      {pet.photoUrl ? (
+                        <img
+                          src={pet.photoUrl}
+                          alt={pet.name}
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                        />
+                      ) : (
+                        <div className="flex flex-col items-center text-slate-400 pt-16">
+                          <Camera size={40} className="mb-2 opacity-50" />
+                          <span className="text-xs font-semibold uppercase tracking-wider">
+                            Pet sem foto
+                          </span>
+                        </div>
+                      )}
+                      {/* Badge de Idade por cima da foto */}
+                      <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-slate-800 shadow-sm">
+                        {pet.age} {pet.age === 1 ? "ano" : "anos"}
+                      </div>
                     </div>
-                  )}
-                  {/* Badge de Idade por cima da foto */}
-                  <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-slate-800 shadow-sm">
-                    {pet.age} {pet.age === 1 ? "ano" : "anos"}
-                  </div>
-                </div>
+                  </CardItem>
 
-                {/* INFORMAÇÕES */}
-                <div className="p-5 flex flex-col flex-1">
+                  {/* INFORMAÇÕES */}
+                  <CardItem translateZ={30} className="flex w-full flex-1 flex-col p-5">
                   <div className="flex justify-between items-start mb-2">
                     <h3 className="text-xl font-extrabold text-slate-900 group-hover:text-brand-600 transition-colors">
                       {pet.name}
@@ -462,8 +466,9 @@ export default function PessoaFisicaHome() {
                       </span>
                     </div>
                   </div>
-                </div>
-              </div>
+                  </CardItem>
+                </CardBody>
+              </CardContainer>
             </div>
           ))}
         </div>
