@@ -6,7 +6,15 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { apiFetch } from "@/lib/api";
 import { Pet } from "@/types/api";
-import { Search, MapPin, Heart, Info, Camera } from "lucide-react";
+import {
+  Search,
+  MapPin,
+  Heart,
+  Info,
+  Camera,
+  SlidersHorizontal,
+  ChevronDown,
+} from "lucide-react";
 import { STATUS_COLORS } from "@/constants/theme";
 
 type SpeciesFilter = "TODOS" | "Cão" | "Gato";
@@ -22,12 +30,33 @@ export default function PessoaFisicaHome() {
   const [searchTerm, setSearchTerm] = useState("");
   const [speciesFilter, setSpeciesFilter] = useState<SpeciesFilter>("TODOS");
 
+  const [showMoreFilters, setShowMoreFilters] = useState(false);
+  const [sizeFilter, setSizeFilter] = useState("");
+  const [sexFilter, setSexFilter] = useState("");
+  const [cityFilter, setCityFilter] = useState("");
+  const [castratedFilter, setCastratedFilter] = useState(false);
+  const [vaccinatedFilter, setVaccinatedFilter] = useState(false);
+
+  const activeExtraFiltersCount = [
+    sizeFilter,
+    sexFilter,
+    cityFilter,
+    castratedFilter,
+    vaccinatedFilter,
+  ].filter(Boolean).length;
+
+  const clearMoreFilters = () => {
+    setSizeFilter("");
+    setSexFilter("");
+    setCityFilter("");
+    setCastratedFilter(false);
+    setVaccinatedFilter(false);
+  };
+
   useEffect(() => {
     const fetchPets = async () => {
       if (!token) return;
       try {
-        // Supondo que a API retorne todos os pets.
-        // Se você tiver uma rota "/pets/available", melhor ainda!
         const data = await apiFetch<Pet[]>("/pets", undefined, token);
         setPets(data);
       } catch (err) {
@@ -59,9 +88,48 @@ export default function PessoaFisicaHome() {
       )
         return false;
 
+      // 4. Filtro por Porte
+      if (sizeFilter && pet.size !== sizeFilter) return false;
+
+      // 5. Filtro por Sexo
+      if (sexFilter && pet.sex !== sexFilter) return false;
+
+      // 6. Filtro por Cidade
+      if (
+        cityFilter &&
+        !pet.ong?.city?.toLowerCase().includes(cityFilter.trim().toLowerCase())
+      )
+        return false;
+
+      // 7. Filtro por Castrado
+      if (castratedFilter && !pet.isCastrated) return false;
+
+      // 8. Filtro por Vacinado (qualquer vacina aplicada)
+      if (
+        vaccinatedFilter &&
+        !(
+          pet.hasVaccineV8 ||
+          pet.hasVaccineGiardia ||
+          pet.hasVaccineFlu ||
+          pet.hasVaccineRabies ||
+          pet.hasVaccineFeline ||
+          pet.hasVaccineFelv
+        )
+      )
+        return false;
+
       return true;
     });
-  }, [pets, speciesFilter, searchTerm]);
+  }, [
+    pets,
+    speciesFilter,
+    searchTerm,
+    sizeFilter,
+    sexFilter,
+    cityFilter,
+    castratedFilter,
+    vaccinatedFilter,
+  ]);
 
   if (authLoading || isLoading) {
     return (
@@ -124,6 +192,127 @@ export default function PessoaFisicaHome() {
             </button>
           ))}
         </div>
+      </div>
+
+      <div className="mb-8">
+        <div className="flex justify-end">
+          <button
+            type="button"
+            onClick={() => setShowMoreFilters((prev) => !prev)}
+            className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-bold text-slate-600 shadow-sm transition-colors hover:border-brand-300 hover:text-brand-600"
+          >
+            <SlidersHorizontal size={16} />
+            Mais filtros
+            {activeExtraFiltersCount > 0 && (
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-brand-600 text-[10px] font-bold text-white">
+                {activeExtraFiltersCount}
+              </span>
+            )}
+            <ChevronDown
+              size={16}
+              className={`transition-transform ${showMoreFilters ? "rotate-180" : ""}`}
+            />
+          </button>
+        </div>
+
+        {showMoreFilters && (
+          <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="flex flex-col gap-1.5">
+                <label
+                  htmlFor="size-filter"
+                  className="text-xs font-bold uppercase tracking-wider text-slate-400"
+                >
+                  Porte
+                </label>
+                <select
+                  id="size-filter"
+                  value={sizeFilter}
+                  onChange={(event) => setSizeFilter(event.target.value)}
+                  className="rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-900 outline-none focus:border-brand-500 focus:bg-white focus:ring-2 focus:ring-brand-500/20"
+                >
+                  <option value="">Todos</option>
+                  <option value="Pequeno">Pequeno</option>
+                  <option value="Médio">Médio</option>
+                  <option value="Grande">Grande</option>
+                </select>
+              </div>
+
+              <div className="flex flex-col gap-1.5">
+                <label
+                  htmlFor="sex-filter"
+                  className="text-xs font-bold uppercase tracking-wider text-slate-400"
+                >
+                  Sexo
+                </label>
+                <select
+                  id="sex-filter"
+                  value={sexFilter}
+                  onChange={(event) => setSexFilter(event.target.value)}
+                  className="rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-900 outline-none focus:border-brand-500 focus:bg-white focus:ring-2 focus:ring-brand-500/20"
+                >
+                  <option value="">Todos</option>
+                  <option value="Macho">Macho</option>
+                  <option value="Fêmea">Fêmea</option>
+                </select>
+              </div>
+
+              <div className="flex flex-col gap-1.5">
+                <label
+                  htmlFor="city-filter"
+                  className="text-xs font-bold uppercase tracking-wider text-slate-400"
+                >
+                  Cidade
+                </label>
+                <input
+                  id="city-filter"
+                  type="text"
+                  value={cityFilter}
+                  onChange={(event) => setCityFilter(event.target.value)}
+                  placeholder="Ex: São Paulo"
+                  className="rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-900 outline-none focus:border-brand-500 focus:bg-white focus:ring-2 focus:ring-brand-500/20"
+                />
+              </div>
+
+              <div className="flex flex-col justify-end gap-2 pb-1">
+                <label className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+                  <input
+                    type="checkbox"
+                    checked={castratedFilter}
+                    onChange={(event) =>
+                      setCastratedFilter(event.target.checked)
+                    }
+                    className="h-4 w-4 rounded border-slate-300 text-brand-600 focus:ring-brand-500"
+                  />
+                  Castrado
+                </label>
+                <label className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+                  <input
+                    type="checkbox"
+                    checked={vaccinatedFilter}
+                    onChange={(event) =>
+                      setVaccinatedFilter(event.target.checked)
+                    }
+                    className="h-4 w-4 rounded border-slate-300 text-brand-600 focus:ring-brand-500"
+                  />
+                  Vacinado
+                </label>
+              </div>
+            </div>
+
+            {activeExtraFiltersCount > 0 && (
+              <div className="mt-4 flex justify-end">
+                <button
+                  type="button"
+                  onClick={clearMoreFilters}
+                  className="text-sm font-bold text-brand-600 hover:underline"
+                >
+                  Limpar filtros
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {error && (
