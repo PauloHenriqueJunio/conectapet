@@ -1,13 +1,23 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Inbox } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { apiFetch } from "@/lib/api";
 import { AdoptionRequest } from "@/types/api";
 import { AdoptionCard } from "@/components/ui/AdoptionCard";
+import { CancelRequestModal } from "./CancelRequestModal";
 import { STATUS_COLORS } from "@/constants/theme";
 
 type FilterType = "ALL" | "PENDING" | "APPROVED" | "REJECTED";
+
+const FILTER_TABS: { id: FilterType; label: string }[] = [
+  { id: "ALL", label: "Todas" },
+  { id: "PENDING", label: "Pendentes" },
+  { id: "APPROVED", label: "Aprovadas" },
+  { id: "REJECTED", label: "Rejeitadas" },
+];
 
 /** Lista de solicitacoes de adocao, compartilhada entre o dashboard da ONG
  *  (que aprova/rejeita) e "Minhas solicitacoes" da pessoa fisica (que so
@@ -22,6 +32,9 @@ export function AdoptionRequestsPanel() {
     null,
   );
   const [activeFilter, setActiveFilter] = useState<FilterType>("ALL");
+  const [cancelTarget, setCancelTarget] = useState<AdoptionRequest | null>(
+    null,
+  );
 
   const isOng = useMemo(() => user?.role === "ONG", [user?.role]);
 
@@ -64,6 +77,23 @@ export function AdoptionRequestsPanel() {
     }
   };
 
+  const cancelRequest = async (id: string) => {
+    if (!token) return;
+    try {
+      await apiFetch(
+        `/adoptions/${id}`,
+        {
+          method: "DELETE",
+        },
+        token,
+      );
+      setCancelTarget(null);
+      await loadData();
+    } catch {
+      setError("Não foi possível cancelar a solicitação.");
+    }
+  };
+
   const toggleExpand = (id: string) => {
     setExpandedRequestId((prev) => (prev === id ? null : id));
   };
@@ -73,19 +103,51 @@ export function AdoptionRequestsPanel() {
     return requests.filter((req) => req.status === activeFilter);
   }, [requests, activeFilter]);
 
+  const countByFilter = (filter: FilterType) =>
+    filter === "ALL"
+      ? requests.length
+      : requests.filter((req) => req.status === filter).length;
+
   if (isLoading) {
     return (
       <div className="flex min-h-[400px] items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-brand-500 border-t-transparent"></div>
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-brand-500 border-t-transparent"></div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-5xl mx-auto">
+    <div className="mx-auto max-w-5xl">
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+        className="mb-8"
+      >
+        <div>
+          <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">
+            {isOng ? (
+              "Gestão de Adoções"
+            ) : (
+              <>
+                Minhas{" "}
+                <span className="text-brand-600">solicitações de adoção</span>
+              </>
+            )}
+          </h2>
+          <p className="mt-1 text-sm text-slate-500">
+            {isOng
+              ? "Analise as solicitações de adoção recebidas para os seus pets."
+              : "Acompanhe em tempo real o andamento dos pets que você quer adotar."}
+          </p>
+        </div>
+      </motion.div>
+
       {error && (
-        <div
-          className="mb-6 rounded-lg border p-4 text-sm shadow-sm animate-in fade-in duration-300"
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="mb-6 rounded-2xl border p-4 text-sm shadow-sm"
           style={{
             backgroundColor: STATUS_COLORS.danger[50],
             borderColor: STATUS_COLORS.danger[200],
@@ -93,72 +155,85 @@ export function AdoptionRequestsPanel() {
           }}
         >
           {error}
-        </div>
+        </motion.div>
       )}
 
-      <div className="mb-6 border-b border-slate-200 pb-5">
-        <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight">
-          {isOng ? "Gestão de Adoções" : "Minhas Solicitações de Adoção"}
-        </h2>
-        <p className="text-slate-500 text-sm mt-1">
-          {isOng
-            ? "Analise as solicitações de adoção recebidas para os seus pets."
-            : "Acompanhe o status dos pets que você deseja adotar."}
-        </p>
-      </div>
-
-      <div className="flex gap-2 mb-6 overflow-x-auto pb-2 scrollbar-hide">
-        {(
-          [
-            { id: "ALL", label: "Todas" },
-            { id: "PENDING", label: "Pendentes" },
-            { id: "APPROVED", label: "Aprovadas" },
-            { id: "REJECTED", label: "Rejeitadas" },
-          ] as const
-        ).map((tab) => (
+      <div className="mb-8 flex flex-wrap gap-2 rounded-2xl border border-slate-200 bg-white p-1.5 shadow-sm">
+        {FILTER_TABS.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveFilter(tab.id)}
-            className={`px-4 py-2 rounded-full text-sm font-semibold transition-colors whitespace-nowrap flex items-center gap-2 ${
+            className={`flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-bold transition-colors ${
               activeFilter === tab.id
-                ? "bg-slate-800 text-white shadow-sm"
-                : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-50"
+                ? "bg-brand-600 text-white shadow-sm"
+                : "text-slate-500 hover:bg-slate-50 hover:text-slate-800"
             }`}
           >
             {tab.label}
-            {tab.id === "ALL" && (
-              <span
-                className={`rounded-full px-2 py-0.5 text-[10px] ${
-                  activeFilter === tab.id
-                    ? "bg-slate-600 text-white"
-                    : "bg-slate-200 text-slate-700"
-                }`}
-              >
-                {requests.length}
-              </span>
-            )}
+            <span
+              className={`flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-[10px] font-bold ${
+                activeFilter === tab.id
+                  ? "bg-white/25 text-white"
+                  : "bg-slate-100 text-slate-500"
+              }`}
+            >
+              {countByFilter(tab.id)}
+            </span>
           </button>
         ))}
       </div>
 
       <section className="flex flex-col gap-4 pb-10">
         {filteredRequests.length === 0 ? (
-          <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-12 text-center text-sm text-slate-500">
-            Nenhuma solicitação encontrada para este filtro.
-          </div>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-slate-300 bg-slate-50 py-20 text-center"
+          >
+            <Inbox className="mb-4 h-14 w-14 text-slate-300" />
+            <h3 className="text-lg font-bold text-slate-700">
+              Nenhuma solicitação encontrada
+            </h3>
+            <p className="mt-1.5 max-w-sm text-sm text-slate-500">
+              {isOng
+                ? "Assim que alguém solicitar a adoção de um dos seus pets, ela aparece por aqui."
+                : "Assim que você solicitar a adoção de um pet, o andamento aparece por aqui."}
+            </p>
+          </motion.div>
         ) : (
-          filteredRequests.map((request) => (
-            <AdoptionCard
-              key={request.id}
-              request={request}
-              isOng={isOng}
-              isExpanded={request.id === expandedRequestId}
-              onToggleExpand={toggleExpand}
-              onUpdateStatus={updateStatus}
-            />
-          ))
+          <AnimatePresence initial={false} mode="popLayout">
+            {filteredRequests.map((request, index) => (
+              <motion.div
+                key={request.id}
+                layout
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.97 }}
+                transition={{
+                  duration: 0.3,
+                  delay: index * 0.04,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
+              >
+                <AdoptionCard
+                  request={request}
+                  isOng={isOng}
+                  isExpanded={request.id === expandedRequestId}
+                  onToggleExpand={toggleExpand}
+                  onUpdateStatus={updateStatus}
+                  onCancel={() => setCancelTarget(request)}
+                />
+              </motion.div>
+            ))}
+          </AnimatePresence>
         )}
       </section>
+
+      <CancelRequestModal
+        request={cancelTarget}
+        onClose={() => setCancelTarget(null)}
+        onConfirm={cancelRequest}
+      />
     </div>
   );
 }
