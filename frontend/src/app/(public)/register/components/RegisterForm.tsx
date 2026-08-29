@@ -12,6 +12,8 @@ import { PasswordInput } from "./PasswordInput";
 import { RoleSelector } from "./RoleSelector";
 import { useCepLookup } from "../hooks/useCepLookup";
 import { STATUS_COLORS } from "@/constants/theme";
+import { MultiStepLoader } from "@/components/ui/multi-step-loader";
+import { REGISTER_LOADING_STATES } from "@/constants/loaderMessages";
 
 export function RegisterForm() {
   const { register } = useAuth();
@@ -291,6 +293,12 @@ export function RegisterForm() {
           </Link>
         </p>
       </div>
+
+      <MultiStepLoader
+        loading={isSubmitting}
+        loadingStates={REGISTER_LOADING_STATES}
+        duration={900}
+      />
     </main>
   );
 }

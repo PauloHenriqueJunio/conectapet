@@ -3,11 +3,15 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { AnimatePresence, motion } from "framer-motion";
 import { apiFetch } from "@/lib/api";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { Pet } from "@/types/api";
 import { isPetVaccinated } from "@/lib/pet";
+import { prefetchPet } from "@/lib/petCache";
+import { CardBody, CardContainer, CardItem } from "@/components/ui/3d-card";
+import { PetQuickView } from "@/components/pets/PetQuickView";
 import {
   MapPin,
   Camera,
@@ -23,6 +27,7 @@ export default function HomePage() {
   const [pets, setPets] = useState<Pet[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [activePet, setActivePet] = useState<Pet | null>(null);
 
   const [speciesFilter, setSpeciesFilter] = useState("");
 
@@ -300,36 +305,45 @@ export default function HomePage() {
               </div>
             ) : (
               pets.map((pet) => (
-                <div
+                <motion.div
                   key={pet.id}
+                  layoutId={`pet-card-${pet.id}`}
+                  transition={{ type: "spring", damping: 28, stiffness: 300 }}
                   role="link"
                   tabIndex={0}
-                  onClick={() => router.push(`/pet/${pet.id}`)}
-                  onKeyDown={(event) => {
-                    if (event.key === "Enter") router.push(`/pet/${pet.id}`);
+                  onMouseEnter={() => {
+                    prefetchPet(pet.id);
+                    router.prefetch(`/pet/${pet.id}`);
                   }}
-                  className="group cursor-pointer"
+                  onClick={() => setActivePet(pet)}
+                  onKeyDown={(event) => {
+                    if (event.key !== "Enter") return;
+                    setActivePet(pet);
+                  }}
+                  className="group cursor-pointer h-full"
                 >
-                  <article className="flex h-full flex-col overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-slate-100 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:ring-brand-200">
-                    <div className="relative h-64 w-full bg-slate-100 flex items-center justify-center overflow-hidden">
-                      {pet.photoUrl ? (
-                        <img
-                          src={pet.photoUrl}
-                          alt={pet.name}
-                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                        />
-                      ) : (
-                        <Camera size={48} className="text-slate-300" />
-                      )}
+                  <CardContainer containerClassName="p-0 w-full h-full" className="w-full h-full">
+                    <CardBody className="flex h-full w-full flex-col overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-slate-100 transition-shadow duration-300 hover:shadow-xl hover:ring-brand-200">
+                      <div className="relative h-64 w-full bg-slate-100 flex items-center justify-center overflow-hidden">
+                        {pet.photoUrl ? (
+                          <motion.img
+                            layoutId={`pet-image-${pet.id}`}
+                            src={pet.photoUrl}
+                            alt={pet.name}
+                            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          />
+                        ) : (
+                          <Camera size={48} className="text-slate-300" />
+                        )}
 
-                      {pet.isAdopted && (
-                        <div className="absolute top-3 right-3 bg-brand-600/90 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs font-bold shadow-md flex items-center gap-1.5">
-                          <Heart size={14} fill="currentColor" /> Adotado
-                        </div>
-                      )}
-                    </div>
+                        {pet.isAdopted && (
+                          <div className="absolute top-3 right-3 bg-brand-600/90 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs font-bold shadow-md flex items-center gap-1.5">
+                            <Heart size={14} fill="currentColor" /> Adotado
+                          </div>
+                        )}
+                      </div>
 
-                    <div className="flex flex-1 flex-col p-5">
+                      <CardItem translateZ={30} className="flex w-full flex-1 flex-col p-5">
                       <div className="flex justify-between items-start mb-2">
                         <h2
                           className="text-2xl font-extrabold text-slate-900 group-hover:text-brand-600 transition-colors truncate max-w-[70%]"
@@ -410,14 +424,28 @@ export default function HomePage() {
                           </span>
                         </div>
                       </div>
-                    </div>
-                  </article>
-                </div>
+                      </CardItem>
+                    </CardBody>
+                  </CardContainer>
+                </motion.div>
               ))
             )}
           </section>
         )}
       </main>
+
+      <AnimatePresence>
+        {activePet && (
+          <PetQuickView
+            pet={activePet}
+            onClose={() => setActivePet(null)}
+            onViewMore={() => {
+              router.push(`/pet/${activePet.id}`);
+              setActivePet(null);
+            }}
+          />
+        )}
+      </AnimatePresence>
 
       <SiteFooter />
     </div>

@@ -3,10 +3,14 @@
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { AnimatePresence, motion } from "framer-motion";
 import { useAuth } from "@/context/AuthContext";
 import { apiFetch } from "@/lib/api";
 import { Pet } from "@/types/api";
 import { isPetVaccinated } from "@/lib/pet";
+import { prefetchPet } from "@/lib/petCache";
+import { CardBody, CardContainer, CardItem } from "@/components/ui/3d-card";
+import { PetQuickView } from "@/components/pets/PetQuickView";
 import {
   Search,
   MapPin,
@@ -26,6 +30,7 @@ export default function PessoaFisicaHome() {
   const [pets, setPets] = useState<Pet[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [activePet, setActivePet] = useState<Pet | null>(null);
 
   // Estados dos Filtros
   const [searchTerm, setSearchTerm] = useState("");
@@ -332,40 +337,49 @@ export default function PessoaFisicaHome() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
           {filteredPets.map((pet) => (
-            <div
+            <motion.div
               key={pet.id}
+              layoutId={`pet-card-${pet.id}`}
+              transition={{ type: "spring", damping: 28, stiffness: 300 }}
               role="link"
               tabIndex={0}
-              onClick={() => router.push(`/pet/${pet.id}`)}
-              onKeyDown={(event) => {
-                if (event.key === "Enter") router.push(`/pet/${pet.id}`);
+              onMouseEnter={() => {
+                prefetchPet(pet.id);
+                router.prefetch(`/pet/${pet.id}`);
               }}
-              className="group cursor-pointer"
+              onClick={() => setActivePet(pet)}
+              onKeyDown={(event) => {
+                if (event.key !== "Enter") return;
+                setActivePet(pet);
+              }}
+              className="group cursor-pointer h-full"
             >
-              <div className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl border border-slate-100 transition-all duration-300 hover:-translate-y-2 flex flex-col h-full">
-                <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-100">
-                  {pet.photoUrl ? (
-                    <img
-                      src={pet.photoUrl}
-                      alt={pet.name}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
-                  ) : (
-                    <div className="flex flex-col items-center text-slate-400 pt-16">
-                      <Camera size={40} className="mb-2 opacity-50" />
-                      <span className="text-xs font-semibold uppercase tracking-wider">
-                        Pet sem foto
-                      </span>
+              <CardContainer containerClassName="p-0 w-full h-full" className="w-full h-full">
+                <CardBody className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl border border-slate-100 transition-shadow duration-300 flex flex-col h-full w-full">
+                  <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-100">
+                    {pet.photoUrl ? (
+                      <motion.img
+                        layoutId={`pet-image-${pet.id}`}
+                        src={pet.photoUrl}
+                        alt={pet.name}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      />
+                    ) : (
+                      <div className="flex flex-col items-center text-slate-400 pt-16">
+                        <Camera size={40} className="mb-2 opacity-50" />
+                        <span className="text-xs font-semibold uppercase tracking-wider">
+                          Pet sem foto
+                        </span>
+                      </div>
+                    )}
+                    {/* Badge de Idade por cima da foto */}
+                    <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-slate-800 shadow-sm">
+                      {pet.age} {pet.age === 1 ? "ano" : "anos"}
                     </div>
-                  )}
-                  {/* Badge de Idade por cima da foto */}
-                  <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-slate-800 shadow-sm">
-                    {pet.age} {pet.age === 1 ? "ano" : "anos"}
                   </div>
-                </div>
 
-                {/* INFORMAÇÕES */}
-                <div className="p-5 flex flex-col flex-1">
+                  {/* INFORMAÇÕES */}
+                  <CardItem translateZ={30} className="flex w-full flex-1 flex-col p-5">
                   <div className="flex justify-between items-start mb-2">
                     <h3 className="text-xl font-extrabold text-slate-900 group-hover:text-brand-600 transition-colors">
                       {pet.name}
@@ -442,12 +456,26 @@ export default function PessoaFisicaHome() {
                       </span>
                     </div>
                   </div>
-                </div>
-              </div>
-            </div>
+                  </CardItem>
+                </CardBody>
+              </CardContainer>
+            </motion.div>
           ))}
         </div>
       )}
+
+      <AnimatePresence>
+        {activePet && (
+          <PetQuickView
+            pet={activePet}
+            onClose={() => setActivePet(null)}
+            onViewMore={() => {
+              router.push(`/pet/${activePet.id}`);
+              setActivePet(null);
+            }}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }

@@ -7,6 +7,7 @@ import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { THEME_COLOR_META, themeInitScript } from "@/lib/theme";
+import { LayoutGroup } from "framer-motion";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -40,7 +41,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       </head>
       <body className="min-h-screen" suppressHydrationWarning>
         <ThemeProvider>
-          <AuthProvider>{children}</AuthProvider>
+          <AuthProvider>
+            <LayoutGroup>{children}</LayoutGroup>
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>

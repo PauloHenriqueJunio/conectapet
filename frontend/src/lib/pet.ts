@@ -10,3 +10,4 @@ export function isPetVaccinated(pet: Pet): boolean {
     pet.hasVaccineFelv
   );
 }
+
