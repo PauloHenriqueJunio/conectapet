@@ -9,7 +9,7 @@ import { isPetVaccinated } from "@/lib/pet";
 interface PetQuickViewProps {
   pet: Pet;
   onClose: () => void;
-  onViewMore: (imageEl: HTMLImageElement | null) => void;
+  onViewMore: () => void;
 }
 
 /** Card expansivel no estilo Aceternity: ao clicar em um card do grid, esse
@@ -17,7 +17,6 @@ interface PetQuickViewProps {
  *  resumo do pet com um botao para ir ate a pagina completa. */
 export function PetQuickView({ pet, onClose, onViewMore }: PetQuickViewProps) {
   const cardRef = useRef<HTMLDivElement>(null);
-  const imgRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -75,7 +74,6 @@ export function PetQuickView({ pet, onClose, onViewMore }: PetQuickViewProps) {
         >
           {pet.photoUrl ? (
             <img
-              ref={imgRef}
               src={pet.photoUrl}
               alt={pet.name}
               className="h-full w-full object-cover"
@@ -127,7 +125,7 @@ export function PetQuickView({ pet, onClose, onViewMore }: PetQuickViewProps) {
 
           <button
             type="button"
-            onClick={() => onViewMore(imgRef.current)}
+            onClick={onViewMore}
             className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-full bg-brand-600 px-5 py-3 text-sm font-bold text-white shadow-md transition hover:bg-brand-700"
           >
             Aperte para saber mais

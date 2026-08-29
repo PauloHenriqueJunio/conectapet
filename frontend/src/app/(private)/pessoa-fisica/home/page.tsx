@@ -9,7 +9,6 @@ import { apiFetch } from "@/lib/api";
 import { Pet } from "@/types/api";
 import { isPetVaccinated } from "@/lib/pet";
 import { prefetchPet } from "@/lib/petCache";
-import { usePetPhotoTransition } from "@/context/PetPhotoTransitionContext";
 import { CardBody, CardContainer, CardItem } from "@/components/ui/3d-card";
 import { PetQuickView } from "@/components/pets/PetQuickView";
 import {
@@ -27,7 +26,6 @@ type SpeciesFilter = "TODOS" | "Cão" | "Gato";
 
 export default function PessoaFisicaHome() {
   const router = useRouter();
-  const { startPhotoExpand } = usePetPhotoTransition();
   const { token, user, isLoading: authLoading } = useAuth();
   const [pets, setPets] = useState<Pet[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -358,29 +356,27 @@ export default function PessoaFisicaHome() {
             >
               <CardContainer containerClassName="p-0 w-full h-full" className="w-full h-full">
                 <CardBody className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl border border-slate-100 transition-shadow duration-300 flex flex-col h-full w-full">
-                  <CardItem translateZ={50} className="w-full">
-                    <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-100">
-                      {pet.photoUrl ? (
-                        <motion.img
-                          layoutId={`pet-image-${pet.id}`}
-                          src={pet.photoUrl}
-                          alt={pet.name}
-                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                        />
-                      ) : (
-                        <div className="flex flex-col items-center text-slate-400 pt-16">
-                          <Camera size={40} className="mb-2 opacity-50" />
-                          <span className="text-xs font-semibold uppercase tracking-wider">
-                            Pet sem foto
-                          </span>
-                        </div>
-                      )}
-                      {/* Badge de Idade por cima da foto */}
-                      <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-slate-800 shadow-sm">
-                        {pet.age} {pet.age === 1 ? "ano" : "anos"}
+                  <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-100">
+                    {pet.photoUrl ? (
+                      <motion.img
+                        layoutId={`pet-image-${pet.id}`}
+                        src={pet.photoUrl}
+                        alt={pet.name}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      />
+                    ) : (
+                      <div className="flex flex-col items-center text-slate-400 pt-16">
+                        <Camera size={40} className="mb-2 opacity-50" />
+                        <span className="text-xs font-semibold uppercase tracking-wider">
+                          Pet sem foto
+                        </span>
                       </div>
+                    )}
+                    {/* Badge de Idade por cima da foto */}
+                    <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-slate-800 shadow-sm">
+                      {pet.age} {pet.age === 1 ? "ano" : "anos"}
                     </div>
-                  </CardItem>
+                  </div>
 
                   {/* INFORMAÇÕES */}
                   <CardItem translateZ={30} className="flex w-full flex-1 flex-col p-5">
@@ -473,11 +469,7 @@ export default function PessoaFisicaHome() {
           <PetQuickView
             pet={activePet}
             onClose={() => setActivePet(null)}
-            onViewMore={(imgEl) => {
-              const rect = imgEl?.getBoundingClientRect();
-              if (rect && activePet.photoUrl) {
-                startPhotoExpand(activePet.id, activePet.photoUrl, rect);
-              }
+            onViewMore={() => {
               router.push(`/pet/${activePet.id}`);
               setActivePet(null);
             }}

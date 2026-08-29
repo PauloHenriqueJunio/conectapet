@@ -6,9 +6,7 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { apiFetch } from "@/lib/api";
 import { AdoptionContactModal } from "@/components/ui/AdoptionContactModal";
-import { petPhotoLayoutId } from "@/lib/pet";
 import { getCachedPet } from "@/lib/petCache";
-import { usePetPhotoTransition } from "@/context/PetPhotoTransitionContext";
 import { Pet } from "@/types/api";
 import { motion } from "framer-motion";
 import {
@@ -41,7 +39,6 @@ export default function PetProfilePage() {
   const id = params?.id as string;
   const { user } = useAuth();
   const isAuthenticated = !!user;
-  const { clearPhotoExpand } = usePetPhotoTransition();
 
   const [pet, setPet] = useState<Pet | null>(() => getCachedPet(id));
   const [isLoading, setIsLoading] = useState(() => !getCachedPet(id));
@@ -60,20 +57,13 @@ export default function PetProfilePage() {
         setPet(data);
       } catch {
         setError("Não foi possível carregar as informações deste pet.");
-        clearPhotoExpand();
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchPetDetails();
-  }, [id, clearPhotoExpand]);
-
-  // O overlay de transicao (foto expandida cobrindo a tela) fica ativo ate
-  // a foto real da pagina estar pronta para assumir o lugar dela.
-  useEffect(() => {
-    if (pet) clearPhotoExpand();
-  }, [pet, clearPhotoExpand]);
+  }, [id]);
 
   const handleShare = async () => {
     try {
@@ -293,7 +283,6 @@ export default function PetProfilePage() {
                 <motion.img
                   src={featuredPhoto}
                   alt={pet.name}
-                  layoutId={petPhotoLayoutId(pet.id)}
                   className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
                 />
 

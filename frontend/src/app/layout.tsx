@@ -8,8 +8,6 @@ import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { THEME_COLOR_META, themeInitScript } from "@/lib/theme";
 import { LayoutGroup } from "framer-motion";
-import { PetPhotoTransitionProvider } from "@/context/PetPhotoTransitionContext";
-import { PetPhotoOverlay } from "@/components/PetPhotoOverlay";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -44,12 +42,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body className="min-h-screen" suppressHydrationWarning>
         <ThemeProvider>
           <AuthProvider>
-            <LayoutGroup>
-              <PetPhotoTransitionProvider>
-                {children}
-                <PetPhotoOverlay />
-              </PetPhotoTransitionProvider>
-            </LayoutGroup>
+            <LayoutGroup>{children}</LayoutGroup>
           </AuthProvider>
         </ThemeProvider>
       </body>
