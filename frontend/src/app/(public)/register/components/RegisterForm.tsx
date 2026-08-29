@@ -14,9 +14,10 @@ import { useCepLookup } from "../hooks/useCepLookup";
 import { STATUS_COLORS } from "@/constants/theme";
 import { MultiStepLoader } from "@/components/ui/multi-step-loader";
 import { REGISTER_LOADING_STATES } from "@/constants/loaderMessages";
+import { OngLogoPicker } from "@/components/ui/OngLogoPicker";
 
 export function RegisterForm() {
-  const { register } = useAuth();
+  const { register, uploadPhoto } = useAuth();
   const searchParams = useSearchParams();
   const initialRole =
     searchParams.get("role") === "ONG" ? "ONG" : "PESSOA_FISICA";
@@ -30,9 +31,17 @@ export function RegisterForm() {
   const [role, setRole] = useState<Role>(initialRole);
   const [cpf, setCpf] = useState("");
   const [cnpj, setCnpj] = useState("");
+  const [ongPhotoFile, setOngPhotoFile] = useState<File | null>(null);
+  const [ongPhotoPreview, setOngPhotoPreview] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  const handleOngPhotoSelected = (file: File) => {
+    if (ongPhotoPreview) URL.revokeObjectURL(ongPhotoPreview);
+    setOngPhotoFile(file);
+    setOngPhotoPreview(URL.createObjectURL(file));
+  };
 
   const handleAddressResolved = useCallback((resolvedAddress: string) => {
     setAddress(resolvedAddress);
@@ -82,6 +91,16 @@ export function RegisterForm() {
         cpf: cpf || undefined,
         cnpj: cnpj || undefined,
       });
+
+      if (ongPhotoFile) {
+        try {
+          await uploadPhoto(ongPhotoFile);
+        } catch {
+          // Conta ja foi criada com sucesso; a foto pode ser adicionada
+          // depois em "Editar Perfil", entao um erro aqui nao deve
+          // bloquear o fluxo de cadastro.
+        }
+      }
     } catch (err) {
       const rawMessage = err instanceof Error ? err.message : "";
       try {
@@ -220,6 +239,14 @@ export function RegisterForm() {
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
                   className="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-2 outline-none ring-brand-300 focus:ring"
+                />
+              </div>
+
+              <div className="sm:col-span-2">
+                <OngLogoPicker
+                  previewUrl={ongPhotoPreview}
+                  onFileSelected={handleOngPhotoSelected}
+                  disabled={isSubmitting}
                 />
               </div>
             </div>

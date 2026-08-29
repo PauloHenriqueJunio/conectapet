@@ -39,12 +39,17 @@ describe("AuthService - security", () => {
     registerSuccess: jest.fn(),
   };
 
+  const cloudinaryService = {
+    uploadFile: jest.fn(),
+  };
+
   const createService = (prisma: { user: MockPrismaUser }) =>
     new AuthService(
       prisma as never,
       jwtService as never,
       cepValidationService as never,
       loginAttemptService as never,
+      cloudinaryService as never,
     );
 
   beforeEach(() => {

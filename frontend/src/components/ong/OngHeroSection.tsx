@@ -44,8 +44,16 @@ export function OngHeroSection({
 
           {/* Icon */}
           <div className="mb-6 flex items-center justify-center">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-brand-500 shadow-lg shadow-brand-200/80 ring-8 ring-brand-50">
-              <Building2 size={32} className="text-white" />
+            <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-brand-500 shadow-lg shadow-brand-200/80 ring-8 ring-brand-50">
+              {ong.photoUrl ? (
+                <img
+                  src={ong.photoUrl}
+                  alt={ong.name}
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                <Building2 size={32} className="text-white" />
+              )}
             </div>
           </div>
 

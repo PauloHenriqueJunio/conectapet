@@ -9,6 +9,7 @@ export interface AuthUserPublic {
   city?: string | null;
   contact?: string | null;
   address?: string | null;
+  photoUrl?: string | null;
   role: Role;
 }
 
