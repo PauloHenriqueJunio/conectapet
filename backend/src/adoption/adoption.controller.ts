@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Patch,
   Post,
@@ -51,5 +52,14 @@ export class AdoptionController {
     @Req() req: { user: RequestUser },
   ) {
     return this.adoptionService.updateStatus(id, dto, req.user.userId);
+  }
+
+  @Roles(Role.PESSOA_FISICA)
+  @Delete(":id")
+  cancelRequest(
+    @Param("id") id: string,
+    @Req() req: { user: RequestUser },
+  ) {
+    return this.adoptionService.cancelRequest(id, req.user.userId);
   }
 }

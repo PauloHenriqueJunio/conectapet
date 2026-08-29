@@ -86,8 +86,12 @@ export interface AdoptionRequest {
     hasVaccineFelv: boolean;
     hasHistoryOfIllness: boolean;
     illnessDescription?: string | null;
-    hasOtherHealthInfo: string | null;
+    hasOtherHealthInfo: boolean;
     otherHealthInfoDescription?: string | null;
+    ong?: {
+      id?: string;
+      name?: string;
+    };
   };
   adopter?: {
     id: string;

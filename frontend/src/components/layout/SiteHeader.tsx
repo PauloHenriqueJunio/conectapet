@@ -34,7 +34,11 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
   const [activeNav, setActiveNav] = useState<HeaderNavKey>(page);
 
   const effectiveVariant: HeaderVariant =
-    user?.role === "ONG" ? "ong" : isAuthenticated ? variant : "public";
+    user?.role === "ONG"
+      ? "ong"
+      : user?.role === "PESSOA_FISICA"
+        ? "pessoa-fisica"
+        : variant;
 
   useEffect(() => {
     setActiveNav(page);
