@@ -4,7 +4,7 @@ import {
   UnauthorizedException,
 } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import { Prisma, Role } from "@prisma/client";
+import { AdoptionStatus, Prisma, Role } from "@prisma/client";
 import * as bcrypt from "bcrypt";
 import { PrismaService } from "../prisma/prisma.service";
 import { DeleteAccountDto } from "./dto/delete-account.dto";
@@ -342,6 +342,19 @@ export class AuthService {
 
     if (!passwordMatches) {
       throw new UnauthorizedException("Senha incorreta.");
+    }
+
+    const pendingRequestsCount = await this.prisma.adoptionRequest.count({
+      where: {
+        status: AdoptionStatus.PENDING,
+        pet: { ongId: userId },
+      },
+    });
+
+    if (pendingRequestsCount > 0) {
+      throw new BadRequestException(
+        "Você possui solicitações de adoção pendentes nos seus pets. Aprove ou recuse todas antes de excluir sua conta.",
+      );
     }
 
     // Remove os pets cadastrados pelo usuario antes de excluir a conta, pois
