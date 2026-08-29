@@ -103,8 +103,8 @@ export class AuthService {
       throw new BadRequestException("CEP obrigatório e inválido.");
     }
 
-    if (dto.role === Role.ONG && trimmedContact.length === 0) {
-      throw new BadRequestException("Contato é obrigatório para ONG.");
+    if (trimmedContact.length === 0) {
+      throw new BadRequestException("Contato é obrigatório.");
     }
 
     const existingUser = await this.prisma.user.findUnique({
