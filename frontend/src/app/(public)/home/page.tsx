@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { AnimatePresence, motion } from "framer-motion";
 import { apiFetch } from "@/lib/api";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
@@ -11,6 +12,7 @@ import { isPetVaccinated } from "@/lib/pet";
 import { prefetchPet } from "@/lib/petCache";
 import { usePetPhotoTransition } from "@/context/PetPhotoTransitionContext";
 import { CardBody, CardContainer, CardItem } from "@/components/ui/3d-card";
+import { PetQuickView } from "@/components/pets/PetQuickView";
 import {
   MapPin,
   Camera,
@@ -27,6 +29,7 @@ export default function HomePage() {
   const [pets, setPets] = useState<Pet[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [activePet, setActivePet] = useState<Pet | null>(null);
 
   const [speciesFilter, setSpeciesFilter] = useState("");
 
@@ -304,30 +307,20 @@ export default function HomePage() {
               </div>
             ) : (
               pets.map((pet) => (
-                <div
+                <motion.div
                   key={pet.id}
+                  layoutId={`pet-card-${pet.id}`}
+                  transition={{ type: "spring", damping: 28, stiffness: 300 }}
                   role="link"
                   tabIndex={0}
                   onMouseEnter={() => {
                     prefetchPet(pet.id);
                     router.prefetch(`/pet/${pet.id}`);
                   }}
-                  onClick={(event) => {
-                    const imgEl = event.currentTarget.querySelector("img");
-                    const rect = imgEl?.getBoundingClientRect();
-                    if (rect && pet.photoUrl) {
-                      startPhotoExpand(pet.id, pet.photoUrl, rect);
-                    }
-                    router.push(`/pet/${pet.id}`);
-                  }}
+                  onClick={() => setActivePet(pet)}
                   onKeyDown={(event) => {
                     if (event.key !== "Enter") return;
-                    const imgEl = event.currentTarget.querySelector("img");
-                    const rect = imgEl?.getBoundingClientRect();
-                    if (rect && pet.photoUrl) {
-                      startPhotoExpand(pet.id, pet.photoUrl, rect);
-                    }
-                    router.push(`/pet/${pet.id}`);
+                    setActivePet(pet);
                   }}
                   className="group cursor-pointer h-full"
                 >
@@ -336,7 +329,8 @@ export default function HomePage() {
                       <CardItem translateZ={50} className="w-full">
                         <div className="relative h-64 w-full bg-slate-100 flex items-center justify-center overflow-hidden">
                           {pet.photoUrl ? (
-                            <img
+                            <motion.img
+                              layoutId={`pet-image-${pet.id}`}
                               src={pet.photoUrl}
                               alt={pet.name}
                               className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
@@ -437,12 +431,29 @@ export default function HomePage() {
                       </CardItem>
                     </CardBody>
                   </CardContainer>
-                </div>
+                </motion.div>
               ))
             )}
           </section>
         )}
       </main>
+
+      <AnimatePresence>
+        {activePet && (
+          <PetQuickView
+            pet={activePet}
+            onClose={() => setActivePet(null)}
+            onViewMore={(imgEl) => {
+              const rect = imgEl?.getBoundingClientRect();
+              if (rect && activePet.photoUrl) {
+                startPhotoExpand(activePet.id, activePet.photoUrl, rect);
+              }
+              router.push(`/pet/${activePet.id}`);
+              setActivePet(null);
+            }}
+          />
+        )}
+      </AnimatePresence>
 
       <SiteFooter />
     </div>

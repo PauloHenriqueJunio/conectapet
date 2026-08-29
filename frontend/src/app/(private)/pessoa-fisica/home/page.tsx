@@ -3,6 +3,7 @@
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { AnimatePresence, motion } from "framer-motion";
 import { useAuth } from "@/context/AuthContext";
 import { apiFetch } from "@/lib/api";
 import { Pet } from "@/types/api";
@@ -10,6 +11,7 @@ import { isPetVaccinated } from "@/lib/pet";
 import { prefetchPet } from "@/lib/petCache";
 import { usePetPhotoTransition } from "@/context/PetPhotoTransitionContext";
 import { CardBody, CardContainer, CardItem } from "@/components/ui/3d-card";
+import { PetQuickView } from "@/components/pets/PetQuickView";
 import {
   Search,
   MapPin,
@@ -30,6 +32,7 @@ export default function PessoaFisicaHome() {
   const [pets, setPets] = useState<Pet[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [activePet, setActivePet] = useState<Pet | null>(null);
 
   // Estados dos Filtros
   const [searchTerm, setSearchTerm] = useState("");
@@ -336,30 +339,20 @@ export default function PessoaFisicaHome() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
           {filteredPets.map((pet) => (
-            <div
+            <motion.div
               key={pet.id}
+              layoutId={`pet-card-${pet.id}`}
+              transition={{ type: "spring", damping: 28, stiffness: 300 }}
               role="link"
               tabIndex={0}
               onMouseEnter={() => {
                 prefetchPet(pet.id);
                 router.prefetch(`/pet/${pet.id}`);
               }}
-              onClick={(event) => {
-                const imgEl = event.currentTarget.querySelector("img");
-                const rect = imgEl?.getBoundingClientRect();
-                if (rect && pet.photoUrl) {
-                  startPhotoExpand(pet.id, pet.photoUrl, rect);
-                }
-                router.push(`/pet/${pet.id}`);
-              }}
+              onClick={() => setActivePet(pet)}
               onKeyDown={(event) => {
                 if (event.key !== "Enter") return;
-                const imgEl = event.currentTarget.querySelector("img");
-                const rect = imgEl?.getBoundingClientRect();
-                if (rect && pet.photoUrl) {
-                  startPhotoExpand(pet.id, pet.photoUrl, rect);
-                }
-                router.push(`/pet/${pet.id}`);
+                setActivePet(pet);
               }}
               className="group cursor-pointer h-full"
             >
@@ -368,7 +361,8 @@ export default function PessoaFisicaHome() {
                   <CardItem translateZ={50} className="w-full">
                     <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-100">
                       {pet.photoUrl ? (
-                        <img
+                        <motion.img
+                          layoutId={`pet-image-${pet.id}`}
                           src={pet.photoUrl}
                           alt={pet.name}
                           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
@@ -469,10 +463,27 @@ export default function PessoaFisicaHome() {
                   </CardItem>
                 </CardBody>
               </CardContainer>
-            </div>
+            </motion.div>
           ))}
         </div>
       )}
+
+      <AnimatePresence>
+        {activePet && (
+          <PetQuickView
+            pet={activePet}
+            onClose={() => setActivePet(null)}
+            onViewMore={(imgEl) => {
+              const rect = imgEl?.getBoundingClientRect();
+              if (rect && activePet.photoUrl) {
+                startPhotoExpand(activePet.id, activePet.photoUrl, rect);
+              }
+              router.push(`/pet/${activePet.id}`);
+              setActivePet(null);
+            }}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
