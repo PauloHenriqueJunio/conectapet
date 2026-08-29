@@ -5,6 +5,7 @@ import {
   CheckCircle2,
   XCircle,
   ChevronDown,
+  Clock,
 } from "lucide-react";
 import { HealthBadge } from "@/components/ui/HealthBadge";
 import { AdoptionCardDetails } from "./AdoptionCardDetails";
@@ -26,6 +27,12 @@ export function AdoptionCard({
   onUpdateStatus,
 }: AdoptionCardProps) {
   const petData = request.pet;
+
+  const statusLabels: Record<AdoptionRequest["status"], string> = {
+    APPROVED: "Aprovada",
+    REJECTED: "Recusada",
+    PENDING: "Em andamento",
+  };
 
   const statusStyles: Record<AdoptionRequest["status"], React.CSSProperties> = {
     APPROVED: {
@@ -87,30 +94,43 @@ export function AdoptionCard({
               className="rounded-full border px-2.5 py-0.5 text-xs font-bold"
               style={statusStyles[request.status]}
             >
-              {request.status}
+              {statusLabels[request.status]}
             </span>
           </div>
 
           <div className="text-sm text-slate-600 mb-2.5 flex flex-wrap items-center gap-x-1.5 gap-y-1">
-            <div className="flex items-center gap-1">
-              <UserRound size={14} className="text-slate-400" />
-              <span className="font-medium text-slate-800">
-                {request.adopter?.name || "Usuário"}
-              </span>
-            </div>
-
-            {request.adopter?.email && (
+            {isOng ? (
               <>
-                <span className="text-slate-300 mx-0.5 hidden sm:block">•</span>
-                <a
-                  href={`mailto:${request.adopter.email}`}
-                  onClick={(e) => e.stopPropagation()}
-                  className="text-brand-600 hover:text-brand-700 hover:underline flex items-center gap-1 transition-colors z-10"
-                >
-                  <Mail size={14} />
-                  {request.adopter.email}
-                </a>
+                <div className="flex items-center gap-1">
+                  <UserRound size={14} className="text-slate-400" />
+                  <span className="font-medium text-slate-800">
+                    {request.adopter?.name || "Usuário"}
+                  </span>
+                </div>
+
+                {request.adopter?.email && (
+                  <>
+                    <span className="text-slate-300 mx-0.5 hidden sm:block">•</span>
+                    <a
+                      href={`mailto:${request.adopter.email}`}
+                      onClick={(e) => e.stopPropagation()}
+                      className="text-brand-600 hover:text-brand-700 hover:underline flex items-center gap-1 transition-colors z-10"
+                    >
+                      <Mail size={14} />
+                      {request.adopter.email}
+                    </a>
+                  </>
+                )}
               </>
+            ) : (
+              petData?.ong?.name && (
+                <div className="flex items-center gap-1">
+                  <UserRound size={14} className="text-slate-400" />
+                  <span className="font-medium text-slate-800">
+                    {petData.ong.name}
+                  </span>
+                </div>
+              )
             )}
 
             <span className="text-slate-300 mx-0.5 hidden sm:block">•</span>
@@ -154,6 +174,13 @@ export function AdoptionCard({
                   <CheckCircle2 className="w-8 h-8" />
                   <span className="text-[10px] font-bold uppercase tracking-widest mt-1 whitespace-nowrap">
                     Concluído
+                  </span>
+                </div>
+              ) : request.status === "PENDING" ? (
+                <div className="flex flex-col items-center text-amber-500/70">
+                  <Clock className="w-8 h-8" />
+                  <span className="text-[10px] font-bold uppercase tracking-widest mt-1 whitespace-nowrap">
+                    Aguardando
                   </span>
                 </div>
               ) : (

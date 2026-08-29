@@ -88,6 +88,10 @@ export interface AdoptionRequest {
     illnessDescription?: string | null;
     hasOtherHealthInfo: string | null;
     otherHealthInfoDescription?: string | null;
+    ong?: {
+      id?: string;
+      name?: string;
+    };
   };
   adopter?: {
     id: string;
