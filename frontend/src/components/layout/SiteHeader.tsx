@@ -2,26 +2,17 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { Settings } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
-
-type HeaderVariant = "public" | "ong" | "pessoa-fisica";
-
-type HeaderPage =
-  | "home"
-  | "ongs"
-  | "quem-somos"
-  | "quero-adotar"
-  | "colocar-na-adocao"
-  | "dashboard-home"
-  | "dashboard-cadastrar-pet"
-  | "dashboard-editar"
-  | "meus-pets"
-  | "minhas-solicitacoes"
-  | "editar-perfil"
-  | "pet-profile";
-
-type HeaderNavKey = HeaderPage;
+import { useTheme } from "@/context/ThemeContext";
+import { DesktopNavLinks } from "./site-header/DesktopNavLinks";
+import { DesktopUserActions } from "./site-header/DesktopUserActions";
+import { MobileNavLinks } from "./site-header/MobileNavLinks";
+import { MobileUserActions } from "./site-header/MobileUserActions";
+import type {
+  HeaderNavKey,
+  HeaderPage,
+  HeaderVariant,
+} from "./site-header/types";
 
 interface SiteHeaderProps {
   page: HeaderPage;
@@ -30,16 +21,17 @@ interface SiteHeaderProps {
 
 export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
   const { logout, isAuthenticated, user } = useAuth();
+  const { theme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const [logoFailed, setLogoFailed] = useState(false);
   const userDropdownRef = useRef<HTMLDivElement | null>(null);
   const mobileDropdownRef = useRef<HTMLDivElement | null>(null);
-
   const [activeNav, setActiveNav] = useState<HeaderNavKey>(page);
 
-  const effectiveVariant: HeaderVariant = isAuthenticated ? variant : "public";
+  const effectiveVariant: HeaderVariant =
+    user?.role === "ONG" ? "ong" : isAuthenticated ? variant : "public";
 
   useEffect(() => {
     setActiveNav(page);
@@ -70,13 +62,6 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const navClass = (key: HeaderNavKey) =>
-    `rounded-md px-2 py-1 transition ${
-      activeNav === key
-        ? "bg-brand-100 text-brand-800 font-bold"
-        : "text-slate-700 hover:text-brand-700 font-medium"
-    }`;
-
   const closeMobileMenu = () => setIsMenuOpen(false);
 
   const getEditProfileLink = () => {
@@ -84,7 +69,6 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
     return "/pessoa-fisica/editar-perfil";
   };
 
-  // Define para onde o clique no Logo vai levar, dependendo de quem está logado
   const getLogoLink = () => {
     if (effectiveVariant === "ong") return "/ong/dashboard";
     if (effectiveVariant === "pessoa-fisica") return "/pessoa-fisica/home";
@@ -93,33 +77,34 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
 
   return (
     <header
-      className={`sticky top-0 z-50 w-full border-b border-white/50 bg-gradient-to-r from-white/95 via-white/90 to-brand-50/85 px-5 shadow-sm backdrop-blur-xl transition-all duration-300 ${
+      className={`sticky top-0 z-50 w-full border-b px-5 shadow-sm backdrop-blur-xl transition-all duration-300 ${
         isScrolled ? "py-3" : "py-5"
       }`}
+      style={{
+        borderColor: "var(--border-default)",
+        backgroundColor: "var(--bg-primary)",
+      }}
     >
       <nav className="flex items-center justify-between gap-4">
-        {/* LOGO */}
         <div className="flex items-center">
-          <Link
-            href={getLogoLink()}
-            className="flex items-center gap-3"
-          >
+          <Link href={getLogoLink()} className="flex items-center gap-3">
             {!logoFailed ? (
               <img
-                src="/logo-white.svg"
+                src={theme === "dark" ? "/logo-dark.svg" : "/logo-white.svg"}
                 alt="ConectaPet"
+                suppressHydrationWarning
                 className="h-10 w-auto max-w-[180px]"
                 onError={() => setLogoFailed(true)}
               />
             ) : (
-              <span className="text-xl font-extrabold tracking-tight text-brand-800">
-                Conecta<span className="text-slate-900">Pet</span>
+              <span className="text-xl font-extrabold tracking-tight text-brand-800 dark:text-brand-300">
+                Conecta
+                <span className="text-slate-900">Pet</span>
               </span>
             )}
           </Link>
         </div>
 
-        {/* BOTÃO MOBILE */}
         <button
           type="button"
           className="flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 md:hidden"
@@ -127,381 +112,55 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
         >
           <span className="relative block h-4 w-5">
             <span
-              className={`absolute left-0 top-0 h-0.5 w-5 bg-slate-700 transition-all duration-300 ${isMenuOpen ? "translate-y-[7px] rotate-45" : ""}`}
+              className={`absolute left-0 top-0 h-0.5 w-5 bg-slate-700 dark:bg-slate-200 transition-all duration-300 ${isMenuOpen ? "translate-y-[7px] rotate-45" : ""}`}
             />
             <span
-              className={`absolute left-0 top-[7px] h-0.5 w-5 bg-slate-700 transition-all duration-300 ${isMenuOpen ? "opacity-0" : "opacity-100"}`}
+              className={`absolute left-0 top-[7px] h-0.5 w-5 bg-slate-700 dark:bg-slate-200 transition-all duration-300 ${isMenuOpen ? "opacity-0" : "opacity-100"}`}
             />
             <span
-              className={`absolute left-0 top-[14px] h-0.5 w-5 bg-slate-700 transition-all duration-300 ${isMenuOpen ? "-translate-y-[7px] -rotate-45" : ""}`}
+              className={`absolute left-0 top-[14px] h-0.5 w-5 bg-slate-700 dark:bg-slate-200 transition-all duration-300 ${isMenuOpen ? "-translate-y-[7px] -rotate-45" : ""}`}
             />
           </span>
         </button>
 
-        {/* MENUS DESKTOP */}
         <div className="hidden items-center gap-6 md:flex">
-          <ul className="flex flex-wrap items-center gap-5 text-sm">
-            {/* MUNDO 1: PÚBLICO (VISITANTES) */}
-            {effectiveVariant === "public" && (
-              <>
-                <li>
-                  <Link href="/home" className={navClass("home")}>
-                    Home
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/ongs" className={navClass("ongs")}>
-                    Verificar ONGs
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/quem-somos" className={navClass("quem-somos")}>
-                    Quem somos?
-                  </Link>
-                </li>
-              </>
-            )}
-
-            {/* MUNDO 2: PESSOA FÍSICA LOGADA */}
-            {effectiveVariant === "pessoa-fisica" && (
-              <>
-                <li>
-                  <Link
-                    href="/pessoa-fisica/home"
-                    className={navClass("quero-adotar")}
-                  >
-                    Quero adotar
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/pessoa-fisica/cadastrar-pet"
-                    className={navClass("colocar-na-adocao")}
-                  >
-                    Colocar na adoção
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/pessoa-fisica/minhas-solicitacoes"
-                    className={navClass("minhas-solicitacoes")}
-                  >
-                    Minhas solicitações
-                  </Link>
-                </li>
-              </>
-            )}
-
-            {/* MUNDO 3: ONG LOGADA */}
-            {effectiveVariant === "ong" && (
-              <>
-                <li>
-                  <Link
-                    href="/ong/dashboard"
-                    className={navClass("dashboard-home")}
-                  >
-                    Home
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/ong/cadastrar-pet"
-                    className={navClass("dashboard-cadastrar-pet")}
-                  >
-                    Cadastrar Pet
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/ong/editar"
-                    className={navClass("dashboard-editar")}
-                  >
-                    Editar Pets
-                  </Link>
-                </li>
-              </>
-            )}
-          </ul>
-
-          {/* BOTÕES DE AÇÃO (DIREITA) */}
-          {isAuthenticated ? (
-            // Usuário LOGADO: Mostra o nome e o botão de Sair em qualquer página
-            <div className="flex items-center gap-4 pl-4 border-l border-slate-200">
-              <span className="text-sm font-semibold text-slate-700">
-                Olá, {user?.name?.split(" ")[0]}
-              </span>
-
-              <div className="relative" ref={userDropdownRef}>
-                <button
-                  type="button"
-                  onClick={() => setIsUserDropdownOpen((prev) => !prev)}
-                  className="rounded-lg p-2 text-slate-600 transition hover:text-slate-900"
-                  aria-label="Abrir menu do perfil"
-                  aria-expanded={isUserDropdownOpen}
-                >
-                  <Settings
-                    size={21}
-                    className={`transition-transform duration-300 ${isUserDropdownOpen ? "rotate-180" : "rotate-0"}`}
-                  />
-                </button>
-
-                <div
-                  className={`absolute right-0 top-12 z-50 w-56 origin-top-right rounded-xl border border-slate-200 bg-white p-1 shadow-lg transition-all duration-200 ${
-                    isUserDropdownOpen
-                      ? "pointer-events-auto translate-y-0 scale-100 opacity-100"
-                      : "pointer-events-none -translate-y-1 scale-95 opacity-0"
-                  }`}
-                >
-                  <Link
-                    href={getEditProfileLink()}
-                    onClick={() => setIsUserDropdownOpen(false)}
-                    className="block rounded-lg px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
-                  >
-                    Editar Perfil
-                  </Link>
-                  {user?.role === "PESSOA_FISICA" && (
-                    <Link
-                      href="/pessoa-fisica/meus-pets"
-                      onClick={() => setIsUserDropdownOpen(false)}
-                      className="block rounded-lg px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
-                    >
-                      Meus pets cadastrados
-                    </Link>
-                  )}
-                  <button
-                    type="button"
-                    className="block w-full cursor-default rounded-lg px-3 py-2 text-left text-sm font-medium text-slate-500"
-                  >
-                    Excluir conta
-                  </button>
-                </div>
-              </div>
-
-              <button
-                onClick={logout}
-                className="rounded-lg bg-slate-800 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-900 shadow-sm"
-              >
-                Sair
-              </button>
-            </div>
-          ) : (
-            // Usuário DESLOGADO: Mostra os botões de Entrar/Criar Conta sempre
-            <div className="flex items-center gap-3 pl-4 border-l border-slate-200">
-              <Link
-                href="/login"
-                className="rounded-lg border border-brand-300 px-4 py-2 text-sm font-bold text-brand-700 transition hover:bg-brand-50"
-              >
-                Entrar
-              </Link>
-              <Link
-                href="/register"
-                className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-brand-700 shadow-sm"
-              >
-                Criar conta
-              </Link>
-            </div>
-          )}
+          <DesktopNavLinks
+            activeNav={activeNav}
+            effectiveVariant={effectiveVariant}
+          />
+          <DesktopUserActions
+            displayName={user?.name}
+            editProfileHref={getEditProfileLink()}
+            isAuthenticated={isAuthenticated}
+            isUserDropdownOpen={isUserDropdownOpen}
+            logout={logout}
+            setIsUserDropdownOpen={setIsUserDropdownOpen}
+            userDropdownRef={userDropdownRef}
+          />
         </div>
       </nav>
 
-      {/* MENU MOBILE */}
       <div
         className={`grid overflow-hidden transition-all duration-300 md:hidden ${isMenuOpen ? "mt-4 grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
       >
         <div className="min-h-0">
           <ul className="space-y-2 border-t border-slate-200 pt-3 text-sm font-medium text-slate-700">
-            {/* LINKS CONDICIONAIS POR VARIANT - MOBILE */}
-            {effectiveVariant === "public" && (
-              <>
-                <li>
-                  <Link
-                    href="/home"
-                    className="block rounded-lg px-3 py-2 hover:bg-brand-50"
-                    onClick={closeMobileMenu}
-                  >
-                    Home
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/ongs"
-                    className="block rounded-lg px-3 py-2 hover:bg-brand-50"
-                    onClick={closeMobileMenu}
-                  >
-                    Verificar ONGs
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/quem-somos"
-                    className="block rounded-lg px-3 py-2 hover:bg-brand-50"
-                    onClick={closeMobileMenu}
-                  >
-                    Quem somos?
-                  </Link>
-                </li>
-              </>
-            )}
-
-            {effectiveVariant === "pessoa-fisica" && (
-              <>
-                <li>
-                  <Link
-                    href="/pessoa-fisica/home"
-                    className="block rounded-lg px-3 py-2 hover:bg-brand-50 text-brand-700"
-                    onClick={closeMobileMenu}
-                  >
-                    Quero adotar
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/pessoa-fisica/cadastrar-pet"
-                    className="block rounded-lg px-3 py-2 hover:bg-brand-50 text-brand-700"
-                    onClick={closeMobileMenu}
-                  >
-                    Colocar na adoção
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/pessoa-fisica/minhas-solicitacoes"
-                    className="block rounded-lg px-3 py-2 hover:bg-brand-50 text-brand-700"
-                    onClick={closeMobileMenu}
-                  >
-                    Minhas solicitações
-                  </Link>
-                </li>
-              </>
-            )}
-
-            {effectiveVariant === "ong" && (
-              <>
-                <li>
-                  <Link
-                    href="/ong/dashboard"
-                    className="block rounded-lg px-3 py-2 hover:bg-brand-50 text-brand-700"
-                    onClick={closeMobileMenu}
-                  >
-                    Home
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/ong/cadastrar-pet"
-                    className="block rounded-lg px-3 py-2 hover:bg-brand-50 text-brand-700"
-                    onClick={closeMobileMenu}
-                  >
-                    Cadastrar Pet
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/ong/editar"
-                    className="block rounded-lg px-3 py-2 hover:bg-brand-50 text-brand-700"
-                    onClick={closeMobileMenu}
-                  >
-                    Editar Pets
-                  </Link>
-                </li>
-              </>
-            )}
+            <MobileNavLinks
+              effectiveVariant={effectiveVariant}
+              closeMobileMenu={closeMobileMenu}
+            />
 
             <li className="pt-2 mt-4 border-t border-slate-100">
-              {isAuthenticated ? (
-                <div className="flex flex-col gap-2" ref={mobileDropdownRef}>
-                  <div className="flex items-center justify-between px-3">
-                    <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                      {`LOGADO COMO ${user?.name?.split(" ")[0]?.toUpperCase() ?? "USUÁRIO"}`}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => setIsUserDropdownOpen((prev) => !prev)}
-                      className="rounded-lg p-1 text-slate-600 transition hover:text-slate-900"
-                      aria-label="Abrir menu do perfil"
-                      aria-expanded={isUserDropdownOpen}
-                    >
-                      <Settings
-                        size={16}
-                        className={`transition-transform duration-300 ${isUserDropdownOpen ? "rotate-180" : "rotate-0"}`}
-                      />
-                    </button>
-                  </div>
-                  {isUserDropdownOpen && (
-                    <div className="flex flex-col gap-1 px-2 py-2 bg-slate-50 rounded-lg border border-slate-200">
-                      {variant === "ong" ? (
-                        <a
-                          href="/ong/editar-perfil"
-                          onClick={() => {
-                            setIsUserDropdownOpen(false);
-                            closeMobileMenu();
-                          }}
-                          className="block rounded-lg px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
-                        >
-                          Editar Perfil
-                        </a>
-                      ) : (
-                        <>
-                          <a
-                            href="/pessoa-fisica/editar-perfil"
-                            onClick={() => {
-                              setIsUserDropdownOpen(false);
-                              closeMobileMenu();
-                            }}
-                            className="block rounded-lg px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
-                          >
-                            Editar Perfil
-                          </a>
-                          {user?.role === "PESSOA_FISICA" && (
-                            <a
-                              href="/pessoa-fisica/meus-pets"
-                              onClick={() => {
-                                setIsUserDropdownOpen(false);
-                                closeMobileMenu();
-                              }}
-                              className="block rounded-lg px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
-                            >
-                              Meus pets cadastrados
-                            </a>
-                          )}
-                        </>
-                      )}
-                      <button
-                        type="button"
-                        className="block w-full text-left rounded-lg px-3 py-2 text-sm font-medium text-slate-500 transition hover:bg-slate-100 cursor-default"
-                      >
-                        Excluir conta
-                      </button>
-                    </div>
-                  )}
-                  <button
-                    onClick={() => {
-                      closeMobileMenu();
-                      logout();
-                    }}
-                    className="w-full rounded-lg bg-slate-800 px-3 py-3 text-center font-bold text-white shadow-sm transition-colors hover:bg-slate-900"
-                  >
-                    Sair da conta
-                  </button>
-                </div>
-              ) : (
-                <div className="grid grid-cols-2 gap-3">
-                  <Link
-                    href="/login"
-                    className="rounded-lg border-2 border-brand-100 bg-brand-50 px-3 py-3 text-center font-bold text-brand-700 transition-colors hover:bg-brand-100"
-                    onClick={closeMobileMenu}
-                  >
-                    Entrar
-                  </Link>
-                  <Link
-                    href="/register"
-                    className="rounded-lg bg-brand-600 px-3 py-3 text-center font-bold text-white shadow-sm transition-colors hover:bg-brand-700"
-                    onClick={closeMobileMenu}
-                  >
-                    Criar conta
-                  </Link>
-                </div>
-              )}
+              <MobileUserActions
+                closeMobileMenu={closeMobileMenu}
+                displayName={user?.name}
+                editProfileHref={getEditProfileLink()}
+                isAuthenticated={isAuthenticated}
+                isUserDropdownOpen={isUserDropdownOpen}
+                logout={logout}
+                setIsUserDropdownOpen={setIsUserDropdownOpen}
+                userDropdownRef={mobileDropdownRef}
+              />
             </li>
           </ul>
         </div>

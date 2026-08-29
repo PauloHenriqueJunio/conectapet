@@ -15,7 +15,7 @@ export function OngHeroSection({
   onFavoriteToggle,
 }: OngHeroSectionProps) {
   return (
-    <section className="relative overflow-hidden bg-slate-400 py-20 md:py-28">
+    <section className="relative overflow-hidden bg-slate-400 dark:bg-slate-800 py-20 md:py-28">
       {/* Background Image */}
       <div
         className="absolute inset-0"
@@ -27,14 +27,14 @@ export function OngHeroSection({
       ></div>
 
       {/* Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-slate-900/60 via-slate-900/55 to-white/50"></div>
+      <div className="absolute inset-0 bg-gradient-to-b from-slate-900/60 via-slate-900/55 to-white/50 dark:to-[rgba(15,17,23,0.55)]"></div>
 
       {/* Bottom gradient fade to white */}
-      <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-white to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-white to-transparent dark:from-[var(--bg-page)]" />
 
       {/* Card Content */}
       <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-2xl rounded-[2rem] border border-white bg-white p-8 shadow-[0_24px_80px_rgba(15,23,42,0.35)] md:p-12">
+        <div className="mx-auto max-w-2xl rounded-[2rem] border border-white bg-white p-8 shadow-[0_24px_80px_rgba(15,23,42,0.35)] dark:border-[var(--border-default)] md:p-12">
           {/* Badge */}
           <div className="mb-4 flex justify-center">
             <span className="rounded-full border border-brand-200 bg-brand-50 px-4 py-1 text-xs font-bold uppercase tracking-[0.22em] text-brand-700">

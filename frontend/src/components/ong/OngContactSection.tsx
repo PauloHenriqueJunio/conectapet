@@ -32,7 +32,7 @@ export function OngContactSection({
       <div className="grid gap-4">
         {/* Phone Card */}
         {ong.contact && (
-          <div className="rounded-3xl border border-emerald-200/70 bg-gradient-to-br from-emerald-50 via-white to-emerald-50/40 p-6 transition hover:shadow-lg">
+          <div className="rounded-3xl border border-emerald-200/70 bg-gradient-to-br from-emerald-50 via-white to-emerald-50/40 p-6 transition hover:shadow-lg dark:from-[var(--status-success-bg)] dark:via-[var(--bg-card)] dark:to-[var(--status-success-bg)]">
             <div className="flex items-start gap-4">
               <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-2xl bg-emerald-100 shadow-sm">
                 <Phone size={28} className="text-emerald-600" />
@@ -68,7 +68,7 @@ export function OngContactSection({
 
         {/* Location Card */}
         {ong.city && ong.state && (
-          <div className="rounded-3xl border border-blue-200/70 bg-gradient-to-br from-blue-50 via-white to-blue-50/40 p-6 transition hover:shadow-lg">
+          <div className="rounded-3xl border border-blue-200/70 bg-gradient-to-br from-blue-50 via-white to-blue-50/40 p-6 transition hover:shadow-lg dark:from-[var(--status-info-bg)] dark:via-[var(--bg-card)] dark:to-[var(--status-info-bg)]">
             <div className="flex items-start gap-4">
               <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-2xl bg-blue-100 shadow-sm">
                 <MapPin size={28} className="text-blue-600" />
@@ -95,7 +95,7 @@ export function OngContactSection({
 
         {/* Email Card */}
         {ong.email && (
-          <div className="rounded-3xl border border-purple-200/70 bg-gradient-to-br from-purple-50 via-white to-purple-50/40 p-6 transition hover:shadow-lg">
+          <div className="rounded-3xl border border-purple-200/70 bg-gradient-to-br from-purple-50 via-white to-purple-50/40 p-6 transition hover:shadow-lg dark:from-[var(--status-purple-bg)] dark:via-[var(--bg-card)] dark:to-[var(--status-purple-bg)]">
             <div className="flex items-start gap-4">
               <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-2xl bg-purple-100 shadow-sm">
                 <Mail size={28} className="text-purple-600" />

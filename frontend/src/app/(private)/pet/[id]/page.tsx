@@ -6,7 +6,9 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { apiFetch } from "@/lib/api";
 import { AdoptionContactModal } from "@/components/ui/AdoptionContactModal";
+import { getCachedPet } from "@/lib/petCache";
 import { Pet } from "@/types/api";
+import { motion } from "framer-motion";
 import {
   ArrowLeft,
   ChevronLeft,
@@ -38,8 +40,8 @@ export default function PetProfilePage() {
   const { user } = useAuth();
   const isAuthenticated = !!user;
 
-  const [pet, setPet] = useState<Pet | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [pet, setPet] = useState<Pet | null>(() => getCachedPet(id));
+  const [isLoading, setIsLoading] = useState(() => !getCachedPet(id));
   const [isCopied, setIsCopied] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isAdoptionModalOpen, setIsAdoptionModalOpen] = useState(false);
@@ -264,7 +266,12 @@ export default function PetProfilePage() {
           </button>
         </div>
 
-        <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden flex flex-col lg:flex-row">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+          className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden flex flex-col lg:flex-row"
+        >
           <div className="w-full lg:w-1/2 relative bg-slate-100 flex items-center justify-center min-h-[400px] lg:min-h-full group">
             {featuredPhoto ? (
               <button
@@ -273,7 +280,7 @@ export default function PetProfilePage() {
                 className="absolute inset-0 block h-full w-full cursor-zoom-in"
                 aria-label={`Abrir galeria de fotos de ${pet.name}`}
               >
-                <img
+                <motion.img
                   src={featuredPhoto}
                   alt={pet.name}
                   className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
@@ -418,13 +425,13 @@ export default function PetProfilePage() {
                           {vaccine.label}
                         </span>
 
-                        <Info size={14} className="text-slate-300 ml-1" />
+                        <Info size={14} className="text-[#cbd5e1] ml-1" />
 
                         <div className="absolute left-0 bottom-full mb-2 hidden w-56 -translate-x-2 flex-col rounded-xl bg-slate-900 px-3 py-2.5 text-xs text-white opacity-0 transition-opacity group-hover:flex group-hover:opacity-100 z-10 shadow-xl pointer-events-none">
                           <span className="font-bold text-brand-400 mb-1">
                             {vaccine.label}
                           </span>
-                          <span className="text-slate-300 leading-relaxed">
+                          <span className="text-[#cbd5e1] leading-relaxed">
                             {vaccine.desc}
                           </span>
 
@@ -529,7 +536,8 @@ export default function PetProfilePage() {
               <button
                 type="button"
                 onClick={() => setIsAdoptionModalOpen(true)}
-                className="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white py-4 rounded-2xl font-bold text-lg transition-all shadow-lg shadow-[#25D366]/30 flex items-center justify-center gap-3 hover:-translate-y-1"
+                className="w-full bg-[var(--brand)] hover:bg-[var(--brand-hover)] text-[var(--text-inverse)] py-4 rounded-2xl font-bold text-lg transition-all shadow-lg flex items-center justify-center gap-3 hover:-translate-y-1"
+                style={{ boxShadow: "0 10px 30px var(--shadow)" }}
               >
                 Quero Adotar
               </button>
@@ -557,7 +565,7 @@ export default function PetProfilePage() {
               </div>
             )}
           </div>
-        </div>
+        </motion.div>
 
         {isGalleryOpen && petPhotos.length > 0 && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 px-2 py-2 backdrop-blur-sm sm:px-4 sm:py-6">

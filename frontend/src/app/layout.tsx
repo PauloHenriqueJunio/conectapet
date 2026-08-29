@@ -1,11 +1,15 @@
 import "./globals.css";
+import "../styles/theme-map.css";
 import type { Metadata } from "next";
 import { ReactNode } from "react";
 import { AuthProvider } from "@/context/AuthContext";
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
+import { ThemeProvider } from "@/context/ThemeContext";
+import { THEME_COLOR_META, themeInitScript } from "@/lib/theme";
+import { LayoutGroup } from "framer-motion";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata: Metadata = {
   title: "ConectaPet",
@@ -22,9 +26,25 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="pt-BR" className={cn("font-sans", geist.variable)}>
+    <html
+      lang="pt-BR"
+      className={cn("font-sans", geist.variable)}
+      suppressHydrationWarning
+    >
+      <head>
+        {/* Cor da barra do navegador/status bar no mobile. Valor inicial e o
+            do tema claro; themeInitScript corrige antes da primeira pintura
+            se o tema salvo for escuro. */}
+        <meta name="theme-color" content={THEME_COLOR_META.light} />
+        {/* Aplica o tema salvo antes da primeira pintura (evita o flash claro). */}
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
       <body className="min-h-screen" suppressHydrationWarning>
-        <AuthProvider>{children}</AuthProvider>
+        <ThemeProvider>
+          <AuthProvider>
+            <LayoutGroup>{children}</LayoutGroup>
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

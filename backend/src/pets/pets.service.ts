@@ -31,12 +31,40 @@ export class PetsService {
     private readonly cloudinaryService: CloudinaryService,
   ) {}
 
-  findAvailable(species?: string) {
+  findAvailable(filters?: {
+    species?: string;
+    size?: string;
+    sex?: string;
+    city?: string;
+    isCastrated?: boolean;
+    isVaccinated?: boolean;
+  }) {
+    const { species, size, sex, city, isCastrated, isVaccinated } =
+      filters ?? {};
+
     return this.prisma.pet.findMany({
       where: {
         isAdopted: false,
         ...(species
           ? { species: { equals: species, mode: "insensitive" } }
+          : {}),
+        ...(size ? { size: { equals: size, mode: "insensitive" } } : {}),
+        ...(sex ? { sex: { equals: sex, mode: "insensitive" } } : {}),
+        ...(isCastrated !== undefined ? { isCastrated } : {}),
+        ...(isVaccinated
+          ? {
+              OR: [
+                { hasVaccineV8: true },
+                { hasVaccineGiardia: true },
+                { hasVaccineFlu: true },
+                { hasVaccineRabies: true },
+                { hasVaccineFeline: true },
+                { hasVaccineFelv: true },
+              ],
+            }
+          : {}),
+        ...(city
+          ? { ong: { city: { equals: city, mode: "insensitive" } } }
           : {}),
       },
       include: {
