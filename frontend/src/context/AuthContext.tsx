@@ -37,6 +37,7 @@ interface AuthContextValue {
   login: (payload: LoginPayload, expectedRole?: Role) => Promise<void>;
   register: (payload: RegisterPayload) => Promise<void>;
   logout: () => void;
+  deleteAccount: (password: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -167,6 +168,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     router.push("/login");
   };
 
+  const deleteAccount = async (password: string) => {
+    await apiFetch("/auth/account", {
+      method: "DELETE",
+      body: JSON.stringify({ password }),
+    });
+
+    setToken(null);
+    setUser(null);
+    router.push("/login");
+  };
+
   const value = useMemo<AuthContextValue>(
     () => ({
       token,
@@ -176,6 +188,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       login,
       register,
       logout,
+      deleteAccount,
     }),
     [token, user, isLoading],
   );

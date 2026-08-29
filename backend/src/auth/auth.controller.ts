@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Patch,
   Post,
@@ -12,6 +13,7 @@ import type { Response } from "express";
 import { Throttle } from "@nestjs/throttler";
 import { JwtAuthGuard } from "./guards/jwt-auth.guard";
 import { AuthService } from "./auth.service";
+import { DeleteAccountDto } from "./dto/delete-account.dto";
 import { LoginDto } from "./dto/login.dto";
 import { RegisterDto } from "./dto/register.dto";
 import { UpdateProfileDto } from "./dto/update-profile.dto";
@@ -84,5 +86,26 @@ export class AuthController {
     @Body() dto: UpdateProfileDto,
   ) {
     return this.authService.updateProfile(req.user.userId, dto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete("account")
+  @Throttle({ default: { limit: 5, ttl: 60_000 } })
+  async deleteAccount(
+    @Req() req: { user: RequestUser },
+    @Body() dto: DeleteAccountDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const result = await this.authService.deleteAccount(
+      req.user.userId,
+      dto,
+    );
+
+    res.clearCookie(
+      AuthController.AUTH_COOKIE_NAME,
+      this.getAuthCookieOptions(),
+    );
+
+    return result;
   }
 }

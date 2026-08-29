@@ -8,6 +8,7 @@ import { DesktopNavLinks } from "./site-header/DesktopNavLinks";
 import { DesktopUserActions } from "./site-header/DesktopUserActions";
 import { MobileNavLinks } from "./site-header/MobileNavLinks";
 import { MobileUserActions } from "./site-header/MobileUserActions";
+import { DeleteAccountModal } from "@/components/ui/DeleteAccountModal";
 import type {
   HeaderNavKey,
   HeaderPage,
@@ -26,6 +27,8 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const [logoFailed, setLogoFailed] = useState(false);
+  const [isDeleteAccountModalOpen, setIsDeleteAccountModalOpen] =
+    useState(false);
   const userDropdownRef = useRef<HTMLDivElement | null>(null);
   const mobileDropdownRef = useRef<HTMLDivElement | null>(null);
   const [activeNav, setActiveNav] = useState<HeaderNavKey>(page);
@@ -64,6 +67,12 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
 
   const closeMobileMenu = () => setIsMenuOpen(false);
 
+  const openDeleteAccountModal = () => {
+    setIsUserDropdownOpen(false);
+    setIsMenuOpen(false);
+    setIsDeleteAccountModalOpen(true);
+  };
+
   const getEditProfileLink = () => {
     if (variant === "ong" || user?.role === "ONG") return "/ong/editar-perfil";
     return "/pessoa-fisica/editar-perfil";
@@ -76,95 +85,104 @@ export function SiteHeader({ page, variant = "public" }: SiteHeaderProps) {
   };
 
   return (
-    <header
-      className={`sticky top-0 z-50 w-full border-b px-5 shadow-sm backdrop-blur-xl transition-all duration-300 ${
-        isScrolled ? "py-3" : "py-5"
-      }`}
-      style={{
-        borderColor: "var(--border-default)",
-        backgroundColor: "var(--bg-primary)",
-      }}
-    >
-      <nav className="flex items-center justify-between gap-4">
-        <div className="flex items-center">
-          <Link href={getLogoLink()} className="flex items-center gap-3">
-            {!logoFailed ? (
-              <img
-                src={theme === "dark" ? "/logo-dark.svg" : "/logo-white.svg"}
-                alt="ConectaPet"
-                suppressHydrationWarning
-                className="h-10 w-auto max-w-[180px]"
-                onError={() => setLogoFailed(true)}
-              />
-            ) : (
-              <span className="text-xl font-extrabold tracking-tight text-brand-800 dark:text-brand-300">
-                Conecta
-                <span className="text-slate-900">Pet</span>
-              </span>
-            )}
-          </Link>
-        </div>
-
-        <button
-          type="button"
-          className="flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 md:hidden"
-          onClick={() => setIsMenuOpen((prev) => !prev)}
-        >
-          <span className="relative block h-4 w-5">
-            <span
-              className={`absolute left-0 top-0 h-0.5 w-5 bg-slate-700 dark:bg-slate-200 transition-all duration-300 ${isMenuOpen ? "translate-y-[7px] rotate-45" : ""}`}
-            />
-            <span
-              className={`absolute left-0 top-[7px] h-0.5 w-5 bg-slate-700 dark:bg-slate-200 transition-all duration-300 ${isMenuOpen ? "opacity-0" : "opacity-100"}`}
-            />
-            <span
-              className={`absolute left-0 top-[14px] h-0.5 w-5 bg-slate-700 dark:bg-slate-200 transition-all duration-300 ${isMenuOpen ? "-translate-y-[7px] -rotate-45" : ""}`}
-            />
-          </span>
-        </button>
-
-        <div className="hidden items-center gap-6 md:flex">
-          <DesktopNavLinks
-            activeNav={activeNav}
-            effectiveVariant={effectiveVariant}
-          />
-          <DesktopUserActions
-            displayName={user?.name}
-            editProfileHref={getEditProfileLink()}
-            isAuthenticated={isAuthenticated}
-            isUserDropdownOpen={isUserDropdownOpen}
-            logout={logout}
-            setIsUserDropdownOpen={setIsUserDropdownOpen}
-            userDropdownRef={userDropdownRef}
-          />
-        </div>
-      </nav>
-
-      <div
-        className={`grid overflow-hidden transition-all duration-300 md:hidden ${isMenuOpen ? "mt-4 grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
+    <>
+      <header
+        className={`sticky top-0 z-50 w-full border-b px-5 shadow-sm backdrop-blur-xl transition-all duration-300 ${
+          isScrolled ? "py-3" : "py-5"
+        }`}
+        style={{
+          borderColor: "var(--border-default)",
+          backgroundColor: "var(--bg-primary)",
+        }}
       >
-        <div className="min-h-0">
-          <ul className="space-y-2 border-t border-slate-200 pt-3 text-sm font-medium text-slate-700">
-            <MobileNavLinks
-              effectiveVariant={effectiveVariant}
-              closeMobileMenu={closeMobileMenu}
-            />
+        <nav className="flex items-center justify-between gap-4">
+          <div className="flex items-center">
+            <Link href={getLogoLink()} className="flex items-center gap-3">
+              {!logoFailed ? (
+                <img
+                  src={theme === "dark" ? "/logo-dark.svg" : "/logo-white.svg"}
+                  alt="ConectaPet"
+                  suppressHydrationWarning
+                  className="h-10 w-auto max-w-[180px]"
+                  onError={() => setLogoFailed(true)}
+                />
+              ) : (
+                <span className="text-xl font-extrabold tracking-tight text-brand-800 dark:text-brand-300">
+                  Conecta
+                  <span className="text-slate-900">Pet</span>
+                </span>
+              )}
+            </Link>
+          </div>
 
-            <li className="pt-2 mt-4 border-t border-slate-100">
-              <MobileUserActions
-                closeMobileMenu={closeMobileMenu}
-                displayName={user?.name}
-                editProfileHref={getEditProfileLink()}
-                isAuthenticated={isAuthenticated}
-                isUserDropdownOpen={isUserDropdownOpen}
-                logout={logout}
-                setIsUserDropdownOpen={setIsUserDropdownOpen}
-                userDropdownRef={mobileDropdownRef}
+          <button
+            type="button"
+            className="flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 md:hidden"
+            onClick={() => setIsMenuOpen((prev) => !prev)}
+          >
+            <span className="relative block h-4 w-5">
+              <span
+                className={`absolute left-0 top-0 h-0.5 w-5 bg-slate-700 dark:bg-slate-200 transition-all duration-300 ${isMenuOpen ? "translate-y-[7px] rotate-45" : ""}`}
               />
-            </li>
-          </ul>
+              <span
+                className={`absolute left-0 top-[7px] h-0.5 w-5 bg-slate-700 dark:bg-slate-200 transition-all duration-300 ${isMenuOpen ? "opacity-0" : "opacity-100"}`}
+              />
+              <span
+                className={`absolute left-0 top-[14px] h-0.5 w-5 bg-slate-700 dark:bg-slate-200 transition-all duration-300 ${isMenuOpen ? "-translate-y-[7px] -rotate-45" : ""}`}
+              />
+            </span>
+          </button>
+
+          <div className="hidden items-center gap-6 md:flex">
+            <DesktopNavLinks
+              activeNav={activeNav}
+              effectiveVariant={effectiveVariant}
+            />
+            <DesktopUserActions
+              displayName={user?.name}
+              editProfileHref={getEditProfileLink()}
+              isAuthenticated={isAuthenticated}
+              isUserDropdownOpen={isUserDropdownOpen}
+              logout={logout}
+              onDeleteAccountClick={openDeleteAccountModal}
+              setIsUserDropdownOpen={setIsUserDropdownOpen}
+              userDropdownRef={userDropdownRef}
+            />
+          </div>
+        </nav>
+
+        <div
+          className={`grid overflow-hidden transition-all duration-300 md:hidden ${isMenuOpen ? "mt-4 grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
+        >
+          <div className="min-h-0">
+            <ul className="space-y-2 border-t border-slate-200 pt-3 text-sm font-medium text-slate-700">
+              <MobileNavLinks
+                effectiveVariant={effectiveVariant}
+                closeMobileMenu={closeMobileMenu}
+              />
+
+              <li className="pt-2 mt-4 border-t border-slate-100">
+                <MobileUserActions
+                  closeMobileMenu={closeMobileMenu}
+                  displayName={user?.name}
+                  editProfileHref={getEditProfileLink()}
+                  isAuthenticated={isAuthenticated}
+                  isUserDropdownOpen={isUserDropdownOpen}
+                  logout={logout}
+                  onDeleteAccountClick={openDeleteAccountModal}
+                  setIsUserDropdownOpen={setIsUserDropdownOpen}
+                  userDropdownRef={mobileDropdownRef}
+                />
+              </li>
+            </ul>
+          </div>
         </div>
-      </div>
-    </header>
+      </header>
+
+      <DeleteAccountModal
+        open={isDeleteAccountModalOpen}
+        onClose={() => setIsDeleteAccountModalOpen(false)}
+      />
+    </>
   );
 }

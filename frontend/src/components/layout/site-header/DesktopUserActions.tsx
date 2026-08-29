@@ -11,6 +11,7 @@ interface DesktopUserActionsProps {
   isAuthenticated: boolean;
   isUserDropdownOpen: boolean;
   logout: () => void;
+  onDeleteAccountClick: () => void;
   setIsUserDropdownOpen: Dispatch<SetStateAction<boolean>>;
   userDropdownRef: RefObject<HTMLDivElement | null>;
 }
@@ -21,6 +22,7 @@ export function DesktopUserActions({
   isAuthenticated,
   isUserDropdownOpen,
   logout,
+  onDeleteAccountClick,
   setIsUserDropdownOpen,
   userDropdownRef,
 }: DesktopUserActionsProps) {
@@ -99,15 +101,16 @@ export function DesktopUserActions({
           <Link
             href={editProfileHref}
             onClick={() => setIsUserDropdownOpen(false)}
-            className="block rounded-lg px-3 py-2 text-sm font-medium transition"
+            className="block rounded-lg px-3 py-2 text-sm font-medium transition hover:bg-slate-100"
             style={{ color: "var(--text-primary)" }}
           >
             Editar Perfil
           </Link>
           <button
             type="button"
-            className="block w-full cursor-default rounded-lg px-3 py-2 text-left text-sm font-medium"
-            style={{ color: "var(--text-muted)" }}
+            onClick={onDeleteAccountClick}
+            className="block w-full rounded-lg px-3 py-2 text-left hover:bg-slate-100 text-sm font-medium transition"
+            style={{ color: "var(--status-danger-text)" }}
           >
             Excluir conta
           </button>
