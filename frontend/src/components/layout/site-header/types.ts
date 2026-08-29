@@ -9,6 +9,7 @@ export type HeaderPage =
   | "dashboard-home"
   | "dashboard-cadastrar-pet"
   | "dashboard-editar"
+  | "meus-pets"
   | "minhas-solicitacoes"
   | "editar-perfil"
   | "pet-profile";
