@@ -12,14 +12,8 @@ import { isPetVaccinated } from "@/lib/pet";
 import { prefetchPet } from "@/lib/petCache";
 import { CardBody, CardContainer, CardItem } from "@/components/ui/3d-card";
 import { PetQuickView } from "@/components/pets/PetQuickView";
-import {
-  MapPin,
-  Camera,
-  Heart,
-  MousePointerClick,
-  SlidersHorizontal,
-  ChevronDown,
-} from "lucide-react";
+import { PetFilterBar } from "@/components/pets/PetFilterBar";
+import { MapPin, Camera, Heart, MousePointerClick } from "lucide-react";
 import { STATUS_COLORS } from "@/constants/theme";
 
 export default function HomePage() {
@@ -29,6 +23,7 @@ export default function HomePage() {
   const [error, setError] = useState<string | null>(null);
   const [activePet, setActivePet] = useState<Pet | null>(null);
 
+  const [searchTerm, setSearchTerm] = useState("");
   const [speciesFilter, setSpeciesFilter] = useState("");
 
   const [showMoreFilters, setShowMoreFilters] = useState(false);
@@ -46,7 +41,8 @@ export default function HomePage() {
     return () => clearTimeout(timeout);
   }, [cityInput]);
 
-  const activeExtraFiltersCount = [
+  const activeFiltersCount = [
+    speciesFilter,
     sizeFilter,
     cityFilter,
     sexFilter,
@@ -55,12 +51,17 @@ export default function HomePage() {
   ].filter(Boolean).length;
 
   const clearMoreFilters = () => {
+    setSpeciesFilter("");
     setSizeFilter("");
     setCityInput("");
     setSexFilter("");
     setCastratedFilter(false);
     setVaccinatedFilter(false);
   };
+
+  const visiblePets = pets.filter((pet) =>
+    searchTerm ? pet.name.toLowerCase().includes(searchTerm.toLowerCase()) : true,
+  );
 
   useEffect(() => {
     const loadPets = async () => {
@@ -113,172 +114,37 @@ export default function HomePage() {
       </section>
 
       <main className="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 lg:px-8 flex-1">
-        <section className="mb-10 flex flex-col items-center justify-between gap-4 sm:flex-row">
-          <div className="mb-6 flex flex-col items-center justify-center gap-2 text-center md:flex-col md:justify-start md:text-left md:items-start">
-            <h2 className="text-3xl font-bold text-slate-900">
-              Pets para adoção
-            </h2>
+        <section className="mb-6 flex flex-col items-center justify-center gap-2 text-center md:items-start md:text-left">
+          <h2 className="text-3xl font-bold text-slate-900">
+            Pets para adoção
+          </h2>
 
-            <div className="flex items-center gap-1.5 text-sm font-medium text-slate-400">
-              <MousePointerClick size={16} />
-              <span>Aperte para saber mais</span>
-            </div>
-          </div>
-
-          <div className="flex gap-2 bg-white p-1.5 rounded-full shadow-sm border border-slate-200">
-            <button
-              onClick={() => setSpeciesFilter("")}
-              className={`px-5 py-2 rounded-full text-sm font-bold transition-colors ${
-                speciesFilter === ""
-                  ? "bg-brand-600 text-white shadow-md"
-                  : "text-slate-500 hover:text-brand-600 hover:bg-brand-50"
-              }`}
-            >
-              Todos
-            </button>
-            <button
-              onClick={() => setSpeciesFilter("Cão")}
-              className={`px-5 py-2 rounded-full text-sm font-bold transition-colors ${
-                speciesFilter === "Cão"
-                  ? "bg-brand-600 text-white shadow-md"
-                  : "text-slate-500 hover:text-brand-600 hover:bg-brand-50"
-              }`}
-            >
-              🐶 Cães
-            </button>
-            <button
-              onClick={() => setSpeciesFilter("Gato")}
-              className={`px-5 py-2 rounded-full text-sm font-bold transition-colors ${
-                speciesFilter === "Gato"
-                  ? "bg-brand-600 text-white shadow-md"
-                  : "text-slate-500 hover:text-brand-600 hover:bg-brand-50"
-              }`}
-            >
-              🐱 Gatos
-            </button>
+          <div className="flex items-center gap-1.5 text-sm font-medium text-slate-400">
+            <MousePointerClick size={16} />
+            <span>Aperte para saber mais</span>
           </div>
         </section>
 
-        <section className="mb-10">
-          <div className="flex justify-center sm:justify-end">
-            <button
-              type="button"
-              onClick={() => setShowMoreFilters((prev) => !prev)}
-              className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-2.5 text-sm font-bold text-slate-600 shadow-sm transition-colors hover:border-brand-300 hover:text-brand-600"
-            >
-              <SlidersHorizontal size={16} />
-              Mais filtros
-              {activeExtraFiltersCount > 0 && (
-                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-brand-600 text-[10px] font-bold text-white">
-                  {activeExtraFiltersCount}
-                </span>
-              )}
-              <ChevronDown
-                size={16}
-                className={`transition-transform ${showMoreFilters ? "rotate-180" : ""}`}
-              />
-            </button>
-          </div>
-
-          {showMoreFilters && (
-            <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                <div className="flex flex-col gap-1.5">
-                  <label
-                    htmlFor="size-filter"
-                    className="text-xs font-bold uppercase tracking-wider text-slate-400"
-                  >
-                    Porte
-                  </label>
-                  <select
-                    id="size-filter"
-                    value={sizeFilter}
-                    onChange={(event) => setSizeFilter(event.target.value)}
-                    className="rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-900 outline-none focus:border-brand-500 focus:bg-white focus:ring-2 focus:ring-brand-500/20"
-                  >
-                    <option value="">Todos</option>
-                    <option value="Pequeno">Pequeno</option>
-                    <option value="Médio">Médio</option>
-                    <option value="Grande">Grande</option>
-                  </select>
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <label
-                    htmlFor="sex-filter"
-                    className="text-xs font-bold uppercase tracking-wider text-slate-400"
-                  >
-                    Sexo
-                  </label>
-                  <select
-                    id="sex-filter"
-                    value={sexFilter}
-                    onChange={(event) => setSexFilter(event.target.value)}
-                    className="rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-900 outline-none focus:border-brand-500 focus:bg-white focus:ring-2 focus:ring-brand-500/20"
-                  >
-                    <option value="">Todos</option>
-                    <option value="Macho">Macho</option>
-                    <option value="Fêmea">Fêmea</option>
-                  </select>
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <label
-                    htmlFor="city-filter"
-                    className="text-xs font-bold uppercase tracking-wider text-slate-400"
-                  >
-                    Cidade
-                  </label>
-                  <input
-                    id="city-filter"
-                    type="text"
-                    value={cityInput}
-                    onChange={(event) => setCityInput(event.target.value)}
-                    placeholder="Ex: São Paulo"
-                    className="rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-900 outline-none focus:border-brand-500 focus:bg-white focus:ring-2 focus:ring-brand-500/20"
-                  />
-                </div>
-
-                <div className="flex flex-col justify-end gap-2 pb-1">
-                  <label className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-                    <input
-                      type="checkbox"
-                      checked={castratedFilter}
-                      onChange={(event) =>
-                        setCastratedFilter(event.target.checked)
-                      }
-                      className="h-4 w-4 rounded border-slate-300 text-brand-600 focus:ring-brand-500"
-                    />
-                    Castrado
-                  </label>
-                  <label className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-                    <input
-                      type="checkbox"
-                      checked={vaccinatedFilter}
-                      onChange={(event) =>
-                        setVaccinatedFilter(event.target.checked)
-                      }
-                      className="h-4 w-4 rounded border-slate-300 text-brand-600 focus:ring-brand-500"
-                    />
-                    Vacinado
-                  </label>
-                </div>
-              </div>
-
-              {activeExtraFiltersCount > 0 && (
-                <div className="mt-4 flex justify-end">
-                  <button
-                    type="button"
-                    onClick={clearMoreFilters}
-                    className="text-sm font-bold text-brand-600 hover:underline"
-                  >
-                    Limpar filtros
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
-        </section>
+        <PetFilterBar
+          searchTerm={searchTerm}
+          onSearchTermChange={setSearchTerm}
+          showMoreFilters={showMoreFilters}
+          onToggleMoreFilters={() => setShowMoreFilters((prev) => !prev)}
+          activeFiltersCount={activeFiltersCount}
+          onClearFilters={clearMoreFilters}
+          speciesFilter={speciesFilter}
+          onSpeciesChange={setSpeciesFilter}
+          sizeFilter={sizeFilter}
+          onSizeChange={setSizeFilter}
+          sexFilter={sexFilter}
+          onSexChange={setSexFilter}
+          cityValue={cityInput}
+          onCityChange={setCityInput}
+          castratedFilter={castratedFilter}
+          onCastratedChange={setCastratedFilter}
+          vaccinatedFilter={vaccinatedFilter}
+          onVaccinatedChange={setVaccinatedFilter}
+        />
 
         {error && (
           <div
@@ -299,12 +165,12 @@ export default function HomePage() {
           </div>
         ) : (
           <section className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {pets.length === 0 ? (
+            {visiblePets.length === 0 ? (
               <div className="col-span-full py-20 text-center text-slate-500">
                 Nenhum pet encontrado com esses filtros.
               </div>
             ) : (
-              pets.map((pet) => (
+              visiblePets.map((pet) => (
                 <motion.div
                   key={pet.id}
                   layoutId={`pet-card-${pet.id}`}

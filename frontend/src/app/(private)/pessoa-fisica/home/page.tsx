@@ -11,18 +11,9 @@ import { isPetVaccinated } from "@/lib/pet";
 import { prefetchPet } from "@/lib/petCache";
 import { CardBody, CardContainer, CardItem } from "@/components/ui/3d-card";
 import { PetQuickView } from "@/components/pets/PetQuickView";
-import {
-  Search,
-  MapPin,
-  Heart,
-  Info,
-  Camera,
-  SlidersHorizontal,
-  ChevronDown,
-} from "lucide-react";
+import { PetFilterBar } from "@/components/pets/PetFilterBar";
+import { MapPin, Heart, Info, Camera } from "lucide-react";
 import { STATUS_COLORS } from "@/constants/theme";
-
-type SpeciesFilter = "TODOS" | "Cão" | "Gato";
 
 export default function PessoaFisicaHome() {
   const router = useRouter();
@@ -34,7 +25,7 @@ export default function PessoaFisicaHome() {
 
   // Estados dos Filtros
   const [searchTerm, setSearchTerm] = useState("");
-  const [speciesFilter, setSpeciesFilter] = useState<SpeciesFilter>("TODOS");
+  const [speciesFilter, setSpeciesFilter] = useState("");
 
   const [showMoreFilters, setShowMoreFilters] = useState(false);
   const [sizeFilter, setSizeFilter] = useState("");
@@ -43,7 +34,8 @@ export default function PessoaFisicaHome() {
   const [castratedFilter, setCastratedFilter] = useState(false);
   const [vaccinatedFilter, setVaccinatedFilter] = useState(false);
 
-  const activeExtraFiltersCount = [
+  const activeFiltersCount = [
+    speciesFilter,
     sizeFilter,
     sexFilter,
     cityFilter,
@@ -52,6 +44,7 @@ export default function PessoaFisicaHome() {
   ].filter(Boolean).length;
 
   const clearMoreFilters = () => {
+    setSpeciesFilter("");
     setSizeFilter("");
     setSexFilter("");
     setCityFilter("");
@@ -84,8 +77,7 @@ export default function PessoaFisicaHome() {
       if (pet.isAdopted) return false;
 
       // 2. Filtro por Espécie
-      if (speciesFilter !== "TODOS" && pet.species !== speciesFilter)
-        return false;
+      if (speciesFilter && pet.species !== speciesFilter) return false;
 
       // 3. Filtro por Pesquisa de Nome
       if (
@@ -151,164 +143,26 @@ export default function PessoaFisicaHome() {
         </div>
       </div>
 
-      <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 mb-8 flex flex-col sm:flex-row gap-4">
-        {/* Input de Pesquisa */}
-        <div className="relative flex-1">
-          <Search
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
-            size={20}
-          />
-          <input
-            type="text"
-            placeholder="Buscar pet pelo nome..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all"
-          />
-        </div>
-
-        {/* Botões de Espécie */}
-        <div className="flex gap-2">
-          {(["TODOS", "Cão", "Gato"] as SpeciesFilter[]).map((filter) => (
-            <button
-              key={filter}
-              onClick={() => setSpeciesFilter(filter)}
-              className={`px-6 py-3 rounded-xl font-semibold text-sm transition-all flex-1 sm:flex-none ${
-                speciesFilter === filter
-                  ? "bg-brand-600 text-white shadow-md shadow-brand-500/30"
-                  : "bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100"
-              }`}
-            >
-              {filter === "TODOS"
-                ? "Todos"
-                : filter === "Cão"
-                  ? "Cães"
-                  : "Gatos"}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="mb-8">
-        <div className="flex justify-end">
-          <button
-            type="button"
-            onClick={() => setShowMoreFilters((prev) => !prev)}
-            className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-bold text-slate-600 shadow-sm transition-colors hover:border-brand-300 hover:text-brand-600"
-          >
-            <SlidersHorizontal size={16} />
-            Mais filtros
-            {activeExtraFiltersCount > 0 && (
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-brand-600 text-[10px] font-bold text-white">
-                {activeExtraFiltersCount}
-              </span>
-            )}
-            <ChevronDown
-              size={16}
-              className={`transition-transform ${showMoreFilters ? "rotate-180" : ""}`}
-            />
-          </button>
-        </div>
-
-        {showMoreFilters && (
-          <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              <div className="flex flex-col gap-1.5">
-                <label
-                  htmlFor="size-filter"
-                  className="text-xs font-bold uppercase tracking-wider text-slate-400"
-                >
-                  Porte
-                </label>
-                <select
-                  id="size-filter"
-                  value={sizeFilter}
-                  onChange={(event) => setSizeFilter(event.target.value)}
-                  className="rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-900 outline-none focus:border-brand-500 focus:bg-white focus:ring-2 focus:ring-brand-500/20"
-                >
-                  <option value="">Todos</option>
-                  <option value="Pequeno">Pequeno</option>
-                  <option value="Médio">Médio</option>
-                  <option value="Grande">Grande</option>
-                </select>
-              </div>
-
-              <div className="flex flex-col gap-1.5">
-                <label
-                  htmlFor="sex-filter"
-                  className="text-xs font-bold uppercase tracking-wider text-slate-400"
-                >
-                  Sexo
-                </label>
-                <select
-                  id="sex-filter"
-                  value={sexFilter}
-                  onChange={(event) => setSexFilter(event.target.value)}
-                  className="rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-900 outline-none focus:border-brand-500 focus:bg-white focus:ring-2 focus:ring-brand-500/20"
-                >
-                  <option value="">Todos</option>
-                  <option value="Macho">Macho</option>
-                  <option value="Fêmea">Fêmea</option>
-                </select>
-              </div>
-
-              <div className="flex flex-col gap-1.5">
-                <label
-                  htmlFor="city-filter"
-                  className="text-xs font-bold uppercase tracking-wider text-slate-400"
-                >
-                  Cidade
-                </label>
-                <input
-                  id="city-filter"
-                  type="text"
-                  value={cityFilter}
-                  onChange={(event) => setCityFilter(event.target.value)}
-                  placeholder="Ex: São Paulo"
-                  className="rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 text-sm font-medium text-slate-900 outline-none focus:border-brand-500 focus:bg-white focus:ring-2 focus:ring-brand-500/20"
-                />
-              </div>
-
-              <div className="flex flex-col justify-end gap-2 pb-1">
-                <label className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-                  <input
-                    type="checkbox"
-                    checked={castratedFilter}
-                    onChange={(event) =>
-                      setCastratedFilter(event.target.checked)
-                    }
-                    className="h-4 w-4 rounded border-slate-300 text-brand-600 focus:ring-brand-500"
-                  />
-                  Castrado
-                </label>
-                <label className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-                  <input
-                    type="checkbox"
-                    checked={vaccinatedFilter}
-                    onChange={(event) =>
-                      setVaccinatedFilter(event.target.checked)
-                    }
-                    className="h-4 w-4 rounded border-slate-300 text-brand-600 focus:ring-brand-500"
-                  />
-                  Vacinado
-                </label>
-              </div>
-            </div>
-
-            {activeExtraFiltersCount > 0 && (
-              <div className="mt-4 flex justify-end">
-                <button
-                  type="button"
-                  onClick={clearMoreFilters}
-                  className="text-sm font-bold text-brand-600 hover:underline"
-                >
-                  Limpar filtros
-                </button>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
+      <PetFilterBar
+        searchTerm={searchTerm}
+        onSearchTermChange={setSearchTerm}
+        showMoreFilters={showMoreFilters}
+        onToggleMoreFilters={() => setShowMoreFilters((prev) => !prev)}
+        activeFiltersCount={activeFiltersCount}
+        onClearFilters={clearMoreFilters}
+        speciesFilter={speciesFilter}
+        onSpeciesChange={setSpeciesFilter}
+        sizeFilter={sizeFilter}
+        onSizeChange={setSizeFilter}
+        sexFilter={sexFilter}
+        onSexChange={setSexFilter}
+        cityValue={cityFilter}
+        onCityChange={setCityFilter}
+        castratedFilter={castratedFilter}
+        onCastratedChange={setCastratedFilter}
+        vaccinatedFilter={vaccinatedFilter}
+        onVaccinatedChange={setVaccinatedFilter}
+      />
 
       {error && (
         <div
