@@ -191,6 +191,7 @@ describe("AuthService - security", () => {
       role: Role.PESSOA_FISICA,
       cep: "57000-000",
       cpf: "123.456.789-01",
+      contact: "82999999999",
     });
 
     expect(prisma.user.create).toHaveBeenCalledWith(

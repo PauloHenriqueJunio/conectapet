@@ -226,20 +226,39 @@ export function RegisterForm() {
           )}
 
           {role === "PESSOA_FISICA" && (
-            <div>
-              <label
-                htmlFor="address"
-                className="mb-1 block text-sm font-medium"
-              >
-                Endereço
-              </label>
-              <input
-                id="address"
-                type="text"
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                className="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-2 outline-none ring-brand-300 focus:ring"
-              />
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div>
+                <label
+                  htmlFor="contact"
+                  className="mb-1 block text-sm font-medium"
+                >
+                  Contato
+                </label>
+                <input
+                  id="contact"
+                  type="text"
+                  required
+                  value={contact}
+                  onChange={(e) => setContact(maskPhone(e.target.value))}
+                  placeholder="(00) 00000-0000"
+                  className="w-full rounded-xl border border-slate-300 px-4 py-2 outline-none ring-brand-300 focus:ring"
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="address"
+                  className="mb-1 block text-sm font-medium"
+                >
+                  Endereço
+                </label>
+                <input
+                  id="address"
+                  type="text"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  className="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-2 outline-none ring-brand-300 focus:ring"
+                />
+              </div>
             </div>
           )}
 
