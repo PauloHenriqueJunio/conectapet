@@ -7,6 +7,7 @@ import { JwtService } from "@nestjs/jwt";
 import { Prisma, Role } from "@prisma/client";
 import * as bcrypt from "bcrypt";
 import { PrismaService } from "../prisma/prisma.service";
+import { DeleteAccountDto } from "./dto/delete-account.dto";
 import { LoginDto } from "./dto/login.dto";
 import { RegisterDto } from "./dto/register.dto";
 import { UpdateProfileDto } from "./dto/update-profile.dto";
@@ -327,6 +328,32 @@ export class AuthService {
 
     return this.buildFullUser(user);
   }
+  async deleteAccount(userId: string, dto: DeleteAccountDto) {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+
+    if (!user) {
+      throw new UnauthorizedException("Token inválido.");
+    }
+
+    const passwordMatches = await bcrypt.compare(
+      dto.password,
+      user.passwordHash,
+    );
+
+    if (!passwordMatches) {
+      throw new UnauthorizedException("Senha incorreta.");
+    }
+
+    // Remove os pets cadastrados pelo usuario antes de excluir a conta, pois
+    // a FK de Pet.ongId e Restrict (nao cascateia sozinha).
+    await this.prisma.$transaction([
+      this.prisma.pet.deleteMany({ where: { ongId: userId } }),
+      this.prisma.user.delete({ where: { id: userId } }),
+    ]);
+
+    return { success: true };
+  }
+
   async getOngs() {
     return this.prisma.user.findMany({
       where: { role: Role.ONG },

@@ -12,6 +12,7 @@ interface MobileUserActionsProps {
   isAuthenticated: boolean;
   isUserDropdownOpen: boolean;
   logout: () => void;
+  onDeleteAccountClick: () => void;
   setIsUserDropdownOpen: Dispatch<SetStateAction<boolean>>;
   userDropdownRef: RefObject<HTMLDivElement | null>;
 }
@@ -23,6 +24,7 @@ export function MobileUserActions({
   isAuthenticated,
   isUserDropdownOpen,
   logout,
+  onDeleteAccountClick,
   setIsUserDropdownOpen,
   userDropdownRef,
 }: MobileUserActionsProps) {
@@ -88,7 +90,11 @@ export function MobileUserActions({
           </Link>
           <button
             type="button"
-            className="block rounded-lg px-3 py-2 text-left text-sm font-medium text-slate-500 dark:text-slate-400"
+            onClick={() => {
+              onDeleteAccountClick();
+              closeMobileMenu();
+            }}
+            className="block rounded-lg px-3 py-2 text-left text-sm font-medium text-red-600 transition hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/40"
           >
             Excluir conta
           </button>
