@@ -48,4 +48,16 @@ export class CloudinaryService {
       streamifier.createReadStream(file.buffer).pipe(uploadStream);
     });
   }
+
+  /** Extrai o public_id (com pasta) de uma URL do Cloudinary, ex:
+   *  ".../upload/v123456/conectapet/abc123.png" -> "conectapet/abc123". */
+  extractPublicId(url: string): string | null {
+    const match = url.match(/\/upload\/(?:v\d+\/)?(.+)\.[a-zA-Z0-9]+$/);
+    return match ? match[1] : null;
+  }
+
+  async deleteFile(publicId: string): Promise<void> {
+    this.ensureCloudinaryConfig();
+    await cloudinary.uploader.destroy(publicId, { invalidate: true });
+  }
 }

@@ -38,6 +38,7 @@ interface AuthContextValue {
   register: (payload: RegisterPayload) => Promise<void>;
   logout: () => void;
   deleteAccount: (password: string) => Promise<void>;
+  uploadPhoto: (file: File) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -168,6 +169,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     router.push("/login");
   };
 
+  const uploadPhoto = async (file: File) => {
+    const formData = new FormData();
+    formData.append("photo", file);
+
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
+    const response = await fetch(`${apiUrl}/auth/photo`, {
+      method: "POST",
+      // Do NOT set Content-Type here so the browser sets multipart/form-data with boundary.
+      body: formData,
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(text || "Erro ao enviar a imagem.");
+    }
+
+    const updatedUser = (await response.json()) as AuthUserFull;
+    setUser(updatedUser);
+  };
+
   const deleteAccount = async (password: string) => {
     await apiFetch("/auth/account", {
       method: "DELETE",
@@ -189,6 +211,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       register,
       logout,
       deleteAccount,
+      uploadPhoto,
     }),
     [token, user, isLoading],
   );

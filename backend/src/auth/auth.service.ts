@@ -7,6 +7,7 @@ import { JwtService } from "@nestjs/jwt";
 import { AdoptionStatus, Prisma, Role } from "@prisma/client";
 import * as bcrypt from "bcrypt";
 import { PrismaService } from "../prisma/prisma.service";
+import { CloudinaryService } from "../cloudinary/cloudinary.service";
 import { DeleteAccountDto } from "./dto/delete-account.dto";
 import { LoginDto } from "./dto/login.dto";
 import { RegisterDto } from "./dto/register.dto";
@@ -22,6 +23,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly cepValidationService: CepValidationService,
     private readonly loginAttemptService: LoginAttemptService,
+    private readonly cloudinaryService: CloudinaryService,
   ) {}
 
   private buildPublicUser(user: {
@@ -33,6 +35,7 @@ export class AuthService {
     city: string | null;
     contact: string | null;
     address: string | null;
+    photoUrl: string | null;
     role: Role;
   }) {
     return {
@@ -44,6 +47,7 @@ export class AuthService {
       city: user.city,
       contact: user.contact,
       address: user.address,
+      photoUrl: user.photoUrl,
       role: user.role,
     };
   }
@@ -59,6 +63,7 @@ export class AuthService {
     address: string | null;
     cpf: string | null;
     cnpj: string | null;
+    photoUrl: string | null;
     role: Role;
   }) {
     return {
@@ -72,6 +77,7 @@ export class AuthService {
       address: user.address,
       cpf: user.cpf,
       cnpj: user.cnpj,
+      photoUrl: user.photoUrl,
       role: user.role,
     };
   }
@@ -233,6 +239,7 @@ export class AuthService {
         city: user.city,
         contact: user.contact,
         address: user.address,
+        photoUrl: user.photoUrl,
         role: user.role,
       }),
     };
@@ -252,6 +259,7 @@ export class AuthService {
         address: true,
         cpf: true,
         cnpj: true,
+        photoUrl: true,
         role: true,
       },
     });
@@ -322,12 +330,67 @@ export class AuthService {
         address: true,
         cpf: true,
         cnpj: true,
+        photoUrl: true,
         role: true,
       },
     });
 
     return this.buildFullUser(user);
   }
+
+  async uploadPhoto(userId: string, file: { mimetype: string; size: number; buffer: Buffer }) {
+    const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/webp"];
+    const MAX_FILE_SIZE = 5 * 1024 * 1024;
+
+    if (!ALLOWED_MIME_TYPES.includes(file.mimetype)) {
+      throw new BadRequestException("Apenas imagens JPG, PNG ou WEBP.");
+    }
+
+    if (file.size > MAX_FILE_SIZE) {
+      throw new BadRequestException("Tamanho máximo permitido é de 5MB.");
+    }
+
+    const previousUser = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { photoUrl: true },
+    });
+
+    const uploadResult = await this.cloudinaryService.uploadFile(file);
+
+    if (previousUser?.photoUrl) {
+      const previousPublicId = this.cloudinaryService.extractPublicId(
+        previousUser.photoUrl,
+      );
+
+      if (previousPublicId) {
+        // Melhor esforço: se a exclusão da foto antiga falhar, a nova
+        // ja foi enviada e o perfil deve ser atualizado normalmente.
+        this.cloudinaryService.deleteFile(previousPublicId).catch(() => {});
+      }
+    }
+
+    const user = await this.prisma.user.update({
+      where: { id: userId },
+      data: { photoUrl: uploadResult.secure_url },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        cep: true,
+        state: true,
+        city: true,
+        contact: true,
+        address: true,
+        cpf: true,
+        cnpj: true,
+        photoUrl: true,
+        role: true,
+      },
+    });
+
+    return this.buildFullUser(user);
+  }
+
   async deleteAccount(userId: string, dto: DeleteAccountDto) {
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
 
@@ -376,6 +439,7 @@ export class AuthService {
         state: true,
         city: true,
         contact: true,
+        photoUrl: true,
       },
       orderBy: { createdAt: "desc" },
     });

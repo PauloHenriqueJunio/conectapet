@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -7,8 +8,11 @@ import {
   Post,
   Req,
   Res,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from "@nestjs/common";
+import { FileInterceptor } from "@nestjs/platform-express";
 import type { Response } from "express";
 import { Throttle } from "@nestjs/throttler";
 import { JwtAuthGuard } from "./guards/jwt-auth.guard";
@@ -86,6 +90,20 @@ export class AuthController {
     @Body() dto: UpdateProfileDto,
   ) {
     return this.authService.updateProfile(req.user.userId, dto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post("photo")
+  @UseInterceptors(FileInterceptor("photo"))
+  uploadPhoto(
+    @Req() req: { user: RequestUser },
+    @UploadedFile() file?: { mimetype: string; size: number; buffer: Buffer },
+  ) {
+    if (!file) {
+      throw new BadRequestException("Nenhuma imagem enviada.");
+    }
+
+    return this.authService.uploadPhoto(req.user.userId, file);
   }
 
   @UseGuards(JwtAuthGuard)

@@ -92,6 +92,7 @@ export type ONG = {
   state: string | null;
   city: string | null;
   address?: string | null;
+  photoUrl?: string | null;
 };
 
 export type Pet = {

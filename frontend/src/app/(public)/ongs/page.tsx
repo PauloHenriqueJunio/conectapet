@@ -13,6 +13,7 @@ interface ONG {
   state: string | null;
   city: string | null;
   contact: string | null;
+  photoUrl?: string | null;
 }
 
 export default function OngsPage() {
@@ -95,7 +96,15 @@ export default function OngsPage() {
                 >
                   <article className="flex h-full flex-col">
                     <div className="flex h-32 w-full items-center justify-center overflow-hidden bg-gradient-to-br from-brand-400 to-brand-600">
-                      <Building2 size={56} className="text-white/80" />
+                      {ong.photoUrl ? (
+                        <img
+                          src={ong.photoUrl}
+                          alt={ong.name}
+                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        />
+                      ) : (
+                        <Building2 size={56} className="text-white/80" />
+                      )}
                     </div>
 
                     <div className="flex flex-1 flex-col p-6">
