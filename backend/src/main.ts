@@ -1,5 +1,6 @@
 import { ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
+import helmet from "helmet";
 import type { NextFunction, Request, Response } from "express";
 import { AppModule } from "./app.module";
 
@@ -9,10 +10,16 @@ async function bootstrap() {
 
   expressApp.disable("x-powered-by");
 
+  app.use(
+    helmet({
+      // API JSON-only: no HTML/scripts are served, so a default CSP would
+      // only block Swagger/docs if those are ever added here.
+      contentSecurityPolicy: false,
+      crossOriginResourcePolicy: { policy: "cross-origin" },
+    }),
+  );
+
   app.use((_: Request, res: Response, next: NextFunction) => {
-    res.setHeader("X-Content-Type-Options", "nosniff");
-    res.setHeader("X-Frame-Options", "DENY");
-    res.setHeader("Referrer-Policy", "no-referrer");
     res.setHeader(
       "Permissions-Policy",
       "camera=(), microphone=(), geolocation=()",
