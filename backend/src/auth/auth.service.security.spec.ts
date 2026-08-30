@@ -39,12 +39,17 @@ describe("AuthService - security", () => {
     registerSuccess: jest.fn(),
   };
 
+  const cloudinaryService = {
+    uploadFile: jest.fn(),
+  };
+
   const createService = (prisma: { user: MockPrismaUser }) =>
     new AuthService(
       prisma as never,
       jwtService as never,
       cepValidationService as never,
       loginAttemptService as never,
+      cloudinaryService as never,
     );
 
   beforeEach(() => {
@@ -191,6 +196,7 @@ describe("AuthService - security", () => {
       role: Role.PESSOA_FISICA,
       cep: "57000-000",
       cpf: "123.456.789-01",
+      contact: "82999999999",
     });
 
     expect(prisma.user.create).toHaveBeenCalledWith(

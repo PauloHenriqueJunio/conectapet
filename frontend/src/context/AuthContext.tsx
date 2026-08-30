@@ -10,7 +10,7 @@ import {
 } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { apiFetch } from "@/lib/api";
-import { AuthResponse, AuthUser, Role } from "@/types/api";
+import { AuthResponse, AuthUser, AuthUserFull, Role } from "@/types/api";
 
 interface RegisterPayload {
   name: string;
@@ -37,12 +37,14 @@ interface AuthContextValue {
   login: (payload: LoginPayload, expectedRole?: Role) => Promise<void>;
   register: (payload: RegisterPayload) => Promise<void>;
   logout: () => void;
+  deleteAccount: (password: string) => Promise<void>;
+  uploadPhoto: (file: File) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 const PRIVATE_PREFIXES = ["/ong", "/pessoa-fisica"];
-const STORAGE_KEY = "conectapet_auth";
+const COOKIE_SESSION_FLAG = "cookie-session";
 
 function isRoutePrivate(pathname: string) {
   return PRIVATE_PREFIXES.some(
@@ -59,19 +61,37 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const pathname = usePathname();
 
   useEffect(() => {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    let isMounted = true;
 
-    if (raw) {
+    const loadProfile = async () => {
       try {
-        const parsed = JSON.parse(raw) as { token: string; user: AuthUser };
-        setToken(parsed.token);
-        setUser(parsed.user);
-      } catch {
-        localStorage.removeItem(STORAGE_KEY);
-      }
-    }
+        const profile = await apiFetch<AuthUser>("/auth/profile");
 
-    setIsLoading(false);
+        if (!isMounted) {
+          return;
+        }
+
+        setUser(profile);
+        setToken(COOKIE_SESSION_FLAG);
+      } catch {
+        if (!isMounted) {
+          return;
+        }
+
+        setToken(null);
+        setUser(null);
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    void loadProfile();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   useEffect(() => {
@@ -93,13 +113,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [pathname, token, isLoading, router]);
 
-  const persistSession = (auth: AuthResponse) => {
-    setToken(auth.accessToken);
+  const persistSession = async (auth: AuthResponse) => {
+    setToken(COOKIE_SESSION_FLAG);
     setUser(auth.user);
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify({ token: auth.accessToken, user: auth.user }),
-    );
+
+    try {
+      const fullProfile = await apiFetch<AuthUserFull>("/auth/profile");
+      if (fullProfile) {
+        setUser(fullProfile);
+      }
+    } catch {
+      // Keep user with public data if profile fetch fails
+    }
   };
 
   const login = async (payload: LoginPayload, expectedRole?: Role) => {
@@ -112,7 +137,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       throw new Error("ROLE_MISMATCH");
     }
 
-    persistSession(auth);
+    await persistSession(auth);
     if (auth.user.role === "ONG") {
       router.push("/ong/dashboard");
     } else {
@@ -133,9 +158,46 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = () => {
+    void apiFetch("/auth/logout", {
+      method: "POST",
+    }).catch(() => {
+      // Keep client-side logout resilient even if API call fails.
+    });
+
     setToken(null);
     setUser(null);
-    localStorage.removeItem(STORAGE_KEY);
+    router.push("/login");
+  };
+
+  const uploadPhoto = async (file: File) => {
+    const formData = new FormData();
+    formData.append("photo", file);
+
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
+    const response = await fetch(`${apiUrl}/auth/photo`, {
+      method: "POST",
+      // Do NOT set Content-Type here so the browser sets multipart/form-data with boundary.
+      body: formData,
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(text || "Erro ao enviar a imagem.");
+    }
+
+    const updatedUser = (await response.json()) as AuthUserFull;
+    setUser(updatedUser);
+  };
+
+  const deleteAccount = async (password: string) => {
+    await apiFetch("/auth/account", {
+      method: "DELETE",
+      body: JSON.stringify({ password }),
+    });
+
+    setToken(null);
+    setUser(null);
     router.push("/login");
   };
 
@@ -148,6 +210,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       login,
       register,
       logout,
+      deleteAccount,
+      uploadPhoto,
     }),
     [token, user, isLoading],
   );

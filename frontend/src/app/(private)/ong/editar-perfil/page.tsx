@@ -9,10 +9,17 @@ import Link from "next/link";
 import { useCepLookup } from "@/app/(public)/register/hooks/useCepLookup";
 import { maskCEP, maskPhone } from "@/utils/masks";
 import { STATUS_COLORS } from "@/constants/theme";
+import { OngLogoPicker } from "@/components/ui/OngLogoPicker";
 
 export default function EditarPerfilONGPage() {
-  const { user, token, isLoading } = useAuth();
+  const { user, token, isLoading, uploadPhoto } = useAuth();
   const router = useRouter();
+
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [pendingPhotoFile, setPendingPhotoFile] = useState<File | null>(null);
+  const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
+  const [photoError, setPhotoError] = useState<string | null>(null);
+  const [photoSaved, setPhotoSaved] = useState(false);
 
   const [formData, setFormData] = useState({
     email: "",
@@ -42,8 +49,36 @@ export default function EditarPerfilONGPage() {
         complement: complementParts.join(", "),
         cep: user.cep || "",
       });
+      setPhotoPreview(user.photoUrl || null);
     }
   }, [user, isLoading]);
+
+  const handlePhotoSelected = (file: File) => {
+    setPhotoError(null);
+    setPhotoSaved(false);
+    setPendingPhotoFile(file);
+    setPhotoPreview(URL.createObjectURL(file));
+  };
+
+  const handleSavePhoto = async () => {
+    if (!pendingPhotoFile) return;
+
+    setPhotoError(null);
+    setIsUploadingPhoto(true);
+
+    try {
+      await uploadPhoto(pendingPhotoFile);
+      setPendingPhotoFile(null);
+      setPhotoSaved(true);
+      setTimeout(() => setPhotoSaved(false), 4000);
+    } catch (err) {
+      setPhotoError(
+        err instanceof Error ? err.message : "Erro ao enviar a imagem.",
+      );
+    } finally {
+      setIsUploadingPhoto(false);
+    }
+  };
 
   const handleAddressResolved = useCallback((resolvedAddress: string) => {
     setFormData((prev) => ({ ...prev, address: resolvedAddress }));
@@ -170,6 +205,23 @@ export default function EditarPerfilONGPage() {
           </div>
         )}
 
+        <div className="mb-6 rounded-3xl bg-white p-8 shadow-sm ring-1 ring-slate-100">
+          <OngLogoPicker
+            previewUrl={photoPreview}
+            onFileSelected={handlePhotoSelected}
+            disabled={isUploadingPhoto}
+            onSave={handleSavePhoto}
+            hasPendingChange={Boolean(pendingPhotoFile)}
+            isSaving={isUploadingPhoto}
+            justSaved={photoSaved}
+          />
+          {photoError && (
+            <p className="mt-2 text-xs font-medium text-red-600">
+              {photoError}
+            </p>
+          )}
+        </div>
+
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="rounded-3xl bg-white p-8 shadow-sm ring-1 ring-slate-100 space-y-6">
             {/* Email */}
@@ -191,7 +243,7 @@ export default function EditarPerfilONGPage() {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-200 outline-none transition"
+                  className="w-full bg-[var(--bg-input)] text-[var(--text-primary)] pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-200 outline-none transition placeholder:text-slate-500 dark:placeholder:text-slate-400"
                 />
               </div>
             </div>
@@ -216,7 +268,7 @@ export default function EditarPerfilONGPage() {
                   value={formData.contact}
                   onChange={handleChange}
                   placeholder="(00) 9999-9999"
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-200 outline-none transition"
+                  className="w-full bg-[var(--bg-input)] text-[var(--text-primary)] pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-200 outline-none transition placeholder:text-slate-500 dark:placeholder:text-slate-400"
                 />
               </div>
             </div>
@@ -246,7 +298,7 @@ export default function EditarPerfilONGPage() {
                   value={formData.cep}
                   onChange={handleChange}
                   placeholder="00000-000"
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-200 outline-none transition"
+                  className="w-full bg-[var(--bg-input)] text-[var(--text-primary)] pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-200 outline-none transition placeholder:text-slate-500 dark:placeholder:text-slate-400"
                 />
               </div>
             </div>
@@ -271,7 +323,7 @@ export default function EditarPerfilONGPage() {
                   value={formData.address}
                   onChange={handleChange}
                   placeholder="Rua e bairro"
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-200 outline-none transition"
+                  className="w-full bg-[var(--bg-input)] text-[var(--text-primary)] pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-200 outline-none transition placeholder:text-slate-500 dark:placeholder:text-slate-400"
                 />
               </div>
 
@@ -288,7 +340,7 @@ export default function EditarPerfilONGPage() {
                     value={formData.number}
                     onChange={handleChange}
                     placeholder="Número"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-200 outline-none transition"
+                    className="w-full bg-[var(--bg-input)] text-[var(--text-primary)] pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-200 outline-none transition placeholder:text-slate-500 dark:placeholder:text-slate-400"
                   />
                 </div>
 
@@ -304,7 +356,7 @@ export default function EditarPerfilONGPage() {
                     value={formData.complement}
                     onChange={handleChange}
                     placeholder="Complemento"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-200 outline-none transition"
+                    className="w-full bg-[var(--bg-input)] text-[var(--text-primary)] pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 focus:border-brand-500 focus:ring focus:ring-brand-200 outline-none transition placeholder:text-slate-500 dark:placeholder:text-slate-400"
                   />
                 </div>
               </div>

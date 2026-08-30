@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
@@ -28,6 +29,29 @@ type UploadedImageFile = {
   buffer: Buffer;
 };
 
+const ALLOWED_IMAGE_MIME_TYPES = ["image/jpeg", "image/png", "image/webp"];
+const PET_UPLOAD_OPTIONS = {
+  limits: {
+    fileSize: 5 * 1024 * 1024,
+    files: 5,
+  },
+  fileFilter: (
+    _req: unknown,
+    file: { mimetype: string },
+    callback: (error: Error | null, acceptFile: boolean) => void,
+  ) => {
+    if (!ALLOWED_IMAGE_MIME_TYPES.includes(file.mimetype)) {
+      callback(
+        new BadRequestException("Apenas imagens JPG, PNG ou WEBP."),
+        false,
+      );
+      return;
+    }
+
+    callback(null, true);
+  },
+};
+
 @Controller("pets")
 export class PetsController {
   constructor(private readonly petsService: PetsService) {}
@@ -36,10 +60,13 @@ export class PetsController {
   @Roles(Role.ONG, Role.PESSOA_FISICA)
   @Post()
   @UseInterceptors(
-    FileFieldsInterceptor([
-      { name: "photo", maxCount: 1 },
-      { name: "photos", maxCount: 5 },
-    ]),
+    FileFieldsInterceptor(
+      [
+        { name: "photo", maxCount: 1 },
+        { name: "photos", maxCount: 5 },
+      ],
+      PET_UPLOAD_OPTIONS,
+    ),
   )
   create(
     @Body() dto: CreatePetDto,
@@ -51,18 +78,47 @@ export class PetsController {
   }
 
   @Get()
-  findAllAvailable(@Query("species") species?: string) {
-    return this.petsService.findAvailable(species);
+  findAllAvailable(
+    @Query("species") species?: string,
+    @Query("size") size?: string,
+    @Query("sex") sex?: string,
+    @Query("city") city?: string,
+    @Query("isCastrated") isCastrated?: string,
+    @Query("isVaccinated") isVaccinated?: string,
+  ) {
+    return this.petsService.findAvailable({
+      species,
+      size,
+      sex,
+      city,
+      isCastrated:
+        isCastrated === undefined ? undefined : isCastrated === "true",
+      isVaccinated:
+        isVaccinated === undefined ? undefined : isVaccinated === "true",
+    });
+  }
+
+  @Get("ong/:ongId/available-count")
+  countAvailableByOng(@Param("ongId") ongId: string) {
+    return this.petsService.countAvailableByOng(ongId);
+  }
+
+  @Get("ong/:ongId/available")
+  findAvailableByOng(@Param("ongId") ongId: string) {
+    return this.petsService.findAvailableByOng(ongId);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ONG, Role.PESSOA_FISICA)
   @Patch(":id")
   @UseInterceptors(
-    FileFieldsInterceptor([
-      { name: "photo", maxCount: 1 },
-      { name: "photos", maxCount: 5 },
-    ]),
+    FileFieldsInterceptor(
+      [
+        { name: "photo", maxCount: 1 },
+        { name: "photos", maxCount: 5 },
+      ],
+      PET_UPLOAD_OPTIONS,
+    ),
   )
   update(
     @Param("id") id: string,

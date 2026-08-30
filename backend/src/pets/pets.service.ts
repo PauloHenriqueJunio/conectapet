@@ -31,20 +31,81 @@ export class PetsService {
     private readonly cloudinaryService: CloudinaryService,
   ) {}
 
-  findAvailable(species?: string) {
+  findAvailable(filters?: {
+    species?: string;
+    size?: string;
+    sex?: string;
+    city?: string;
+    isCastrated?: boolean;
+    isVaccinated?: boolean;
+  }) {
+    const { species, size, sex, city, isCastrated, isVaccinated } =
+      filters ?? {};
+
     return this.prisma.pet.findMany({
       where: {
         isAdopted: false,
         ...(species
           ? { species: { equals: species, mode: "insensitive" } }
           : {}),
+        ...(size ? { size: { equals: size, mode: "insensitive" } } : {}),
+        ...(sex ? { sex: { equals: sex, mode: "insensitive" } } : {}),
+        ...(isCastrated !== undefined ? { isCastrated } : {}),
+        ...(isVaccinated
+          ? {
+              OR: [
+                { hasVaccineV8: true },
+                { hasVaccineGiardia: true },
+                { hasVaccineFlu: true },
+                { hasVaccineRabies: true },
+                { hasVaccineFeline: true },
+                { hasVaccineFelv: true },
+              ],
+            }
+          : {}),
+        ...(city
+          ? { ong: { city: { equals: city, mode: "insensitive" } } }
+          : {}),
       },
       include: {
         ong: {
-          select: { id: true, name: true, email: true },
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            city: true,
+            state: true,
+          },
         },
       },
       orderBy: { name: "asc" },
+    });
+  }
+
+  countAvailableByOng(ongId: string) {
+    return this.prisma.pet.count({
+      where: {
+        ongId,
+        isAdopted: false,
+      },
+    });
+  }
+
+  findAvailableByOng(ongId: string) {
+    return this.prisma.pet.findMany({
+      where: {
+        ongId,
+        isAdopted: false,
+      },
+      orderBy: { createdAt: "desc" },
+      select: {
+        id: true,
+        name: true,
+        species: true,
+        age: true,
+        photoUrl: true,
+        isAdopted: true,
+      },
     });
   }
 
@@ -54,8 +115,11 @@ export class PetsService {
       include: {
         ong: {
           select: {
+            id: true,
             name: true,
             contact: true,
+            city: true,
+            state: true,
           },
         },
       },

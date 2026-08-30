@@ -6,6 +6,33 @@ import { ExtractJwt, Strategy } from "passport-jwt";
 import { PrismaService } from "../../prisma/prisma.service";
 import { JwtPayload } from "../types/jwt-payload.type";
 
+const AUTH_COOKIE_NAME = "conectapet_session";
+
+function extractTokenFromCookie(req: {
+  headers?: { cookie?: string };
+}): string | null {
+  const cookieHeader = req?.headers?.cookie;
+
+  if (!cookieHeader) {
+    return null;
+  }
+
+  const pairs = cookieHeader.split(";");
+
+  for (const pair of pairs) {
+    const [rawName, ...rawValueParts] = pair.trim().split("=");
+
+    if (rawName !== AUTH_COOKIE_NAME) {
+      continue;
+    }
+
+    const rawValue = rawValueParts.join("=");
+    return decodeURIComponent(rawValue);
+  }
+
+  return null;
+}
+
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
@@ -13,7 +40,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     configService: ConfigService,
   ) {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        extractTokenFromCookie,
+        ExtractJwt.fromAuthHeaderAsBearerToken(),
+      ]),
       ignoreExpiration: false,
       secretOrKey: configService.getOrThrow<string>("JWT_SECRET"),
     });

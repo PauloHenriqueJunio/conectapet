@@ -1,6 +1,6 @@
 export type Role = "ONG" | "PESSOA_FISICA";
 
-export interface AuthUser {
+export interface AuthUserPublic {
   id: string;
   name: string;
   email: string;
@@ -9,14 +9,19 @@ export interface AuthUser {
   city?: string | null;
   contact?: string | null;
   address?: string | null;
-  cpf?: string | null;
-  cnpj?: string | null;
+  photoUrl?: string | null;
   role: Role;
 }
 
+export interface AuthUserFull extends AuthUserPublic {
+  cpf?: string | null;
+  cnpj?: string | null;
+}
+
+export type AuthUser = AuthUserFull;
+
 export interface AuthResponse {
-  accessToken: string;
-  user: AuthUser;
+  user: AuthUserPublic;
 }
 
 export interface Pet {
@@ -45,8 +50,18 @@ export interface Pet {
   hasOtherHealthInfo: boolean;
   otherHealthInfoDescription?: string | null;
   ong?: {
-    name: string;
-    contact?: string;
+    id?: string;
+    name?: string;
+    contact?: string | null;
+    city?: string | null;
+    state?: string | null;
+  };
+  owner?: {
+    id?: string;
+    name?: string;
+    contact?: string | null;
+    city?: string | null;
+    state?: string | null;
   };
 }
 
@@ -72,12 +87,17 @@ export interface AdoptionRequest {
     hasVaccineFelv: boolean;
     hasHistoryOfIllness: boolean;
     illnessDescription?: string | null;
-    hasOtherHealthInfo: string | null;
+    hasOtherHealthInfo: boolean;
     otherHealthInfoDescription?: string | null;
+    ong?: {
+      id?: string;
+      name?: string;
+    };
   };
   adopter?: {
     id: string;
     name: string;
     email: string;
+    contact?: string | null;
   };
 }

@@ -157,14 +157,14 @@ function FilterBar({ activeFilter, setActiveFilter, counts }: FilterBarProps) {
             className={`flex-1 sm:flex-initial px-4 py-2 text-sm font-semibold rounded-lg transition-all flex items-center justify-center gap-2 whitespace-nowrap 
               ${
                 isActive
-                  ? "bg-white text-brand-700 shadow"
+                  ? "filter-pill-active"
                   : "text-slate-600 hover:bg-white/60 hover:text-slate-900"
               }`}
           >
-            {isActive && <Filter size={15} className="text-brand-500" />}
+            {isActive && <Filter size={15} className="filter-pill-icon" />}
             {filter.label}
             <span
-              className={`px-2 py-0.5 rounded-full text-xs transition-colors ${isActive ? "bg-brand-50 text-brand-800" : "bg-slate-200 text-slate-600"}`}
+              className={`filter-pill-count px-2 py-0.5 rounded-full text-xs transition-colors ${isActive ? "" : "bg-slate-200 text-slate-600"}`}
             >
               {filter.count}
             </span>
@@ -196,7 +196,7 @@ function EmptyState({ isFiltering }: { isFiltering: boolean }) {
 function StatusBadge({ isAdopted }: { isAdopted: boolean }) {
   return (
     <span
-      className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold ${isAdopted ? "bg-brand-50 text-brand-700 border-brand-200" : "bg-blue-50 text-blue-700 border-blue-200"}`}
+      className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold ${isAdopted ? "bg-brand-50 text-brand-700 border-brand-200" : "bg-blue-50 text-blue-900 border-blue-200"}`}
     >
       {isAdopted ? "Adotado" : "Disponível"}
     </span>

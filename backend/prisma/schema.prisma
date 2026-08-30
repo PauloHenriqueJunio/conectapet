@@ -30,6 +30,7 @@ model User {
   address          String?
   cpf              String?           @unique
   cnpj             String?           @unique
+  photoUrl         String?
   role             Role
   createdAt        DateTime          @default(now())
   pets             Pet[]             @relation("OngPets")

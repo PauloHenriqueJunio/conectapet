@@ -1,0 +1,167 @@
+/* ============================================================================
+   ConectaPet — design tokens
+   ----------------------------------------------------------------------------
+   Fonte unica de verdade das cores do tema.
+   Valores do tema claro em :root, do tema escuro em .dark
+   (`.dark` e o seletor usado pelo Tailwind, ver darkMode: "class").
+
+   Os tokens *-rgb existem como canais separados para que o Tailwind consiga
+   aplicar opacidade (ex.: bg-card/50) nas cores semanticas registradas em
+   tailwind.config.ts.
+   ========================================================================== */
+
+:root {
+  color-scheme: light;
+
+  /* Superficies */
+  --bg-page: #f8faf8;
+  --bg-primary: #ffffff;
+  --bg-secondary: #f9fafb;
+  --bg-card: #ffffff;
+  --bg-input: #ffffff;
+  --bg-muted: #f1f5f9;
+  --bg-muted-strong: #e2e8f0;
+
+  /* Texto */
+  --text-primary: #111827;
+  --text-secondary: #6b7280;
+  --text-muted: #9ca3af;
+  --text-faint: #cbd5e1;
+  --text-inverse: #ffffff;
+
+  /* Bordas */
+  --border-default: #e5e7eb;
+  --border-subtle: #f3f4f6;
+  --border-strong: #cbd5e1;
+
+  /* Marca */
+  --brand: #2f9f5a;
+  --brand-hover: #1f7f46;
+  --brand-solid: #2f9f5a;
+  --brand-solid-hover: #1f7f46;
+  --brand-text: #1a6539;
+  --brand-light: #effbf3;
+  --brand-light-hover: #d9f5e2;
+  --brand-border: #b5eac8;
+
+  /* Elevacao (mesma escala do Tailwind no tema claro) */
+  --shadow: rgba(0, 0, 0, 0.08);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05);
+  --shadow-elevation: var(--shadow-md);
+
+  /* Raios (consumidos por components/ui) */
+  --radius: 0.625rem;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+
+  /* Status */
+  --status-success-bg: #f0fdf4;
+  --status-success-text: #15803d;
+  --status-success-border: #bbf7d0;
+  --status-danger-bg: #fef2f2;
+  --status-danger-text: #b91c1c;
+  --status-danger-border: #fecaca;
+  --status-warning-bg: #fffbeb;
+  --status-warning-text: #b45309;
+  --status-warning-border: #fde68a;
+  --status-info-bg: #f0f9ff;
+  --status-info-text: #0369a1;
+  --status-info-border: #bae6fd;
+  --status-purple-bg: #faf5ff;
+  --status-purple-text: #7e22ce;
+  --status-purple-border: #e9d5ff;
+
+  /* Canais RGB para as cores semanticas do Tailwind (suportam opacidade) */
+  --rgb-background: 248 250 248;
+  --rgb-foreground: 17 24 39;
+  --rgb-card: 255 255 255;
+  --rgb-muted: 241 245 249;
+  --rgb-muted-foreground: 107 114 128;
+  --rgb-primary: 47 159 90;
+  --rgb-primary-foreground: 255 255 255;
+  --rgb-destructive: 185 28 28;
+  --rgb-destructive-foreground: 255 255 255;
+  --rgb-border: 229 231 235;
+  --rgb-ring: 47 159 90;
+}
+
+.dark {
+  color-scheme: dark;
+
+  /* Superficies */
+  --bg-page: #0f1117;
+  --bg-primary: #0f1117;
+  --bg-secondary: #1a1f2e;
+  --bg-card: #1a1f2e;
+  --bg-input: #222836;
+  --bg-muted: #222836;
+  --bg-muted-strong: #2e3447;
+
+  /* Texto */
+  --text-primary: #f0f2f7;
+  --text-secondary: #9ba3bb;
+  --text-muted: #5e6680;
+  --text-faint: #454c66;
+  --text-inverse: #0f1117;
+
+  /* Bordas */
+  --border-default: #2e3447;
+  --border-subtle: #222836;
+  --border-strong: #3d4459;
+
+  /* Marca */
+  --brand: #4fbd76;
+  --brand-hover: #84d8a2;
+  /* o botao solido mantem verde saturado para preservar contraste com texto branco */
+  --brand-solid: #2f9f5a;
+  --brand-solid-hover: #38ad68;
+  --brand-text: #84d8a2;
+  --brand-light: #1a2e1f;
+  --brand-light-hover: #21402a;
+  --brand-border: #2f5c3d;
+
+  /* Elevacao (mais densa para separar superficies no escuro) */
+  --shadow: rgba(0, 0, 0, 0.5);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px -1px rgba(0, 0, 0, 0.45);
+  --shadow-md: 0 10px 24px -4px rgba(0, 0, 0, 0.5), 0 4px 8px -4px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 20px 40px -8px rgba(0, 0, 0, 0.55), 0 8px 14px -6px rgba(0, 0, 0, 0.5);
+  --shadow-xl: 0 28px 60px -12px rgba(0, 0, 0, 0.65);
+  --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.35);
+  --shadow-elevation: var(--shadow-md);
+
+  /* Status */
+  --status-success-bg: #0d1f12;
+  --status-success-text: #4ade80;
+  --status-success-border: #166534;
+  --status-danger-bg: #1f0d0d;
+  --status-danger-text: #f87171;
+  --status-danger-border: #7f1d1d;
+  --status-warning-bg: #1f1a0d;
+  --status-warning-text: #fbbf24;
+  --status-warning-border: #78350f;
+  --status-info-bg: #0d1a2e;
+  --status-info-text: #38bdf8;
+  --status-info-border: #075985;
+  --status-purple-bg: #1a1030;
+  --status-purple-text: #c084fc;
+  --status-purple-border: #4c1d95;
+
+  /* Canais RGB para as cores semanticas do Tailwind */
+  --rgb-background: 15 17 23;
+  --rgb-foreground: 240 242 247;
+  --rgb-card: 26 31 46;
+  --rgb-muted: 34 40 54;
+  --rgb-muted-foreground: 155 163 187;
+  --rgb-primary: 47 159 90;
+  --rgb-primary-foreground: 255 255 255;
+  --rgb-destructive: 248 113 113;
+  --rgb-destructive-foreground: 15 17 23;
+  --rgb-border: 46 52 71;
+  --rgb-ring: 79 189 118;
+}

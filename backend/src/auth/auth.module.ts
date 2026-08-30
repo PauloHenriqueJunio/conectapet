@@ -7,11 +7,13 @@ import { AuthService } from "./auth.service";
 import { CepValidationService } from "./services/cep-validation.service";
 import { LoginAttemptService } from "./services/login-attempt.service";
 import { JwtStrategy } from "./strategies/jwt.strategy";
+import { CloudinaryModule } from "../cloudinary/cloudinary.module";
 
 @Module({
   imports: [
     ConfigModule,
     PassportModule,
+    CloudinaryModule,
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
