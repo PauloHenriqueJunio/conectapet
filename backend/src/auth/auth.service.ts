@@ -338,7 +338,10 @@ export class AuthService {
     return this.buildFullUser(user);
   }
 
-  async uploadPhoto(userId: string, file: { mimetype: string; size: number; buffer: Buffer }) {
+  async uploadPhoto(
+    userId: string,
+    file: { mimetype: string; size: number; buffer: Buffer },
+  ) {
     const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/webp"];
     const MAX_FILE_SIZE = 5 * 1024 * 1024;
 

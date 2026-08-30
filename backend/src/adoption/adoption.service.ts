@@ -191,9 +191,7 @@ export class AdoptionService {
     }
 
     if (adoptionRequest.adopterId !== adopterId) {
-      throw new ForbiddenException(
-        "Você não pode cancelar esta solicitação.",
-      );
+      throw new ForbiddenException("Você não pode cancelar esta solicitação.");
     }
 
     if (adoptionRequest.status !== AdoptionStatus.PENDING) {

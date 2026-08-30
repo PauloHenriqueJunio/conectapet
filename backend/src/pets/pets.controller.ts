@@ -91,8 +91,10 @@ export class PetsController {
       size,
       sex,
       city,
-      isCastrated: isCastrated === undefined ? undefined : isCastrated === "true",
-      isVaccinated: isVaccinated === undefined ? undefined : isVaccinated === "true",
+      isCastrated:
+        isCastrated === undefined ? undefined : isCastrated === "true",
+      isVaccinated:
+        isVaccinated === undefined ? undefined : isVaccinated === "true",
     });
   }
 

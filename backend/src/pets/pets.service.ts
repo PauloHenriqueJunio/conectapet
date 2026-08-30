@@ -69,7 +69,13 @@ export class PetsService {
       },
       include: {
         ong: {
-          select: { id: true, name: true, email: true, city: true, state: true },
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            city: true,
+            state: true,
+          },
         },
       },
       orderBy: { name: "asc" },

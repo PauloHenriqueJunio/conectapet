@@ -56,10 +56,7 @@ export class AdoptionController {
 
   @Roles(Role.PESSOA_FISICA)
   @Delete(":id")
-  cancelRequest(
-    @Param("id") id: string,
-    @Req() req: { user: RequestUser },
-  ) {
+  cancelRequest(@Param("id") id: string, @Req() req: { user: RequestUser }) {
     return this.adoptionService.cancelRequest(id, req.user.userId);
   }
 }
