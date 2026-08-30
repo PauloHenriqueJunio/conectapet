@@ -196,7 +196,7 @@ function EmptyState({ isFiltering }: { isFiltering: boolean }) {
 function StatusBadge({ isAdopted }: { isAdopted: boolean }) {
   return (
     <span
-      className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold ${isAdopted ? "bg-brand-50 text-brand-700 border-brand-200" : "bg-blue-50 text-blue-900 dark:text-[var(--text-inverse)] border-blue-200"}`}
+      className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold ${isAdopted ? "bg-brand-50 text-brand-700 border-brand-200" : "bg-blue-50 text-blue-900 border-blue-200"}`}
     >
       {isAdopted ? "Adotado" : "Disponível"}
     </span>
@@ -281,7 +281,7 @@ function DesktopPetTable({
     <section className="hidden md:block rounded-2xl bg-white shadow-sm border border-slate-200 overflow-hidden">
       <table className="min-w-full text-left text-sm whitespace-nowrap">
         <thead>
-          <tr className="border-b border-slate-200 bg-slate-50/80 dark:text-[var(--text-inverse)] font-semibold">
+          <tr className="border-b border-slate-200 bg-slate-50/80 text-slate-600 font-semibold">
             <th className="px-6 py-4">Pet</th>
             <th className="px-6 py-4">Espécie</th>
             <th className="px-6 py-4">Idade</th>
