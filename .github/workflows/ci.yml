@@ -9,6 +9,9 @@ on:
 jobs:
   frontend-build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
 
     steps:
       - uses: actions/checkout@v4
@@ -17,14 +20,17 @@ jobs:
         with:
           node-version: "20"
 
-      - run: npm install --prefix frontend
+      - run: npm install
 
-      - run: npm --prefix frontend run test -- --run
+      - run: npm run test -- --run
 
-      - run: npm --prefix frontend run build
+      - run: npm run build
 
   backend-build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
 
     steps:
       - uses: actions/checkout@v4
@@ -33,12 +39,12 @@ jobs:
         with:
           node-version: "20"
 
-      - run: npm install --prefix backend
+      - run: npm install
 
-      - run: npx --prefix backend prisma generate
+      - run: npx prisma generate
 
-      - run: npx --prefix backend eslint "{src,test}/**/*.ts"
+      - run: npx eslint "{src,test}/**/*.ts"
 
-      - run: npm --prefix backend run test
+      - run: npm run test
 
-      - run: npm --prefix backend run build
+      - run: npm run build
