@@ -12,6 +12,7 @@ export type HeaderPage =
   | "meus-pets"
   | "minhas-solicitacoes"
   | "editar-perfil"
-  | "pet-profile";
+  | "pet-profile"
+  | "legal";
 
 export type HeaderNavKey = HeaderPage;

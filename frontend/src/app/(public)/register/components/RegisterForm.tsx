@@ -36,6 +36,7 @@ export function RegisterForm() {
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
 
   const handleOngPhotoSelected = (file: File) => {
     if (ongPhotoPreview) URL.revokeObjectURL(ongPhotoPreview);
@@ -75,6 +76,14 @@ export function RegisterForm() {
 
     if (role === "ONG" && !cnpj) {
       setError("CNPJ é obrigatório para ONG.");
+      setIsSubmitting(false);
+      return;
+    }
+
+    if (!acceptedTerms) {
+      setError(
+        "Você precisa aceitar os Termos de Uso e a Política de Privacidade.",
+      );
       setIsSubmitting(false);
       return;
     }
@@ -289,6 +298,36 @@ export function RegisterForm() {
             </div>
           )}
 
+          <div className="flex items-start gap-2">
+            <input
+              id="acceptedTerms"
+              type="checkbox"
+              required
+              checked={acceptedTerms}
+              onChange={(e) => setAcceptedTerms(e.target.checked)}
+              className="mt-1 h-4 w-4 rounded border-slate-300 text-brand-600 outline-none ring-brand-300 focus:ring"
+            />
+            <label htmlFor="acceptedTerms" className="text-sm text-slate-600">
+              Li e aceito os{" "}
+              <Link
+                href="/termos-de-uso"
+                target="_blank"
+                className="font-semibold text-brand-700 hover:underline"
+              >
+                Termos de Uso
+              </Link>{" "}
+              e a{" "}
+              <Link
+                href="/politica-de-privacidade"
+                target="_blank"
+                className="font-semibold text-brand-700 hover:underline"
+              >
+                Política de Privacidade
+              </Link>
+              .
+            </label>
+          </div>
+
           {error && (
             <p
               className="rounded-xl px-3 py-2 text-sm"
@@ -303,7 +342,7 @@ export function RegisterForm() {
 
           <button
             type="submit"
-            disabled={isSubmitting}
+            disabled={isSubmitting || !acceptedTerms}
             className="w-full rounded-xl bg-brand-600 px-4 py-2 font-semibold text-white transition-all active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
           >
             {isSubmitting ? "Cadastrando..." : "Cadastrar"}
