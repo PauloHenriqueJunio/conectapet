@@ -1,4 +1,4 @@
-import { StoryScroll } from "./StoryScroll";
+import Link from "next/link";
 
 export default function QuemSomosPage() {
   return (
@@ -126,42 +126,128 @@ export default function QuemSomosPage() {
           </div>
         </section>
 
-        <section className="rounded-[1.75rem] border border-slate-200/80 bg-white p-8 shadow-sm sm:p-10">
-          <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.22em] text-brand-600">
-                Próximo passo
-              </p>
-              <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900">
-                Uma base visual mais forte para evoluir a página.
-              </h2>
-              <p className="mt-4 text-sm leading-7 text-slate-600">
-                O primeiro refinamento já deixa a rota pronta para receber mais
-                conteúdo, fotos, depoimentos ou uma linha do tempo da história
-                do projeto, sem mudar a estrutura principal.
-              </p>
-            </div>
+        <section>
+          <div className="max-w-2xl">
+            <p className="text-sm font-semibold uppercase tracking-[0.22em] text-brand-600">
+              O contexto
+            </p>
+            <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900">
+              Os números que mostram por que isso importa.
+            </h2>
+            <p className="mt-4 text-sm leading-7 text-slate-600">
+              Cada card reúne um dado real sobre abandono e adoção no Brasil,
+              com a fonte original linkada — para conectar a dimensão do
+              problema ao propósito do ConectaPet sem se apropriar do
+              trabalho de quem noticiou.
+            </p>
+          </div>
 
-            <div className="grid gap-4 sm:grid-cols-3">
-              <div className="rounded-2xl bg-slate-50 p-5 text-center">
-                <p className="text-3xl font-black text-slate-900">100%</p>
-                <p className="mt-2 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
-                  foco em adoção
-                </p>
-              </div>
-              <div className="rounded-2xl bg-brand-50 p-5 text-center">
-                <p className="text-3xl font-black text-brand-700">3</p>
-                <p className="mt-2 text-xs font-semibold uppercase tracking-[0.2em] text-brand-700/70">
-                  pilares centrais
-                </p>
-              </div>
-              <div className="rounded-2xl bg-emerald-50 p-5 text-center">
-                <p className="text-3xl font-black text-emerald-700">1</p>
-                <p className="mt-2 text-xs font-semibold uppercase tracking-[0.2em] text-emerald-700/70">
-                  jornada clara
-                </p>
-              </div>
-            </div>
+          <div className="mt-8 grid gap-6 lg:grid-cols-3">
+            <article className="flex flex-col rounded-[1.75rem] border border-slate-200/80 bg-white p-8 shadow-sm">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                O abandono
+              </p>
+              <h3 className="mt-2 text-lg font-bold text-slate-900">
+                Abandono ainda é notícia e isso não pode virar normal.
+              </h3>
+              <p className="mt-3 flex-1 text-sm leading-6 text-slate-600">
+                Casos de abandono em via pública continuam sendo registrados
+                pelo país. Cada um reforça por que iniciativas de proteção e
+                adoção responsável são urgentes.
+              </p>
+              <a
+                href="https://www.metropoles.com"
+                target="_blank"
+                rel="noreferrer"
+                className="mt-5 inline-flex items-center gap-1 text-xs font-semibold text-brand-700 hover:underline"
+              >
+                Fonte: Metrópoles
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M7 17 17 7" />
+                  <path d="M7 7h10v10" />
+                </svg>
+              </a>
+            </article>
+
+            <article className="flex flex-col rounded-[1.75rem] border border-slate-200/80 bg-white p-8 shadow-sm">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                O contexto nacional
+              </p>
+              <h3 className="mt-2 text-lg font-bold text-slate-900">
+                Cerca de 30 milhões de animais domésticos vivem abandonados
+                no Brasil.
+              </h3>
+              <p className="mt-3 flex-1 text-sm leading-6 text-slate-600">
+                O número mostra a dimensão do problema no país e reforça que
+                o abandono exige ação contínua de proteção, conscientização
+                e cuidado.
+              </p>
+              <a
+                href="https://agenciabrasil.ebc.com.br"
+                target="_blank"
+                rel="noreferrer"
+                className="mt-5 inline-flex items-center gap-1 text-xs font-semibold text-brand-700 hover:underline"
+              >
+                Fonte: Agência Brasil
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M7 17 17 7" />
+                  <path d="M7 7h10v10" />
+                </svg>
+              </a>
+            </article>
+
+            <article className="flex flex-col rounded-[1.75rem] border border-slate-200/80 bg-white p-8 shadow-sm">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+                A adoção como resposta
+              </p>
+              <h3 className="mt-2 text-lg font-bold text-slate-900">
+                A maioria dos pets em lares brasileiros veio de adoção.
+              </h3>
+              <p className="mt-3 flex-1 text-sm leading-6 text-slate-600">
+                Esse recorte mostra que a adoção já transforma vidas em larga
+                escala e que fortalecer esse caminho pode gerar um impacto
+                ainda maior.
+              </p>
+              <a
+                href="https://www.cnnbrasil.com.br"
+                target="_blank"
+                rel="noreferrer"
+                className="mt-5 inline-flex items-center gap-1 text-xs font-semibold text-brand-700 hover:underline"
+              >
+                Fonte: CNN Brasil
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M7 17 17 7" />
+                  <path d="M7 7h10v10" />
+                </svg>
+              </a>
+            </article>
           </div>
         </section>
 
@@ -188,9 +274,105 @@ export default function QuemSomosPage() {
             </p>
           </div>
         </section>
-      </div>
 
-      <StoryScroll />
+        <section className="rounded-[1.75rem] border border-slate-200/80 bg-white p-8 shadow-sm sm:p-10">
+          <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.22em] text-brand-600">
+                Faça parte
+              </p>
+              <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900">
+                Você também pode fazer parte dessa mudança.
+              </h2>
+              <p className="mt-4 max-w-md text-sm leading-7 text-slate-600">
+                Seja adotando com responsabilidade ou ajudando uma ONG a
+                ganhar visibilidade, cada ação no ConectaPet aproxima um
+                animal de um novo lar.
+              </p>
+              <div className="mt-7 flex flex-wrap gap-3">
+                <Link
+                  href="/pessoa-fisica/home"
+                  className="rounded-xl bg-brand-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-brand-700"
+                >
+                  Quero adotar
+                </Link>
+                <Link
+                  href="/register?role=ONG"
+                  className="rounded-xl border border-brand-500 px-5 py-3 text-sm font-semibold text-brand-700 transition hover:bg-brand-50"
+                >
+                  Sou uma ONG
+                </Link>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-4 rounded-2xl border border-brand-200 bg-brand-50 p-7">
+              <div className="flex items-center gap-3">
+                <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-white">
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="text-brand-700"
+                  >
+                    <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z" />
+                  </svg>
+                </div>
+                <p className="text-sm font-semibold text-slate-900">
+                  Adoção responsável, do jeito certo.
+                </p>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-white">
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="text-brand-700"
+                  >
+                    <path d="M3 21h18" />
+                    <path d="M5 21V7l8-4v18" />
+                    <path d="M19 21V11l-6-4" />
+                  </svg>
+                </div>
+                <p className="text-sm font-semibold text-slate-900">
+                  ONGs com mais visibilidade e organização.
+                </p>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-white">
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="text-brand-700"
+                  >
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="m9 12 2 2 4-4" />
+                  </svg>
+                </div>
+                <p className="text-sm font-semibold text-slate-900">
+                  Um processo mais claro, do início ao fim.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
     </div>
   );
 }
