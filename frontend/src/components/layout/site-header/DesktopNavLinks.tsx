@@ -23,7 +23,7 @@ export function DesktopNavLinks({
       ? [
           { href: "/home", label: "Home", key: "home" },
           { href: "/ongs", label: "Verificar ONGs", key: "ongs" },
-          { href: "/quem-somos", label: "Quem somos?", key: "quem-somos" },
+          { href: "/", label: "Quem somos?", key: "quem-somos" },
         ]
       : effectiveVariant === "pessoa-fisica"
         ? [
@@ -34,7 +34,7 @@ export function DesktopNavLinks({
             },
             {
               href: "/pessoa-fisica/cadastrar-pet",
-              label: "Colocar na adoção",
+              label: "Colocquem-somosar na adoção",
               key: "colocar-na-adocao",
             },
             {
