@@ -1,24 +1,26 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import { apiFetch } from "@/lib/api";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { Pet } from "@/types/api";
-import { isPetVaccinated } from "@/lib/pet";
 import { prefetchPet } from "@/lib/petCache";
-import { CardBody, CardContainer, CardItem } from "@/components/ui/3d-card";
+import { PetCard } from "@/components/pets/PetCard";
 import { PetQuickView } from "@/components/pets/PetQuickView";
 import { PetFilterBar } from "@/components/pets/PetFilterBar";
-import { MapPin, Camera, Heart, MousePointerClick } from "lucide-react";
+import { MousePointerClick } from "lucide-react";
 import { STATUS_COLORS } from "@/constants/theme";
+
+const FEATURED_COUNT = 3;
 
 export default function HomePage() {
   const router = useRouter();
   const [pets, setPets] = useState<Pet[]>([]);
+  const [ongsCount, setOngsCount] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activePet, setActivePet] = useState<Pet | null>(null);
@@ -63,6 +65,40 @@ export default function HomePage() {
     searchTerm ? pet.name.toLowerCase().includes(searchTerm.toLowerCase()) : true,
   );
 
+  // "Destaques" só aparece na navegação livre (sem busca/filtro ativo): é
+  // uma seção de descoberta, não deve se misturar com um resultado de busca.
+  const showFeatured = activeFiltersCount === 0 && !searchTerm;
+
+  const featuredPets = useMemo(() => {
+    if (!showFeatured) return [];
+    return [...pets]
+      .filter((pet) => !pet.isAdopted)
+      .sort(
+        (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+      )
+      .slice(0, FEATURED_COUNT);
+  }, [pets, showFeatured]);
+
+  const featuredIds = useMemo(
+    () => new Set(featuredPets.map((pet) => pet.id)),
+    [featuredPets],
+  );
+
+  const gridPets = showFeatured
+    ? visiblePets.filter((pet) => !featuredIds.has(pet.id))
+    : visiblePets;
+
+  const availableCount = pets.filter((pet) => !pet.isAdopted).length;
+
+  useEffect(() => {
+    apiFetch<{ id: string }[]>("/auth/ongs")
+      .then((data) => setOngsCount(data.length))
+      .catch(() => {
+        // Não trava a home se a lista de ONGs falhar: o hero só esconde a
+        // estatística quando ela não está disponível.
+      });
+  }, []);
+
   useEffect(() => {
     const loadPets = async () => {
       setIsLoading(true);
@@ -102,21 +138,80 @@ export default function HomePage() {
       <section className="relative bg-brand-600 px-4 py-16 sm:px-6 lg:px-8 overflow-hidden">
         <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-white via-transparent to-transparent"></div>
 
-        <div className="relative mx-auto max-w-4xl text-center">
-          <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl mb-4">
+        <div className="relative mx-auto flex max-w-4xl flex-col items-center gap-5 text-center">
+          <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl mb-0">
             Encontre seu novo melhor amigo
           </h1>
           <p className="text-lg text-brand-100 max-w-2xl mx-auto font-medium">
             Centenas de cães e gatos resgatados por ONGs parceiras estão
             esperando por um lar cheio de amor. Adote e transforme uma vida!
           </p>
+
+          <div className="flex flex-wrap items-center justify-center gap-2.5">
+            <span className="rounded-full border border-white/25 bg-white/10 px-4 py-1.5 text-sm font-semibold text-white">
+              {availableCount} pets esperando um lar
+            </span>
+            {ongsCount !== null && (
+              <span className="rounded-full border border-white/25 bg-white/10 px-4 py-1.5 text-sm font-semibold text-white">
+                {ongsCount} ONGs parceiras
+              </span>
+            )}
+          </div>
+
+          <div className="mt-1 flex flex-wrap items-center justify-center gap-3">
+            <a
+              href="#todos-os-pets"
+              className="rounded-xl bg-white px-6 py-3 text-sm font-bold text-brand-700 transition hover:bg-brand-50"
+            >
+              Quero adotar
+            </a>
+            <Link
+              href="/register?role=ONG"
+              className="rounded-xl border border-white/60 px-6 py-3 text-sm font-bold text-white transition hover:bg-white/10"
+            >
+              Sou uma ONG · cadastrar pets
+            </Link>
+          </div>
         </div>
       </section>
 
       <main className="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 lg:px-8 flex-1">
-        <section className="mb-6 flex flex-col items-center justify-center gap-2 text-center md:items-start md:text-left">
+        {showFeatured && featuredPets.length > 0 && (
+          <section className="mb-12">
+            <div className="mb-5 flex flex-wrap items-baseline justify-between gap-2">
+              <div>
+                <div className="mb-1.5 text-xs font-bold uppercase tracking-wider text-brand-600">
+                  Prioridade de adoção
+                </div>
+                <h2 className="text-2xl font-extrabold text-slate-900">
+                  Esperando há mais tempo
+                </h2>
+              </div>
+            </div>
+
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {featuredPets.map((pet) => (
+                <PetCard
+                  key={pet.id}
+                  pet={pet}
+                  variant="featured"
+                  onOpen={setActivePet}
+                  onHoverPrefetch={(hovered) => {
+                    prefetchPet(hovered.id);
+                    router.prefetch(`/pet/${hovered.id}`);
+                  }}
+                />
+              ))}
+            </div>
+          </section>
+        )}
+
+        <section
+          id="todos-os-pets"
+          className="mb-6 flex flex-col items-center justify-center gap-2 text-center md:items-start md:text-left"
+        >
           <h2 className="text-3xl font-bold text-slate-900">
-            Pets para adoção
+            {showFeatured ? "Todos os pets" : "Pets para adoção"}
           </h2>
 
           <div className="flex items-center gap-1.5 text-sm font-medium text-slate-400">
@@ -165,135 +260,21 @@ export default function HomePage() {
           </div>
         ) : (
           <section className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {visiblePets.length === 0 ? (
+            {gridPets.length === 0 ? (
               <div className="col-span-full py-20 text-center text-slate-500">
                 Nenhum pet encontrado com esses filtros.
               </div>
             ) : (
-              visiblePets.map((pet) => (
-                <motion.div
+              gridPets.map((pet) => (
+                <PetCard
                   key={pet.id}
-                  layoutId={`pet-card-${pet.id}`}
-                  transition={{ type: "spring", damping: 28, stiffness: 300 }}
-                  role="link"
-                  tabIndex={0}
-                  onMouseEnter={() => {
-                    prefetchPet(pet.id);
-                    router.prefetch(`/pet/${pet.id}`);
+                  pet={pet}
+                  onOpen={setActivePet}
+                  onHoverPrefetch={(hovered) => {
+                    prefetchPet(hovered.id);
+                    router.prefetch(`/pet/${hovered.id}`);
                   }}
-                  onClick={() => setActivePet(pet)}
-                  onKeyDown={(event) => {
-                    if (event.key !== "Enter") return;
-                    setActivePet(pet);
-                  }}
-                  className="group cursor-pointer h-full"
-                >
-                  <CardContainer containerClassName="p-0 w-full h-full" className="w-full h-full">
-                    <CardBody className="flex h-full w-full flex-col overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-slate-100 transition-shadow duration-300 hover:shadow-xl hover:ring-brand-200">
-                      <div className="relative h-64 w-full bg-slate-100 flex items-center justify-center overflow-hidden">
-                        {pet.photoUrl ? (
-                          <motion.img
-                            layoutId={`pet-image-${pet.id}`}
-                            src={pet.photoUrl}
-                            alt={pet.name}
-                            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                          />
-                        ) : (
-                          <Camera size={48} className="text-slate-300" />
-                        )}
-
-                        {pet.isAdopted && (
-                          <div className="absolute top-3 right-3 bg-brand-600/90 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs font-bold shadow-md flex items-center gap-1.5">
-                            <Heart size={14} fill="currentColor" /> Adotado
-                          </div>
-                        )}
-                      </div>
-
-                      <CardItem translateZ={30} className="flex w-full flex-1 flex-col p-5">
-                      <div className="flex justify-between items-start mb-2">
-                        <h2
-                          className="text-2xl font-extrabold text-slate-900 group-hover:text-brand-600 transition-colors truncate max-w-[70%]"
-                          title={pet.name}
-                        >
-                          {pet.name}
-                        </h2>
-                        <span className="bg-slate-100 text-slate-600 px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider">
-                          {pet.sex || (pet.species === "Gato" ? "Gato" : "Cão")}
-                        </span>
-                      </div>
-
-                      <div className="flex flex-col gap-1 text-sm font-medium text-slate-500 mb-4">
-                        <div className="flex items-center gap-1.5">
-                          <MapPin size={16} className="text-brand-400" />
-                          {pet.ong?.id ? (
-                            <Link
-                              href={`/ongs/${pet.ong.id}`}
-                              onClick={(event) => event.stopPropagation()}
-                              className="font-semibold text-slate-800 truncate max-w-[220px]"
-                              title={pet.ong?.name}
-                            >
-                              {pet.ong?.name}
-                            </Link>
-                          ) : (
-                            <span
-                              className="font-semibold text-slate-800 truncate max-w-[220px]"
-                              title={pet.ong?.name}
-                            >
-                              {pet.ong?.name || "Abrigo Parceiro"}
-                            </span>
-                          )}
-                        </div>
-                        {(pet.ong?.city || pet.ong?.state) && (
-                          <div className="text-slate-400 text-xs">
-                            {pet.ong?.city
-                              ? `${pet.ong.city}${pet.ong.state ? `, ${pet.ong.state}` : ""}`
-                              : pet.ong?.state}
-                          </div>
-                        )}
-                      </div>
-
-                      <div className="mt-auto grid grid-cols-2 gap-2 border-t border-slate-100 pt-4">
-                        <div className="text-center bg-slate-50 rounded-xl py-2">
-                          <span className="block text-[10px] uppercase font-bold text-slate-400">
-                            Idade
-                          </span>
-                          <span className="text-sm font-bold text-slate-700">
-                            {pet.age} {pet.age === 1 ? "ano" : "anos"}
-                          </span>
-                        </div>
-                        <div className="text-center bg-slate-50 rounded-xl py-2">
-                          <span className="block text-[10px] uppercase font-bold text-slate-400">
-                            Porte
-                          </span>
-                          <span className="text-sm font-bold text-slate-700">
-                            {pet.size || "Médio"}
-                          </span>
-                        </div>
-                        <div className="text-center bg-slate-50 rounded-xl py-2">
-                          <span className="block text-[10px] uppercase font-bold text-slate-400">
-                            Castrado
-                          </span>
-                          <span
-                            className={`text-sm font-black ${pet.isCastrated ? "text-brand-400" : "text-slate-700"}`}
-                          >
-                            {pet.isCastrated ? "Sim" : "Não"}
-                          </span>
-                        </div>
-                        <div className="text-center bg-slate-50 rounded-xl py-2">
-                          <span className="block text-[10px] uppercase font-bold text-slate-400">
-                            Vacinado
-                          </span>
-                          <span
-                            className={`text-sm font-black ${isPetVaccinated(pet) ? "text-brand-400" : "text-slate-700"}`}
-                          >
-                            {isPetVaccinated(pet) ? "Sim" : "Não"}
-                          </span>
-                        </div>
-                      </div>
-                      </CardItem>
-                    </CardBody>
-                  </CardContainer>
-                </motion.div>
+                />
               ))
             )}
           </section>

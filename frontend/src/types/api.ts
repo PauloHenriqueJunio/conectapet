@@ -34,6 +34,7 @@ export interface Pet {
   photoUrls: string[];
   featuredPhotoIndex: number;
   isAdopted: boolean;
+  createdAt: string;
   ongId: string;
   size: string;
   sex: string;

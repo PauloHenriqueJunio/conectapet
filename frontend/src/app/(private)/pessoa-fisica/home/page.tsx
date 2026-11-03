@@ -1,18 +1,17 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import { useAuth } from "@/context/AuthContext";
 import { apiFetch } from "@/lib/api";
 import { Pet } from "@/types/api";
 import { isPetVaccinated } from "@/lib/pet";
 import { prefetchPet } from "@/lib/petCache";
-import { CardBody, CardContainer, CardItem } from "@/components/ui/3d-card";
+import { PetCard } from "@/components/pets/PetCard";
 import { PetQuickView } from "@/components/pets/PetQuickView";
 import { PetFilterBar } from "@/components/pets/PetFilterBar";
-import { MapPin, Heart, Info, Camera } from "lucide-react";
+import { Heart, Info } from "lucide-react";
 import { STATUS_COLORS } from "@/constants/theme";
 
 export default function PessoaFisicaHome() {
@@ -191,129 +190,15 @@ export default function PessoaFisicaHome() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
           {filteredPets.map((pet) => (
-            <motion.div
+            <PetCard
               key={pet.id}
-              layoutId={`pet-card-${pet.id}`}
-              transition={{ type: "spring", damping: 28, stiffness: 300 }}
-              role="link"
-              tabIndex={0}
-              onMouseEnter={() => {
-                prefetchPet(pet.id);
-                router.prefetch(`/pet/${pet.id}`);
+              pet={pet}
+              onOpen={setActivePet}
+              onHoverPrefetch={(hovered) => {
+                prefetchPet(hovered.id);
+                router.prefetch(`/pet/${hovered.id}`);
               }}
-              onClick={() => setActivePet(pet)}
-              onKeyDown={(event) => {
-                if (event.key !== "Enter") return;
-                setActivePet(pet);
-              }}
-              className="group cursor-pointer h-full"
-            >
-              <CardContainer containerClassName="p-0 w-full h-full" className="w-full h-full">
-                <CardBody className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl border border-slate-100 transition-shadow duration-300 flex flex-col h-full w-full">
-                  <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-100">
-                    {pet.photoUrl ? (
-                      <motion.img
-                        layoutId={`pet-image-${pet.id}`}
-                        src={pet.photoUrl}
-                        alt={pet.name}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      />
-                    ) : (
-                      <div className="flex flex-col items-center text-slate-400 pt-16">
-                        <Camera size={40} className="mb-2 opacity-50" />
-                        <span className="text-xs font-semibold uppercase tracking-wider">
-                          Pet sem foto
-                        </span>
-                      </div>
-                    )}
-                    {/* Badge de Idade por cima da foto */}
-                    <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-slate-800 shadow-sm">
-                      {pet.age} {pet.age === 1 ? "ano" : "anos"}
-                    </div>
-                  </div>
-
-                  {/* INFORMAÇÕES */}
-                  <CardItem translateZ={30} className="flex w-full flex-1 flex-col p-5">
-                  <div className="flex justify-between items-start mb-2">
-                    <h3 className="text-xl font-extrabold text-slate-900 group-hover:text-brand-600 transition-colors">
-                      {pet.name}
-                    </h3>
-                    {pet.species === "Gato" ? "Gato" : "Cão"}
-                  </div>
-
-                  {/* Localização (Simulada se não tiver na API) */}
-                  <div className="flex flex-col gap-1 text-slate-500 text-sm mt-auto pt-4">
-                    <div className="flex items-center gap-1.5">
-                      <MapPin size={16} className="text-brand-500" />
-                      {pet.ong?.id ? (
-                        <Link
-                          href={`/ongs/${pet.ong.id}`}
-                          onClick={(event) => event.stopPropagation()}
-                          className="font-semibold text-slate-800 truncate max-w-[220px]"
-                          title={pet.ong?.name}
-                        >
-                          {pet.ong?.name}
-                        </Link>
-                      ) : (
-                        <span
-                          className="font-semibold text-slate-800 truncate max-w-[220px]"
-                          title={pet.ong?.name}
-                        >
-                          {pet.ong?.name || "Abrigo Parceiro"}
-                        </span>
-                      )}
-                    </div>
-                    {(pet.ong?.city || pet.ong?.state) && (
-                      <div className="text-slate-400 text-xs">
-                        {pet.ong?.city
-                          ? `${pet.ong.city}${pet.ong.state ? `, ${pet.ong.state}` : ""}`
-                          : pet.ong?.state}
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="mt-4 grid grid-cols-2 gap-2 border-t border-slate-100 pt-4">
-                    <div className="text-center bg-slate-50 rounded-xl py-2">
-                      <span className="block text-[10px] uppercase font-bold text-slate-400">
-                        Porte
-                      </span>
-                      <span className="text-sm font-bold text-slate-700">
-                        {pet.size || "Médio"}
-                      </span>
-                    </div>
-                    <div className="text-center bg-slate-50 rounded-xl py-2">
-                      <span className="block text-[10px] uppercase font-bold text-slate-400">
-                        Sexo
-                      </span>
-                      <span className="text-sm font-bold text-slate-700">
-                        {pet.sex || "Indefinido"}
-                      </span>
-                    </div>
-                    <div className="text-center bg-slate-50 rounded-xl py-2">
-                      <span className="block text-[10px] uppercase font-bold text-slate-400">
-                        Castrado
-                      </span>
-                      <span
-                        className={`text-sm font-bold ${pet.isCastrated ? "text-brand-600" : "text-slate-700"}`}
-                      >
-                        {pet.isCastrated ? "Sim" : "Não"}
-                      </span>
-                    </div>
-                    <div className="text-center bg-slate-50 rounded-xl py-2">
-                      <span className="block text-[10px] uppercase font-bold text-slate-400">
-                        Vacinado
-                      </span>
-                      <span
-                        className={`text-sm font-bold ${isPetVaccinated(pet) ? "text-brand-600" : "text-slate-700"}`}
-                      >
-                        {isPetVaccinated(pet) ? "Sim" : "Não"}
-                      </span>
-                    </div>
-                  </div>
-                  </CardItem>
-                </CardBody>
-              </CardContainer>
-            </motion.div>
+            />
           ))}
         </div>
       )}
