@@ -3,7 +3,10 @@ import {
   Logger,
   ServiceUnavailableException,
 } from "@nestjs/common";
+import { render } from "@react-email/render";
 import { Resend } from "resend";
+import PasswordResetEmail from "../../emails/PasswordResetEmail";
+import VerifyEmailEmail from "../../emails/VerifyEmailEmail";
 
 type SendEmailInput = {
   to: string;
@@ -44,5 +47,33 @@ export class EmailService {
         "Não foi possível enviar o e-mail no momento.",
       );
     }
+  }
+
+  async sendVerificationEmail(
+    to: string,
+    name: string,
+    verifyUrl: string,
+  ): Promise<void> {
+    const html = await render(VerifyEmailEmail({ name, verifyUrl }));
+
+    await this.sendEmail({
+      to,
+      subject: "Confirme seu e-mail no ConectaPet",
+      html,
+    });
+  }
+
+  async sendPasswordResetEmail(
+    to: string,
+    name: string,
+    resetUrl: string,
+  ): Promise<void> {
+    const html = await render(PasswordResetEmail({ name, resetUrl }));
+
+    await this.sendEmail({
+      to,
+      subject: "Redefinir senha do ConectaPet",
+      html,
+    });
   }
 }

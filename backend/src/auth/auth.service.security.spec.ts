@@ -1,4 +1,8 @@
-import { BadRequestException, UnauthorizedException } from "@nestjs/common";
+import {
+  BadRequestException,
+  ForbiddenException,
+  UnauthorizedException,
+} from "@nestjs/common";
 import { Role } from "@prisma/client";
 import { ThrottlerException } from "@nestjs/throttler";
 import { AuthService } from "./auth.service";
@@ -43,6 +47,16 @@ describe("AuthService - security", () => {
     uploadFile: jest.fn(),
   };
 
+  const emailService = {
+    sendVerificationEmail: jest.fn().mockResolvedValue(undefined),
+    sendPasswordResetEmail: jest.fn().mockResolvedValue(undefined),
+  };
+
+  const authTokenService = {
+    generate: jest.fn().mockResolvedValue("raw-token"),
+    consume: jest.fn(),
+  };
+
   const createService = (prisma: { user: MockPrismaUser }) =>
     new AuthService(
       prisma as never,
@@ -50,6 +64,8 @@ describe("AuthService - security", () => {
       cepValidationService as never,
       loginAttemptService as never,
       cloudinaryService as never,
+      emailService as never,
+      authTokenService as never,
     );
 
   beforeEach(() => {
@@ -264,6 +280,7 @@ describe("AuthService - security", () => {
       address: null,
       cpf: null,
       cnpj: null,
+      emailVerifiedAt: new Date(),
     });
     (bcrypt.compare as jest.Mock).mockResolvedValue(true);
 
@@ -285,6 +302,27 @@ describe("AuthService - security", () => {
     expect(loginAttemptService.registerSuccess).toHaveBeenCalledWith(
       "user@test.com",
     );
+  });
+
+  it("denies login when email is not verified", async () => {
+    const prisma = createPrismaMock();
+    prisma.user.findUnique.mockResolvedValue({
+      id: "user-1",
+      name: "User",
+      email: "unverified@test.com",
+      passwordHash: "hash",
+      role: Role.PESSOA_FISICA,
+      emailVerifiedAt: null,
+    });
+    (bcrypt.compare as jest.Mock).mockResolvedValue(true);
+
+    const service = createService(prisma);
+
+    await expect(
+      service.login({ email: "unverified@test.com", password: "123456" }),
+    ).rejects.toBeInstanceOf(ForbiddenException);
+
+    expect(loginAttemptService.registerSuccess).not.toHaveBeenCalled();
   });
 
   it("denies login when account is temporarily blocked", async () => {

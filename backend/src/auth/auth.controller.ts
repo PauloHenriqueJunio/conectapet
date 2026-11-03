@@ -18,9 +18,13 @@ import { Throttle } from "@nestjs/throttler";
 import { JwtAuthGuard } from "./guards/jwt-auth.guard";
 import { AuthService } from "./auth.service";
 import { DeleteAccountDto } from "./dto/delete-account.dto";
+import { ForgotPasswordDto } from "./dto/forgot-password.dto";
 import { LoginDto } from "./dto/login.dto";
 import { RegisterDto } from "./dto/register.dto";
+import { ResendVerificationDto } from "./dto/resend-verification.dto";
+import { ResetPasswordDto } from "./dto/reset-password.dto";
 import { UpdateProfileDto } from "./dto/update-profile.dto";
+import { VerifyEmailDto } from "./dto/verify-email.dto";
 import { RequestUser } from "./types/request-user.type";
 
 @Controller("auth")
@@ -70,6 +74,30 @@ export class AuthController {
     );
 
     return { success: true };
+  }
+
+  @Post("verify-email")
+  @Throttle({ default: { limit: 10, ttl: 60_000 } })
+  verifyEmail(@Body() dto: VerifyEmailDto) {
+    return this.authService.verifyEmail(dto);
+  }
+
+  @Post("resend-verification")
+  @Throttle({ default: { limit: 3, ttl: 60_000 } })
+  resendVerification(@Body() dto: ResendVerificationDto) {
+    return this.authService.resendVerification(dto);
+  }
+
+  @Post("forgot-password")
+  @Throttle({ default: { limit: 3, ttl: 60_000 } })
+  forgotPassword(@Body() dto: ForgotPasswordDto) {
+    return this.authService.forgotPassword(dto);
+  }
+
+  @Post("reset-password")
+  @Throttle({ default: { limit: 5, ttl: 60_000 } })
+  resetPassword(@Body() dto: ResetPasswordDto) {
+    return this.authService.resetPassword(dto);
   }
 
   @Get("ongs")

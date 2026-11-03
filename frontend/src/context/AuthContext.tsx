@@ -146,15 +146,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const register = async (payload: RegisterPayload) => {
+    // Não loga automaticamente após o cadastro: a conta só pode ser usada
+    // depois que o e-mail for confirmado (ver POST /auth/verify-email).
     await apiFetch("/auth/register", {
       method: "POST",
       body: JSON.stringify(payload),
     });
-
-    await login(
-      { email: payload.email, password: payload.password },
-      payload.role,
-    );
   };
 
   const logout = () => {

@@ -4,16 +4,19 @@ import { JwtModule } from "@nestjs/jwt";
 import { PassportModule } from "@nestjs/passport";
 import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
+import { AuthTokenService } from "./services/auth-token.service";
 import { CepValidationService } from "./services/cep-validation.service";
 import { LoginAttemptService } from "./services/login-attempt.service";
 import { JwtStrategy } from "./strategies/jwt.strategy";
 import { CloudinaryModule } from "../cloudinary/cloudinary.module";
+import { EmailModule } from "../email/email.module";
 
 @Module({
   imports: [
     ConfigModule,
     PassportModule,
     CloudinaryModule,
+    EmailModule,
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
@@ -30,6 +33,7 @@ import { CloudinaryModule } from "../cloudinary/cloudinary.module";
     JwtStrategy,
     CepValidationService,
     LoginAttemptService,
+    AuthTokenService,
   ],
   exports: [AuthService],
 })
