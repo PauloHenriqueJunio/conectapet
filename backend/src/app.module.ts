@@ -8,6 +8,7 @@ import { PrismaModule } from "./prisma/prisma.module";
 import { PetsModule } from "./pets/pets.module";
 import { AdoptionModule } from "./adoption/adoption.module";
 import { CloudinaryModule } from "./cloudinary/cloudinary.module";
+import { EmailModule } from "./email/email.module";
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { CloudinaryModule } from "./cloudinary/cloudinary.module";
     }),
     PrismaModule,
     CloudinaryModule,
+    EmailModule,
     AuthModule,
     PetsModule,
     AdoptionModule,

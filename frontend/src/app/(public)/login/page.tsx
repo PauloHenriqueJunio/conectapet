@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { apiFetch } from "@/lib/api";
 import { Role } from "@/types/api";
 import { ArrowLeft, Eye, EyeOff } from "lucide-react";
 import { STATUS_COLORS } from "@/constants/theme";
@@ -15,10 +16,15 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [needsVerification, setNeedsVerification] = useState(false);
+  const [isResending, setIsResending] = useState(false);
+  const [resendMessage, setResendMessage] = useState<string | null>(null);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError(null);
+    setNeedsVerification(false);
+    setResendMessage(null);
 
     if (!userType) {
       setError("Selecione se vai entrar como Pessoa Física ou ONG.");
@@ -41,10 +47,49 @@ export default function LoginPage() {
           );
         }
       } else {
-        setError("Falha no login. Verifique suas credenciais.");
+        const rawMessage = err instanceof Error ? err.message : "";
+        let statusCode: number | undefined;
+        let backendMessage: string | undefined;
+
+        try {
+          const parsed = JSON.parse(rawMessage) as {
+            statusCode?: number;
+            message?: string;
+          };
+          statusCode = parsed.statusCode;
+          backendMessage = parsed.message;
+        } catch {
+          // rawMessage não era JSON; seguimos com a mensagem genérica.
+        }
+
+        if (statusCode === 403) {
+          setNeedsVerification(true);
+          setError(
+            backendMessage ?? "Confirme seu e-mail antes de entrar.",
+          );
+        } else {
+          setError("Falha no login. Verifique suas credenciais.");
+        }
       }
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleResendVerification = async () => {
+    setIsResending(true);
+    setResendMessage(null);
+
+    try {
+      await apiFetch("/auth/resend-verification", {
+        method: "POST",
+        body: JSON.stringify({ email }),
+      });
+      setResendMessage("Enviamos um novo link de confirmação para seu e-mail.");
+    } catch {
+      setResendMessage("Não foi possível reenviar agora. Tente novamente.");
+    } finally {
+      setIsResending(false);
     }
   };
 
@@ -156,15 +201,28 @@ export default function LoginPage() {
           </div>
 
           {error && (
-            <p
-              className="rounded-xl px-3 py-2 text-sm"
+            <div
+              className="space-y-2 rounded-xl px-3 py-2 text-sm"
               style={{
                 backgroundColor: STATUS_COLORS.danger[100],
                 color: STATUS_COLORS.danger[700],
               }}
             >
-              {error}
-            </p>
+              <p>{error}</p>
+              {needsVerification && (
+                <button
+                  type="button"
+                  onClick={handleResendVerification}
+                  disabled={isResending}
+                  className="font-semibold underline underline-offset-2 disabled:cursor-not-allowed disabled:opacity-70"
+                >
+                  {isResending ? "Reenviando..." : "Reenviar confirmação"}
+                </button>
+              )}
+              {resendMessage && (
+                <p className="text-slate-600">{resendMessage}</p>
+              )}
+            </div>
           )}
 
           <button

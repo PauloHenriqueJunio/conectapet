@@ -1,30 +1,74 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
+  Logger,
   UnauthorizedException,
 } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import { AdoptionStatus, Prisma, Role } from "@prisma/client";
+import { AdoptionStatus, AuthTokenType, Prisma, Role } from "@prisma/client";
 import * as bcrypt from "bcrypt";
 import { PrismaService } from "../prisma/prisma.service";
 import { CloudinaryService } from "../cloudinary/cloudinary.service";
+import { EmailService } from "../email/email.service";
 import { DeleteAccountDto } from "./dto/delete-account.dto";
+import { ForgotPasswordDto } from "./dto/forgot-password.dto";
 import { LoginDto } from "./dto/login.dto";
 import { RegisterDto } from "./dto/register.dto";
+import { ResendVerificationDto } from "./dto/resend-verification.dto";
+import { ResetPasswordDto } from "./dto/reset-password.dto";
 import { UpdateProfileDto } from "./dto/update-profile.dto";
+import { VerifyEmailDto } from "./dto/verify-email.dto";
+import { AuthTokenService } from "./services/auth-token.service";
 import { CepValidationService } from "./services/cep-validation.service";
 import { LoginAttemptService } from "./services/login-attempt.service";
 import { JwtPayload } from "./types/jwt-payload.type";
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
     private readonly cepValidationService: CepValidationService,
     private readonly loginAttemptService: LoginAttemptService,
     private readonly cloudinaryService: CloudinaryService,
+    private readonly emailService: EmailService,
+    private readonly authTokenService: AuthTokenService,
   ) {}
+
+  private getFrontendUrl(): string {
+    return process.env.FRONTEND_URL ?? "http://localhost:3000";
+  }
+
+  private async sendVerificationEmailFor(user: {
+    id: string;
+    name: string;
+    email: string;
+  }) {
+    const token = await this.authTokenService.generate(
+      user.id,
+      AuthTokenType.EMAIL_VERIFICATION,
+    );
+    const verifyUrl = `${this.getFrontendUrl()}/verificar-email?token=${token}`;
+
+    try {
+      await this.emailService.sendVerificationEmail(
+        user.email,
+        user.name,
+        verifyUrl,
+      );
+    } catch (error) {
+      // Melhor esforço: o cadastro/reenvio não deve falhar só porque o
+      // envio do e-mail deu problema. O usuário pode pedir reenvio depois.
+      this.logger.error(
+        `Falha ao enviar e-mail de verificação para ${user.email}: ${
+          error instanceof Error ? error.message : error
+        }`,
+      );
+    }
+  }
 
   private buildPublicUser(user: {
     id: string;
@@ -192,6 +236,8 @@ export class AuthService {
       throw error;
     }
 
+    await this.sendVerificationEmailFor(user);
+
     return user;
   }
 
@@ -219,6 +265,12 @@ export class AuthService {
       throw new UnauthorizedException("Credenciais inválidas.");
     }
 
+    if (!user.emailVerifiedAt) {
+      throw new ForbiddenException(
+        "Confirme seu e-mail antes de entrar. Reenvie a confirmação se precisar de um novo link.",
+      );
+    }
+
     this.loginAttemptService.registerSuccess(normalizedEmail);
 
     const payload: JwtPayload = {
@@ -243,6 +295,88 @@ export class AuthService {
         role: user.role,
       }),
     };
+  }
+
+  async verifyEmail(dto: VerifyEmailDto) {
+    const userId = await this.authTokenService.consume(
+      dto.token,
+      AuthTokenType.EMAIL_VERIFICATION,
+    );
+
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { emailVerifiedAt: new Date() },
+    });
+
+    return { success: true };
+  }
+
+  async resendVerification(dto: ResendVerificationDto) {
+    const user = await this.prisma.user.findUnique({
+      where: { email: dto.email.toLowerCase() },
+      select: { id: true, name: true, email: true, emailVerifiedAt: true },
+    });
+
+    // Resposta sempre genérica: não revela se o e-mail existe ou já foi
+    // confirmado.
+    if (user && !user.emailVerifiedAt) {
+      await this.sendVerificationEmailFor(user);
+    }
+
+    return {
+      message:
+        "Se o e-mail existir e ainda não tiver sido confirmado, enviamos um novo link de confirmação.",
+    };
+  }
+
+  async forgotPassword(dto: ForgotPasswordDto) {
+    const user = await this.prisma.user.findUnique({
+      where: { email: dto.email.toLowerCase() },
+      select: { id: true, name: true, email: true },
+    });
+
+    // Resposta sempre genérica: não revela se o e-mail existe.
+    if (user) {
+      const token = await this.authTokenService.generate(
+        user.id,
+        AuthTokenType.PASSWORD_RESET,
+      );
+      const resetUrl = `${this.getFrontendUrl()}/redefinir-senha?token=${token}`;
+
+      try {
+        await this.emailService.sendPasswordResetEmail(
+          user.email,
+          user.name,
+          resetUrl,
+        );
+      } catch (error) {
+        this.logger.error(
+          `Falha ao enviar e-mail de redefinição de senha para ${user.email}: ${
+            error instanceof Error ? error.message : error
+          }`,
+        );
+      }
+    }
+
+    return {
+      message: "Se o e-mail existir, enviamos um link para redefinir a senha.",
+    };
+  }
+
+  async resetPassword(dto: ResetPasswordDto) {
+    const userId = await this.authTokenService.consume(
+      dto.token,
+      AuthTokenType.PASSWORD_RESET,
+    );
+
+    const passwordHash = await bcrypt.hash(dto.password, 12);
+
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { passwordHash },
+    });
+
+    return { success: true };
   }
 
   async getProfile(userId: string) {

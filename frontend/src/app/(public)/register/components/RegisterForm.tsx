@@ -17,7 +17,7 @@ import { REGISTER_LOADING_STATES } from "@/constants/loaderMessages";
 import { OngLogoPicker } from "@/components/ui/OngLogoPicker";
 
 export function RegisterForm() {
-  const { register, uploadPhoto } = useAuth();
+  const { register } = useAuth();
   const searchParams = useSearchParams();
   const initialRole =
     searchParams.get("role") === "ONG" ? "ONG" : "PESSOA_FISICA";
@@ -37,6 +37,7 @@ export function RegisterForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [isRegistered, setIsRegistered] = useState(false);
 
   const handleOngPhotoSelected = (file: File) => {
     if (ongPhotoPreview) URL.revokeObjectURL(ongPhotoPreview);
@@ -101,15 +102,10 @@ export function RegisterForm() {
         cnpj: cnpj || undefined,
       });
 
-      if (ongPhotoFile) {
-        try {
-          await uploadPhoto(ongPhotoFile);
-        } catch {
-          // Conta ja foi criada com sucesso; a foto pode ser adicionada
-          // depois em "Editar Perfil", entao um erro aqui nao deve
-          // bloquear o fluxo de cadastro.
-        }
-      }
+      // A conta só pode ser usada depois que o e-mail for confirmado, então
+      // não há sessão ainda para enviar a foto da ONG agora. Ela pode ser
+      // adicionada depois em "Editar Perfil".
+      setIsRegistered(true);
     } catch (err) {
       const rawMessage = err instanceof Error ? err.message : "";
       try {
@@ -127,6 +123,36 @@ export function RegisterForm() {
       setIsSubmitting(false);
     }
   };
+
+  if (isRegistered) {
+    return (
+      <main className="mx-auto flex min-h-screen max-w-xl items-center px-6 py-12">
+        <div className="w-full rounded-3xl bg-white p-8 shadow-2xl ring-1 ring-slate-100">
+          <h1 className="text-3xl font-bold text-slate-900">
+            Confirme seu e-mail
+          </h1>
+          <p className="mt-4 text-sm text-slate-600">
+            Enviamos um link de confirmação para <strong>{email}</strong>.
+            Clique no link para ativar sua conta e poder entrar no
+            ConectaPet.
+          </p>
+          {ongPhotoFile && (
+            <p className="mt-2 text-sm text-slate-600">
+              A foto da ONG não foi enviada ainda: você pode adicioná-la em
+              &quot;Editar Perfil&quot; depois de confirmar o e-mail e
+              entrar.
+            </p>
+          )}
+          <Link
+            href="/login"
+            className="mt-6 block w-full rounded-xl bg-brand-600 px-4 py-2 text-center font-semibold text-white"
+          >
+            Ir para o login
+          </Link>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="mx-auto flex min-h-screen max-w-xl items-center px-6 py-12">
